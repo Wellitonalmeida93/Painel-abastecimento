@@ -10,15 +10,19 @@ body {
     padding: 20px;
 }
 
+h1 {
+    margin-bottom: 10px;
+}
+
 input {
     padding: 8px;
     margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
 th, td {
@@ -29,6 +33,15 @@ th, td {
 
 th {
     background-color: #eee;
+    cursor: pointer;
+}
+
+.alto {
+    background-color: #ffcccc;
+}
+
+.medio {
+    background-color: #fff3cd;
 }
 </style>
 </head>
@@ -43,15 +56,15 @@ th {
 <table id="tabela">
     <thead>
         <tr>
-            <th>Data</th>
-            <th>Placa</th>
+            <th onclick="ordenar('dataTransacao')">Data</th>
+            <th onclick="ordenar('placa')">Placa</th>
             <th>Posto</th>
-            <th>Cidade</th>
+            <th onclick="ordenar('nomeCidade')">Cidade</th>
             <th>UF</th>
             <th>Produto</th>
-            <th>Litros</th>
-            <th>Valor Total</th>
-            <th>Valor Unitário</th>
+            <th onclick="ordenar('litros')">Litros</th>
+            <th onclick="ordenar('valorTransacao')">Valor Total</th>
+            <th onclick="ordenar('valorLitro')">Valor Unitário</th>
             <th>Cartão</th>
             <th>Tipo</th>
         </tr>
@@ -61,6 +74,7 @@ th {
 
 <script>
 let dados = []
+let ordemAsc = true
 
 // 🔹 Carregar JSON
 fetch('./transacoes.json')
@@ -70,12 +84,26 @@ fetch('./transacoes.json')
     renderTabela(dados)
 })
 
+// 🔹 Formatações
+function formatarMoeda(valor) {
+    return "R$ " + Number(valor).toFixed(2).replace(".", ",")
+}
+
+function formatarNumero(valor) {
+    return Number(valor).toFixed(2)
+}
+
 // 🔹 Renderizar tabela
 function renderTabela(lista) {
     const tbody = document.querySelector("#tabela tbody")
     tbody.innerHTML = ""
 
     lista.forEach(t => {
+
+        let classe = ""
+        if (t.valorLitro > 7) classe = "alto"
+        else if (t.valorLitro > 5) classe = "medio"
+
         const linha = `
         <tr>
             <td>${t.dataTransacao}</td>
@@ -84,12 +112,13 @@ function renderTabela(lista) {
             <td>${t.nomeCidade}</td>
             <td>${t.uf}</td>
             <td>${t.tipoCombustivel}</td>
-            <td>${t.litros}</td>
-            <td>${t.valorTransacao}</td>
-            <td>${t.valorLitro}</td>
+            <td>${formatarNumero(t.litros)}</td>
+            <td>${formatarMoeda(t.valorTransacao)}</td>
+            <td class="${classe}">${formatarMoeda(t.valorLitro)}</td>
             <td>${t.numeroCartao}</td>
             <td>${t.considerarTransacao}</td>
         </tr>`
+        
         tbody.innerHTML += linha
     })
 }
@@ -110,6 +139,19 @@ function aplicarFiltros() {
     })
 
     renderTabela(filtrado)
+}
+
+// 🔹 Ordenação
+function ordenar(campo) {
+    ordemAsc = !ordemAsc
+
+    dados.sort((a, b) => {
+        if (a[campo] < b[campo]) return ordemAsc ? -1 : 1
+        if (a[campo] > b[campo]) return ordemAsc ? 1 : -1
+        return 0
+    })
+
+    aplicarFiltros()
 }
 </script>
 
