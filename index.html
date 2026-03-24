@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel de Abastecimentos</title>
+
+<style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; font-size: 12px; }
+    th { background: #f2f2f2; }
+    input { margin: 5px; padding: 5px; }
+</style>
+</head>
+
+<body>
+
+<h2>Painel de Abastecimentos</h2>
+
+<input type="text" id="filtroPlaca" placeholder="Filtrar por placa">
+<input type="text" id="filtroCidade" placeholder="Filtrar por cidade">
+
+<table id="tabela">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Placa</th>
+            <th>Posto</th>
+            <th>Cidade</th>
+            <th>UF</th>
+            <th>Produto</th>
+            <th>Litros</th>
+            <th>Valor Total</th>
+            <th>Valor Unitário</th>
+            <th>Cartão</th>
+            <th>Tipo</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+
+async function carregarDados() {
+    const resposta = await fetch("transacoes.json");
+    const dados = await resposta.json();
+
+    const tabela = document.querySelector("#tabela tbody");
+
+    dados.forEach(t => {
+
+        let linha = `
+            <tr>
+                <td>${t.dataTransacao || ''}</td>
+                <td>${t.placa || ''}</td>
+                <td>${t.nomeReduzidoEstabelecimento || ''}</td>
+                <td>${t.nomeCidade || ''}</td>
+                <td>${t.uf || ''}</td>
+                <td>${t.tipoCombustivel || ''}</td>
+                <td>${t.litros || 0}</td>
+                <td>${t.valorTransacao || 0}</td>
+                <td>${t.valorLitro || 0}</td>
+                <td>${t.numeroCartao || ''}</td>
+                <td>${t.considerarTransacao || ''}</td>
+            </tr>
+        `;
+
+        tabela.innerHTML += linha;
+    });
+}
+
+carregarDados();
+
+</script>
+
+</body>
+</html>
