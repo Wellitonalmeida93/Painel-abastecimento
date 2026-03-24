@@ -1,16 +1,46 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Painel de Abastecimentos</title>
+  <meta charset="UTF-8">
+  <title>Painel de Abastecimentos</title>
 
-<style>
-    body { font-family: Arial; padding: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 6px; font-size: 12px; }
-    th { background: #f2f2f2; }
-    input { margin: 5px; padding: 5px; }
-</style>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input {
+      padding: 6px;
+      margin: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #333;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background: #f2f2f2;
+    }
+  </style>
 </head>
 
 <body>
@@ -18,59 +48,77 @@
 <h2>Painel de Abastecimentos</h2>
 
 <input type="text" id="filtroPlaca" placeholder="Filtrar por placa">
-<input type="text" id="filtroCidade" placeholder="Filtrar por cidade">
+<input type="text" id="filtroPosto" placeholder="Filtrar por posto">
 
 <table id="tabela">
-    <thead>
-        <tr>
-            <th>Data</th>
-            <th>Placa</th>
-            <th>Posto</th>
-            <th>Cidade</th>
-            <th>UF</th>
-            <th>Produto</th>
-            <th>Litros</th>
-            <th>Valor Total</th>
-            <th>Valor Unitário</th>
-            <th>Cartão</th>
-            <th>Tipo</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
+  <thead>
+    <tr>
+      <th>Data/Hora</th>
+      <th>Placa</th>
+      <th>Posto</th>
+      <th>Cidade</th>
+      <th>Estado</th>
+      <th>Produto</th>
+      <th>Litros</th>
+      <th>Valor Total</th>
+      <th>Valor Unitário</th>
+      <th>Cartão</th>
+      <th>Tipo</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
 </table>
 
 <script>
+let dadosGlobais = [];
 
-async function carregarDados() {
-    const resposta = await fetch("transacoes.json");
-    const dados = await resposta.json();
+// 🔥 FETCH COM CORREÇÃO DE CACHE
+fetch("./transacoes.json?nocache=" + new Date().getTime())
+  .then(res => res.json())
+  .then(dados => {
+    dadosGlobais = dados;
+    renderTabela(dados);
+  });
 
-    const tabela = document.querySelector("#tabela tbody");
+function renderTabela(dados) {
+  const tbody = document.querySelector("#tabela tbody");
+  tbody.innerHTML = "";
 
-    dados.forEach(t => {
-
-        let linha = `
-            <tr>
-                <td>${t.dataTransacao || ''}</td>
-                <td>${t.placa || ''}</td>
-                <td>${t.nomeReduzidoEstabelecimento || ''}</td>
-                <td>${t.nomeCidade || ''}</td>
-                <td>${t.uf || ''}</td>
-                <td>${t.tipoCombustivel || ''}</td>
-                <td>${t.litros || 0}</td>
-                <td>${t.valorTransacao || 0}</td>
-                <td>${t.valorLitro || 0}</td>
-                <td>${t.numeroCartao || ''}</td>
-                <td>${t.considerarTransacao || ''}</td>
-            </tr>
-        `;
-
-        tabela.innerHTML += linha;
-    });
+  dados.forEach(t => {
+    const linha = `
+      <tr>
+        <td>${t.dataTransacao || ""}</td>
+        <td>${t.placa || ""}</td>
+        <td>${t.nomeReduzidoEstabelecimento || ""}</td>
+        <td>${t.nomeCidade || ""}</td>
+        <td>${t.uf || ""}</td>
+        <td>${t.tipoCombustivel || ""}</td>
+        <td>${t.litros || ""}</td>
+        <td>${t.valorTransacao || ""}</td>
+        <td>${t.valorLitro || ""}</td>
+        <td>${t.numeroCartao || ""}</td>
+        <td>${t.considerarTransacao || ""}</td>
+      </tr>
+    `;
+    tbody.innerHTML += linha;
+  });
 }
 
-carregarDados();
+// 🔎 FILTROS
+document.getElementById("filtroPlaca").addEventListener("input", aplicarFiltros);
+document.getElementById("filtroPosto").addEventListener("input", aplicarFiltros);
 
+function aplicarFiltros() {
+  const placa = document.getElementById("filtroPlaca").value.toLowerCase();
+  const posto = document.getElementById("filtroPosto").value.toLowerCase();
+
+  const filtrado = dadosGlobais.filter(t =>
+    (t.placa || "").toLowerCase().includes(placa) &&
+    (t.nomeReduzidoEstabelecimento || "").toLowerCase().includes(posto)
+  );
+
+  renderTabela(filtrado);
+}
 </script>
 
 </body>
