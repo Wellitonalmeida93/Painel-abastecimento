@@ -14,15 +14,8 @@ body {
     color: #e2e8f0;
 }
 
-.container {
-    padding: 20px;
-}
+.container { padding: 20px; }
 
-h1 {
-    margin-bottom: 10px;
-}
-
-/* BOTÕES */
 button {
     background: #2563eb;
     border: none;
@@ -33,7 +26,6 @@ button {
     cursor: pointer;
 }
 
-/* KPIs */
 .kpis {
     display: flex;
     gap: 15px;
@@ -52,7 +44,6 @@ button {
     font-weight: bold;
 }
 
-/* FILTROS */
 .filtros input, .filtros select {
     padding: 6px;
     margin: 5px;
@@ -60,7 +51,6 @@ button {
     border: none;
 }
 
-/* TABELA */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -72,9 +62,7 @@ th, td {
     border-bottom: 1px solid #334155;
 }
 
-th {
-    background: #334155;
-}
+th { background: #334155; }
 
 td { text-align: right; }
 .texto { text-align: left; }
@@ -83,7 +71,6 @@ td { text-align: right; }
 .medio { color: #facc15; }
 .barato { color: #4ade80; }
 
-/* LISTAS */
 ul { padding-left: 20px; }
 
 </style>
@@ -112,9 +99,11 @@ ul { padding-left: 20px; }
     <input id="filtroCidade" placeholder="Cidade">
     <input type="date" id="filtroDataInicio">
     <input type="date" id="filtroDataFim">
+
     <select id="filtroPosto"><option value="">Posto</option></select>
     <select id="filtroUF"><option value="">UF</option></select>
     <select id="filtroProduto"><option value="">Produto</option></select>
+
     <button onclick="baixarExcel()">Excel</button>
 </div>
 
@@ -168,8 +157,8 @@ fetch("transacoes.json")
 
 /* ABAS */
 function mostrarAba(a){
-    aba-operacional.style.display="none";
-    aba-gerencial.style.display="none";
+    document.getElementById("aba-operacional").style.display="none";
+    document.getElementById("aba-gerencial").style.display="none";
     document.getElementById("aba-"+a).style.display="block";
 
     if(a==="gerencial") gerarAnalises();
@@ -180,9 +169,9 @@ function preencherFiltros(){
     let postos=new Set(),ufs=new Set(),prod=new Set();
 
     dados.forEach(i=>{
-        postos.add(i.nomeReduzidoEstabelecimento);
-        ufs.add(i.uf);
-        prod.add(i.tipoCombustivel);
+        if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
+        if(i.uf) ufs.add(i.uf);
+        if(i.tipoCombustivel) prod.add(i.tipoCombustivel);
     });
 
     postos.forEach(p=>filtroPosto.innerHTML+=`<option>${p}</option>`);
@@ -223,12 +212,16 @@ function render(lista){
     let total=0,litros=0;
 
     lista.forEach(i=>{
-        let dt=new Date(i.dataTransacao);
-        let d=dt.toISOString().split("T")[0];
-        let h=dt.toTimeString().split(" ")[0];
+
+        let d="", h="";
+        if(i.dataTransacao){
+            let dt=new Date(i.dataTransacao);
+            d=dt.toISOString().split("T")[0];
+            h=dt.toTimeString().split(" ")[0];
+        }
 
         let cor="";
-        let vl=Number(i.valorLitro);
+        let vl=Number(i.valorLitro||0);
         if(vl>=7.5) cor="caro";
         else if(vl>=6.5) cor="medio";
         else cor="barato";
@@ -240,18 +233,17 @@ function render(lista){
         <tr>
         <td>${d}</td>
         <td>${h}</td>
-        <td class="texto">${i.placa}</td>
-        <td class="texto">${i.nomeReduzidoEstabelecimento}</td>
-        <td class="texto">${i.nomeCidade}</td>
-        <td>${i.uf}</td>
-        <td class="texto">${i.tipoCombustivel}</td>
+        <td class="texto">${i.placa||""}</td>
+        <td class="texto">${i.nomeReduzidoEstabelecimento||""}</td>
+        <td class="texto">${i.nomeCidade||""}</td>
+        <td>${i.uf||""}</td>
+        <td class="texto">${i.tipoCombustivel||""}</td>
         <td>${numero(i.litros)}</td>
         <td>${moeda(i.valorTransacao)}</td>
         <td class="${cor}">${moeda(i.valorLitro)}</td>
         </tr>`;
     });
 
-    total.innerText;
     document.getElementById("total").innerText=moeda(total);
     document.getElementById("litros").innerText=numero(litros);
     document.getElementById("media").innerText=moeda(total/litros||0);
@@ -270,14 +262,16 @@ function baixarExcel(){
 /* ANALISES */
 function gerarAnalises(){
 
-    /* GRAFICO */
     let consumo={};
+
     dados.forEach(i=>{
-        let d=i.dataTransacao.split("T")[0];
-        consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
+        if(i.dataTransacao){
+            let d=i.dataTransacao.split("T")[0];
+            consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
+        }
     });
 
-    new Chart(grafico,{
+    new Chart(document.getElementById("grafico"),{
         type:"line",
         data:{
             labels:Object.keys(consumo),
@@ -285,7 +279,6 @@ function gerarAnalises(){
         }
     });
 
-    /* VEICULOS */
     let veic={};
     dados.forEach(i=>{
         veic[i.placa]=(veic[i.placa]||0)+Number(i.valorTransacao||0);
@@ -297,7 +290,6 @@ function gerarAnalises(){
         veiculos.innerHTML+=`<li>${v[0]} - ${moeda(v[1])}</li>`;
     });
 
-    /* RANKING */
     let rank={};
     dados.forEach(i=>{
         rank[i.nomeReduzidoEstabelecimento]=(rank[i.nomeReduzidoEstabelecimento]||0)+Number(i.valorTransacao||0);
@@ -309,7 +301,6 @@ function gerarAnalises(){
         ranking.innerHTML+=`<li>${r[0]} - ${moeda(r[1])}</li>`;
     });
 
-    /* ALERTAS */
     alertas.innerHTML="";
     dados.forEach(i=>{
         if(Number(i.valorLitro)>7.5){
