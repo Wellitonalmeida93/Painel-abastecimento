@@ -147,7 +147,7 @@ const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"B
 const numero=v=>Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 
 /* LOAD */
-fetch("transacoes.json")
+fetch("/transacoes.json")
 .then(r=>r.json())
 .then(j=>{
     dados=j;
