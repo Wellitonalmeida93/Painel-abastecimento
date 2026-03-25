@@ -2,69 +2,109 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel de Abastecimentos</title>
+<title>Painel BI Abastecimento</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body { font-family: Arial; margin:20px; background:#f5f6fa; }
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #0f172a;
+    color: #e2e8f0;
+}
 
-h1 { margin-bottom:10px; }
+.container {
+    padding: 20px;
+}
 
-button { padding:8px 12px; margin-right:5px; cursor:pointer; }
+h1 {
+    margin-bottom: 10px;
+}
 
-.kpis { display:flex; gap:15px; margin:15px 0; }
+/* BOTÕES */
+button {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* KPIs */
+.kpis {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+}
+
 .kpi {
-    background:white;
-    padding:10px;
-    flex:1;
-    border-radius:8px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    flex: 1;
 }
 
+.kpi span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* FILTROS */
 .filtros input, .filtros select {
-    padding:6px;
-    margin-right:8px;
-    margin-bottom:8px;
+    padding: 6px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
 }
 
+/* TABELA */
 table {
-    width:100%;
-    border-collapse:collapse;
-    background:white;
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e293b;
 }
 
-th,td {
-    border:1px solid #ddd;
-    padding:6px;
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #334155;
 }
 
-th { background:#eee; }
+th {
+    background: #334155;
+}
 
-td { text-align:right; }
-.texto { text-align:left; }
+td { text-align: right; }
+.texto { text-align: left; }
 
-.caro { background:#f8d7da; }
-.medio { background:#fff3cd; }
-.barato { background:#d4edda; }
+.caro { color: #f87171; font-weight: bold; }
+.medio { color: #facc15; }
+.barato { color: #4ade80; }
+
+/* LISTAS */
+ul { padding-left: 20px; }
 
 </style>
 </head>
 
 <body>
 
-<h1>Painel de Abastecimentos</h1>
+<div class="container">
+
+<h1>📊 Painel BI Abastecimento</h1>
 
 <button onclick="mostrarAba('operacional')">Operacional</button>
 <button onclick="mostrarAba('gerencial')">Gerencial</button>
 
-<!-- ABA OPERACIONAL -->
+<!-- OPERACIONAL -->
 <div id="aba-operacional">
 
 <div class="kpis">
-    <div class="kpi"><b>Total:</b> <span id="total"></span></div>
-    <div class="kpi"><b>Litros:</b> <span id="litros"></span></div>
-    <div class="kpi"><b>Média:</b> <span id="media"></span></div>
+    <div class="kpi">Total<br><span id="total"></span></div>
+    <div class="kpi">Litros<br><span id="litros"></span></div>
+    <div class="kpi">Média<br><span id="media"></span></div>
 </div>
 
 <div class="filtros">
@@ -72,11 +112,9 @@ td { text-align:right; }
     <input id="filtroCidade" placeholder="Cidade">
     <input type="date" id="filtroDataInicio">
     <input type="date" id="filtroDataFim">
-
     <select id="filtroPosto"><option value="">Posto</option></select>
     <select id="filtroUF"><option value="">UF</option></select>
     <select id="filtroProduto"><option value="">Produto</option></select>
-
     <button onclick="baixarExcel()">Excel</button>
 </div>
 
@@ -93,12 +131,15 @@ td { text-align:right; }
 
 </div>
 
-<!-- ABA GERENCIAL -->
+<!-- GERENCIAL -->
 <div id="aba-gerencial" style="display:none">
 
-<h2>Visão Gerencial</h2>
+<h2>📈 Análise Gerencial</h2>
 
 <canvas id="grafico"></canvas>
+
+<h3>🚚 Consumo por Veículo</h3>
+<ul id="veiculos"></ul>
 
 <h3>🏆 Ranking Postos</h3>
 <ul id="ranking"></ul>
@@ -108,10 +149,11 @@ td { text-align:right; }
 
 </div>
 
+</div>
+
 <script>
 let dados=[];
 
-/* FORMATOS */
 const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const numero=v=>Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 
@@ -124,11 +166,10 @@ fetch("transacoes.json")
     render(dados);
 });
 
-/* ABA */
+/* ABAS */
 function mostrarAba(a){
-    document.getElementById("aba-operacional").style.display="none";
-    document.getElementById("aba-gerencial").style.display="none";
-
+    aba-operacional.style.display="none";
+    aba-gerencial.style.display="none";
     document.getElementById("aba-"+a).style.display="block";
 
     if(a==="gerencial") gerarAnalises();
@@ -174,7 +215,7 @@ function filtrar(){
     render(f);
 }
 
-/* RENDER */
+/* TABELA */
 function render(lista){
     let tb=document.getElementById("tabela");
     tb.innerHTML="";
@@ -229,25 +270,37 @@ function baixarExcel(){
 /* ANALISES */
 function gerarAnalises(){
 
+    /* GRAFICO */
     let consumo={};
-
     dados.forEach(i=>{
         let d=i.dataTransacao.split("T")[0];
         consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
     });
 
-    new Chart(document.getElementById("grafico"),{
-        type:"bar",
+    new Chart(grafico,{
+        type:"line",
         data:{
             labels:Object.keys(consumo),
-            datasets:[{label:"Gasto por Dia",data:Object.values(consumo)}]
+            datasets:[{label:"Gasto Diário",data:Object.values(consumo)}]
         }
     });
 
+    /* VEICULOS */
+    let veic={};
+    dados.forEach(i=>{
+        veic[i.placa]=(veic[i.placa]||0)+Number(i.valorTransacao||0);
+    });
+
+    veiculos.innerHTML="";
+    Object.entries(veic).sort((a,b)=>b[1]-a[1]).slice(0,10)
+    .forEach(v=>{
+        veiculos.innerHTML+=`<li>${v[0]} - ${moeda(v[1])}</li>`;
+    });
+
+    /* RANKING */
     let rank={};
     dados.forEach(i=>{
-        let p=i.nomeReduzidoEstabelecimento;
-        rank[p]=(rank[p]||0)+Number(i.valorTransacao||0);
+        rank[i.nomeReduzidoEstabelecimento]=(rank[i.nomeReduzidoEstabelecimento]||0)+Number(i.valorTransacao||0);
     });
 
     ranking.innerHTML="";
@@ -256,6 +309,7 @@ function gerarAnalises(){
         ranking.innerHTML+=`<li>${r[0]} - ${moeda(r[1])}</li>`;
     });
 
+    /* ALERTAS */
     alertas.innerHTML="";
     dados.forEach(i=>{
         if(Number(i.valorLitro)>7.5){
