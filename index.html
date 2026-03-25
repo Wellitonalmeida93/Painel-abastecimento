@@ -1,176 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Painel de Abastecimentos</title>
+<meta charset="UTF-8">
+<title>Painel de Abastecimentos</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+<style>
+body {
+    font-family: Arial;
+    margin: 20px;
+    background: #f5f6fa;
+}
 
-        h1 {
-            margin-bottom: 20px;
-        }
+h1 {
+    margin-bottom: 10px;
+}
 
-        input {
-            padding: 8px;
-            margin-right: 10px;
-        }
+/* KPIs */
+.kpis {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
+.kpi {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-        }
+.kpi h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
 
-        th {
-            background-color: #f0f0f0;
-        }
+.kpi p {
+    font-size: 22px;
+    margin: 5px 0 0;
+    font-weight: bold;
+}
 
-        td {
-            text-align: right;
-        }
+/* Filtros */
+.filtros {
+    margin-bottom: 15px;
+}
 
-        td.texto {
-            text-align: left;
-        }
+input {
+    padding: 8px;
+    margin-right: 10px;
+}
 
-        /* 🔥 CORES */
-        .caro {
-            background-color: #f8d7da;
-        }
+/* Botão */
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
 
-        .medio {
-            background-color: #fff3cd;
-        }
+/* Tabela */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+}
 
-        .barato {
-            background-color: #d4edda;
-        }
-    </style>
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    background: #eee;
+}
+
+td {
+    text-align: right;
+}
+
+td.texto {
+    text-align: left;
+}
+
+/* Cores */
+.caro { background: #f8d7da; }
+.medio { background: #fff3cd; }
+.barato { background: #d4edda; }
+</style>
 </head>
 
 <body>
 
 <h1>Painel de Abastecimentos</h1>
 
-<input type="text" id="filtroPlaca" placeholder="Filtrar por placa">
-<input type="text" id="filtroCidade" placeholder="Filtrar por cidade">
+<!-- KPIs -->
+<div class="kpis">
+    <div class="kpi">
+        <h3>Total Gasto</h3>
+        <p id="totalGasto">R$ 0</p>
+    </div>
+    <div class="kpi">
+        <h3>Total Litros</h3>
+        <p id="totalLitros">0</p>
+    </div>
+    <div class="kpi">
+        <h3>Média Litro</h3>
+        <p id="mediaLitro">R$ 0</p>
+    </div>
+</div>
+
+<!-- FILTROS -->
+<div class="filtros">
+    <input type="text" id="filtroPlaca" placeholder="Placa">
+    <input type="text" id="filtroCidade" placeholder="Cidade">
+    <input type="date" id="filtroDataInicio">
+    <input type="date" id="filtroDataFim">
+    <button onclick="baixarExcel()">Excel</button>
+</div>
 
 <table>
-    <thead>
-        <tr>
-            <th>Data</th>
-            <th>Hora</th>
-            <th>Placa</th>
-            <th>Posto</th>
-            <th>Cidade</th>
-            <th>UF</th>
-            <th>Produto</th>
-            <th>Litros</th>
-            <th>Valor Total</th>
-            <th>Valor Unitário</th>
-            <th>Cartão</th>
-        </tr>
-    </thead>
-    <tbody id="tabela"></tbody>
+<thead>
+<tr>
+    <th>Data</th>
+    <th>Hora</th>
+    <th>Placa</th>
+    <th>Posto</th>
+    <th>Cidade</th>
+    <th>UF</th>
+    <th>Produto</th>
+    <th>Litros</th>
+    <th>Valor Total</th>
+    <th>Valor Unitário</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
 </table>
 
 <script>
 let dados = [];
 
-// 🔹 FORMATAÇÕES
-function formatarMoeda(valor) {
-    if (valor === null || valor === undefined) return "";
-    return Number(valor).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
+/* FORMATOS */
+function moeda(v){
+    return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+function numero(v){
+    return Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 }
 
-function formatarNumero(valor) {
-    if (valor === null || valor === undefined) return "";
-    return Number(valor).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
-
-// 🔹 CARREGAR DADOS
+/* LOAD */
 fetch("transacoes.json")
-    .then(res => res.json())
-    .then(json => {
-        dados = json;
-        renderizarTabela(dados);
-    });
+.then(r=>r.json())
+.then(j=>{
+    dados=j;
+    render(dados);
+});
 
-// 🔹 RENDERIZAR
-function renderizarTabela(lista) {
-    const tabela = document.getElementById("tabela");
-    tabela.innerHTML = "";
+/* RENDER */
+function render(lista){
+    const tb=document.getElementById("tabela");
+    tb.innerHTML="";
 
-    lista.forEach(item => {
+    let total=0, litros=0;
 
-        let data = "";
-        let hora = "";
+    lista.forEach(i=>{
 
-        if (item.dataTransacao) {
-            const dt = new Date(item.dataTransacao);
-            data = dt.toISOString().split("T")[0];
-            hora = dt.toTimeString().split(" ")[0];
+        let d="",h="";
+        if(i.dataTransacao){
+            const dt=new Date(i.dataTransacao);
+            d=dt.toISOString().split("T")[0];
+            h=dt.toTimeString().split(" ")[0];
         }
 
-        // 🔥 REGRA DE COR
-        let classeCor = "";
-        const valor = Number(item.valorLitro);
+        let cor="";
+        let vl=Number(i.valorLitro);
+        if(vl>=7.5) cor="caro";
+        else if(vl>=6.5) cor="medio";
+        else cor="barato";
 
-        if (valor >= 7.5) {
-            classeCor = "caro";
-        } else if (valor >= 6.5) {
-            classeCor = "medio";
-        } else {
-            classeCor = "barato";
-        }
+        total+=Number(i.valorTransacao||0);
+        litros+=Number(i.litros||0);
 
-        tabela.innerHTML += `
-            <tr>
-                <td>${data}</td>
-                <td>${hora}</td>
-                <td class="texto">${item.placa || ""}</td>
-                <td class="texto">${item.nomeReduzidoEstabelecimento || ""}</td>
-                <td class="texto">${item.nomeCidade || ""}</td>
-                <td>${item.uf || ""}</td>
-                <td class="texto">${item.tipoCombustivel || ""}</td>
-                <td>${formatarNumero(item.litros)}</td>
-                <td>${formatarMoeda(item.valorTransacao)}</td>
-                <td class="${classeCor}">${formatarMoeda(item.valorLitro)}</td>
-                <td>${item.numeroCartao || ""}</td>
-            </tr>
-        `;
+        tb.innerHTML+=`
+        <tr>
+            <td>${d}</td>
+            <td>${h}</td>
+            <td class="texto">${i.placa||""}</td>
+            <td class="texto">${i.nomeReduzidoEstabelecimento||""}</td>
+            <td class="texto">${i.nomeCidade||""}</td>
+            <td>${i.uf||""}</td>
+            <td class="texto">${i.tipoCombustivel||""}</td>
+            <td>${numero(i.litros)}</td>
+            <td>${moeda(i.valorTransacao)}</td>
+            <td class="${cor}">${moeda(i.valorLitro)}</td>
+        </tr>`;
     });
+
+    /* KPIs */
+    document.getElementById("totalGasto").innerText=moeda(total);
+    document.getElementById("totalLitros").innerText=numero(litros);
+    document.getElementById("mediaLitro").innerText=moeda(total/litros||0);
 }
 
-// 🔹 FILTROS
-document.getElementById("filtroPlaca").addEventListener("input", filtrar);
-document.getElementById("filtroCidade").addEventListener("input", filtrar);
+/* FILTRO */
+document.querySelectorAll("input").forEach(i=>{
+    i.addEventListener("input",filtrar);
+});
 
-function filtrar() {
-    const placa = document.getElementById("filtroPlaca").value.toLowerCase();
-    const cidade = document.getElementById("filtroCidade").value.toLowerCase();
+function filtrar(){
+    const p=filtroPlaca.value.toLowerCase();
+    const c=filtroCidade.value.toLowerCase();
+    const di=filtroDataInicio.value;
+    const df=filtroDataFim.value;
 
-    const filtrados = dados.filter(item =>
-        (item.placa || "").toLowerCase().includes(placa) &&
-        (item.nomeCidade || "").toLowerCase().includes(cidade)
-    );
+    const f=dados.filter(i=>{
+        let ok=true;
 
-    renderizarTabela(filtrados);
+        if(p && !(i.placa||"").toLowerCase().includes(p)) ok=false;
+        if(c && !(i.nomeCidade||"").toLowerCase().includes(c)) ok=false;
+
+        if(i.dataTransacao){
+            const d=i.dataTransacao.split("T")[0];
+            if(di && d<di) ok=false;
+            if(df && d>df) ok=false;
+        }
+
+        return ok;
+    });
+
+    render(f);
+}
+
+/* EXCEL */
+function baixarExcel(){
+    let t=document.querySelector("table").outerHTML;
+    let blob=new Blob(["\ufeff",t],{type:"application/vnd.ms-excel"});
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="relatorio.xls";
+    a.click();
 }
 </script>
 
