@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel BI Abastecimento</title>
+<title>Painel Abastecimento</title>
 
 <style>
 body {
@@ -16,17 +16,17 @@ h1 {
     margin-bottom: 20px;
 }
 
-input {
-    padding: 8px;
-    margin: 5px;
-    border-radius: 6px;
-    border: none;
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    background: #1e293b;
 }
 
 th, td {
@@ -35,39 +35,36 @@ th, td {
 }
 
 th {
-    background: #1e293b;
+    background: #334155;
 }
 
-td {
-    text-align: right;
-}
-
-td.texto {
-    text-align: left;
+input {
+    padding: 8px;
+    margin-right: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📊 Painel Abastecimento</h1>
+<h1>🚛 Painel de Abastecimento</h1>
 
-<input id="filtroPlaca" placeholder="Placa">
-<input id="filtroCidade" placeholder="Cidade">
+<div class="card">
+    <strong>Total Registros:</strong> <span id="total">0</span>
+</div>
+
+<input type="text" id="filtroPlaca" placeholder="Filtrar placa">
 
 <table>
 <thead>
 <tr>
 <th>Data</th>
-<th>Hora</th>
 <th>Placa</th>
 <th>Posto</th>
 <th>Cidade</th>
-<th>UF</th>
 <th>Produto</th>
 <th>Litros</th>
 <th>Total</th>
-<th>Litro</th>
 </tr>
 </thead>
 <tbody id="tabela"></tbody>
@@ -76,75 +73,58 @@ td.texto {
 <script>
 let dados = [];
 
-// 🔹 FORMATAR
-function moeda(v) {
+function formatarMoeda(v) {
     return Number(v || 0).toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL"
     });
 }
 
-function numero(v) {
-    return Number(v || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2
-    });
+function carregar() {
+    fetch("/api/transacoes")
+        .then(r => r.json())
+        .then(res => {
+            console.log("DADOS:", res);
+
+            dados = res;
+            document.getElementById("total").innerText = dados.length;
+
+            render(dados);
+        });
 }
 
-// 🔹 BUSCAR API
-fetch("https://painel-abastecimento-api.onrender.com/api/transacoes")
-.then(r => r.json())
-.then(res => {
-    dados = res.dados || [];
-    render(dados);
-});
-
-// 🔹 RENDER
 function render(lista) {
     const tabela = document.getElementById("tabela");
     tabela.innerHTML = "";
 
-    lista.forEach(i => {
-
-        let data = "";
-        let hora = "";
-
-        if (i.dataTransacao) {
-            const dt = new Date(i.dataTransacao);
-            data = dt.toLocaleDateString("pt-BR");
-            hora = dt.toLocaleTimeString("pt-BR");
-        }
+    lista.forEach(item => {
+        const dt = new Date(item.dataTransacao);
 
         tabela.innerHTML += `
         <tr>
-            <td>${data}</td>
-            <td>${hora}</td>
-            <td class="texto">${i.placa || ""}</td>
-            <td class="texto">${i.nomeReduzidoEstabelecimento || ""}</td>
-            <td class="texto">${i.nomeCidade || ""}</td>
-            <td>${i.uf || ""}</td>
-            <td class="texto">${i.tipoCombustivel || ""}</td>
-            <td>${numero(i.litros)}</td>
-            <td>${moeda(i.valorTransacao)}</td>
-            <td>${moeda(i.valorLitro)}</td>
-        </tr>`;
+            <td>${dt.toLocaleDateString()}</td>
+            <td>${item.placa || ""}</td>
+            <td>${item.nomeReduzidoEstabelecimento || ""}</td>
+            <td>${item.nomeCidade || ""}</td>
+            <td>${item.tipoCombustivel || ""}</td>
+            <td>${item.litros || 0}</td>
+            <td>${formatarMoeda(item.valorTransacao)}</td>
+        </tr>
+        `;
     });
 }
 
-// 🔹 FILTROS
-document.getElementById("filtroPlaca").addEventListener("input", filtrar);
-document.getElementById("filtroCidade").addEventListener("input", filtrar);
+document.getElementById("filtroPlaca").addEventListener("input", function() {
+    const valor = this.value.toLowerCase();
 
-function filtrar() {
-    const placa = filtroPlaca.value.toLowerCase();
-    const cidade = filtroCidade.value.toLowerCase();
-
-    const filtrado = dados.filter(i =>
-        (i.placa || "").toLowerCase().includes(placa) &&
-        (i.nomeCidade || "").toLowerCase().includes(cidade)
+    const filtrado = dados.filter(d =>
+        (d.placa || "").toLowerCase().includes(valor)
     );
 
     render(filtrado);
-}
+});
+
+carregar();
 </script>
 
 </body>
