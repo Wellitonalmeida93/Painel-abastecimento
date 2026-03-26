@@ -39,7 +39,6 @@ def consultar():
             transacoes = data.get("transacoes", [])
             print("TOTAL:", len(transacoes))
             return transacoes
-
         else:
             print("ERRO API:", response.text)
 
@@ -49,19 +48,26 @@ def consultar():
     return []
 
 
-# 🔹 ROTA API
+# 🔹 TESTE
 @app.route("/api/teste")
 def teste():
     return jsonify({"status": "ok"})
 
 
-# 🔹 SERVIR INDEX
+# 🔥 ROTA QUE FALTAVA
+@app.route("/api/transacoes")
+def transacoes():
+    dados = consultar()
+    return jsonify(dados)
+
+
+# 🔹 INDEX
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
 
 
-# 🔹 RENDER (PORTA DINÂMICA)
+# 🔹 RENDER
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
