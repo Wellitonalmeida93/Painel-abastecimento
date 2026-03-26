@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel BI Abastecimento</title>
+<title>Painel de Abastecimento Pizzattog</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -15,6 +15,16 @@ body {
 }
 
 .container { padding: 20px; }
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header img {
+    height: 60px;
+}
 
 button {
     background: #2563eb;
@@ -71,8 +81,12 @@ td { text-align: right; }
 .medio { color: #facc15; }
 .barato { color: #4ade80; }
 
-ul { padding-left: 20px; }
-
+iframe {
+    width: 100%;
+    height: 700px;
+    border: none;
+    border-radius: 10px;
+}
 </style>
 </head>
 
@@ -80,11 +94,16 @@ ul { padding-left: 20px; }
 
 <div class="container">
 
-<h1>📊 Painel BI Abastecimento</h1>
+<div class="header">
+    <img src="https://i.imgur.com/8Km9tLL.png">
+    <h1>📊 Painel de Abastecimento Pizzattog</h1>
+</div>
+
+<br>
 
 <button onclick="mostrarAba('operacional')">Operacional</button>
 <button onclick="mostrarAba('gerencial')">Gerencial</button>
-<button onclick="mostrarAba('planilha')">Planilha</button>
+<button onclick="mostrarAba('postos')">Valores Postos</button>
 
 <!-- OPERACIONAL -->
 <div id="aba-operacional">
@@ -140,16 +159,11 @@ ul { padding-left: 20px; }
 </div>
 
 <!-- NOVA ABA PLANILHA -->
-<div id="aba-planilha" style="display:none">
+<div id="aba-postos" style="display:none">
 
-<h2>📊 Dados da Planilha</h2>
+<h2>⛽ Valores dos Postos</h2>
 
-<button onclick="carregarSheets()">🔄 Atualizar</button>
-
-<table>
-    <thead id="cabecalhoSheets"></thead>
-    <tbody id="tabelaSheets"></tbody>
-</table>
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?gid=0&single=true"></iframe>
 
 </div>
 
@@ -174,7 +188,7 @@ fetch("transacoes.json")
 function mostrarAba(a){
     document.getElementById("aba-operacional").style.display="none";
     document.getElementById("aba-gerencial").style.display="none";
-    document.getElementById("aba-planilha").style.display="none";
+    document.getElementById("aba-postos").style.display="none";
 
     document.getElementById("aba-"+a).style.display="block";
 
@@ -266,40 +280,34 @@ function render(lista){
     document.getElementById("media").innerText=moeda(total/litros||0);
 }
 
-/* GOOGLE SHEETS */
-function csvParaJson(csv){
-    const linhas=csv.split("\n").filter(l=>l.trim()!=="");
-    const headers=linhas[0].split(",");
-
-    return linhas.slice(1).map(l=>{
-        const valores=l.split(",");
-        let obj={};
-        headers.forEach((h,i)=>obj[h.trim()]=valores[i]);
-        return obj;
-    });
+/* EXCEL */
+function baixarExcel(){
+    let t=document.querySelector("table").outerHTML;
+    let blob=new Blob(["\ufeff",t],{type:"application/vnd.ms-excel"});
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="relatorio.xls";
+    a.click();
 }
 
-function carregarSheets(){
-    fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pub?output=csv")
-    .then(r=>r.text())
-    .then(csv=>{
-        const dados=csvParaJson(csv);
+/* ANALISES */
+function gerarAnalises(){
 
-        let tabela=document.getElementById("tabelaSheets");
-        let cab=document.getElementById("cabecalhoSheets");
+    let consumo={};
 
-        tabela.innerHTML="";
-        cab.innerHTML="";
+    dados.forEach(i=>{
+        if(i.dataTransacao){
+            let d=i.dataTransacao.split("T")[0];
+            consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
+        }
+    });
 
-        if(!dados.length) return;
-
-        let headers=Object.keys(dados[0]);
-
-        cab.innerHTML="<tr>"+headers.map(h=>`<th>${h}</th>`).join("")+"</tr>";
-
-        dados.forEach(l=>{
-            tabela.innerHTML+=`<tr>${headers.map(h=>`<td>${l[h]||""}</td>`).join("")}</tr>`;
-        });
+    new Chart(document.getElementById("grafico"),{
+        type:"line",
+        data:{
+            labels:Object.keys(consumo),
+            datasets:[{label:"Gasto Diário",data:Object.values(consumo)}]
+        }
     });
 }
 </script>
