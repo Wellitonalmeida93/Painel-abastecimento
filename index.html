@@ -13,17 +13,14 @@
     button { background: #2563eb; border: none; color: white; padding: 7px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
     .btn-sheets { background: #10b981; }
 
-    /* KPIs */
     .kpis { display: flex; gap: 10px; margin-bottom: 15px; }
     .kpi { background: #1e293b; padding: 12px; border-radius: 6px; flex: 1; border: 1px solid #334155; }
     .kpi label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px; text-transform: uppercase; }
     .kpi span { font-size: 18px; font-weight: bold; }
 
-    /* Filtros */
     .filtros { display: flex; flex-wrap: wrap; gap: 8px; background: #1e293b; padding: 10px; border-radius: 6px; margin-bottom: 15px; align-items: center; }
     .filtros input, .filtros select { padding: 6px; border-radius: 4px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 12px; }
 
-    /* Tabelas */
     .table-container { overflow-x: auto; background: #1e293b; border-radius: 6px; }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { padding: 8px 10px; border-bottom: 1px solid #334155; text-align: left; }
@@ -32,10 +29,9 @@
     .caro { color: #f87171; font-weight: bold; }
     .barato { color: #4ade80; font-weight: bold; }
 
-    /* Layout Gerencial */
     .grid-gerencial { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 10px; }
     .card-chart { background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
-    .card-chart h3 { font-size: 14px; margin-top: 0; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+    .card-chart h3 { font-size: 14px; margin-top: 0; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px; }
     
     iframe { width: 100%; height: 80vh; border: none; background: white; border-radius: 8px; }
 </style>
@@ -46,16 +42,16 @@
     <h1>📊 Painel BI Abastecimento</h1>
 
     <div class="tabs">
-        <button onclick="mostrarAba('operacional')">Abastecimento Operacional</button>
+        <button onclick="mostrarAba('operacional')">Abastecimentos Operacionais</button>
         <button onclick="mostrarAba('gerencial')">KPI Gerencial</button>
-        <button class="btn-sheets" onclick="mostrarAba('sheets')">Valores Posto</button>
+        <button class="btn-sheets" onclick="mostrarAba('sheets')">Valores Diesel</button>
     </div>
 
     <div id="aba-operacional">
         <div class="kpis">
-            <div class="kpi"><label>Total</label><span id="total">R$ 0,00</span></div>
-            <div class="kpi"><label>Litros</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média/L</label><span id="media">R$ 0,00</span></div>
+            <div class="kpi"><label>Total Gasto</label><span id="total">R$ 0,00</span></div>
+            <div class="kpi"><label>Litros Totais</label><span id="litros">0,00</span></div>
+            <div class="kpi"><label>Preço Médio/L</label><span id="media">R$ 0,00</span></div>
         </div>
         <div class="filtros">
             <input id="filtroPlaca" placeholder="Placa" style="width:90px">
@@ -69,7 +65,7 @@
         <div class="table-container">
             <table>
                 <thead>
-                    <tr><th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Litro</th></tr>
+                    <tr><th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl/Litro</th></tr>
                 </thead>
                 <tbody id="tabela"></tbody>
             </table>
@@ -79,24 +75,24 @@
     <div id="aba-gerencial" style="display:none;">
         <div class="grid-gerencial">
             <div class="card-chart">
-                <h3>📈 Evolução de Gastos Diários</h3>
+                <h3>📈 Evolução Mensal (R$)</h3>
                 <canvas id="graficoEvolucao"></canvas>
             </div>
             <div class="card-chart">
-                <h3>🌍 Gasto por Estado (UF)</h3>
+                <h3>🌍 Gasto por Estado</h3>
                 <canvas id="graficoUF"></canvas>
             </div>
         </div>
         <div class="grid-gerencial">
             <div class="card-chart">
-                <h3>🏆 Top 10 Postos (Maior Faturamento)</h3>
+                <h3>🏆 Ranking de Postos (Top 10)</h3>
                 <canvas id="graficoPostos"></canvas>
             </div>
             <div class="card-chart">
-                <h3>🚨 Maiores Abastecimentos (Top 5)</h3>
-                <table style="margin-top:10px">
-                    <thead><tr><th>Placa</th><th>Posto</th><th class="num">Valor</th></tr></thead>
-                    <tbody id="listaMaiores"></tbody>
+                <h3>🚨 Maiores Preços por Litro (Top 5)</h3>
+                <table style="width:100%">
+                    <thead><tr><th>Placa</th><th>Posto</th><th class="num">Preço/L</th></tr></thead>
+                    <tbody id="listaMaioresPrecos"></tbody>
                 </table>
             </div>
         </div>
@@ -114,6 +110,7 @@ let charts = {};
 const moeda = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const numero = v => Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 
+/* CARGA INICIAL */
 fetch("transacoes.json").then(r => r.json()).then(j => {
     dados = j;
     preencherFiltros();
@@ -130,19 +127,20 @@ function preencherFiltros() {
     Array.from(ufs).sort().forEach(u => filtroUF.innerHTML += `<option value="${u}">${u}</option>`);
 }
 
+/* FILTRAGEM DINÂMICA */
 document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", () => {
     const f = dados.filter(i => {
-        let ok = true;
-        if (filtroPlaca.value && !(i.placa || "").toLowerCase().includes(filtroPlaca.value.toLowerCase())) ok = false;
-        if (filtroCidade.value && !(i.nomeCidade || "").toLowerCase().includes(filtroCidade.value.toLowerCase())) ok = false;
-        if (filtroPosto.value && i.nomeReduzidoEstabelecimento !== filtroPosto.value) ok = false;
-        if (filtroUF.value && i.uf !== filtroUF.value) ok = false;
+        let match = true;
+        if (filtroPlaca.value && !(i.placa || "").toLowerCase().includes(filtroPlaca.value.toLowerCase())) match = false;
+        if (filtroCidade.value && !(i.nomeCidade || "").toLowerCase().includes(filtroCidade.value.toLowerCase())) match = false;
+        if (filtroPosto.value && i.nomeReduzidoEstabelecimento !== filtroPosto.value) match = false;
+        if (filtroUF.value && i.uf !== filtroUF.value) match = false;
         if (i.dataTransacao) {
             let d = i.dataTransacao.split("T")[0];
-            if (filtroDataInicio.value && d < filtroDataInicio.value) ok = false;
-            if (filtroDataFim.value && d > filtroDataFim.value) ok = false;
+            if (filtroDataInicio.value && d < filtroDataInicio.value) match = false;
+            if (filtroDataFim.value && d > filtroDataFim.value) match = false;
         }
-        return ok;
+        return match;
     });
     render(f);
 }));
@@ -156,7 +154,12 @@ function render(lista) {
         litros += Number(i.litros || 0);
         let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
         let vl = Number(i.valorLitro || 0);
-        tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]}</td><td>${dt.toTimeString().split(" ")[0]}</td><td>${i.placa}</td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade}</td><td>${i.uf}</td><td>${i.tipoCombustivel}</td><td class="num">${numero(i.litros)}</td><td class="num">${moeda(i.valorTransacao)}</td><td class="num ${vl > 6.5 ? 'caro' : 'barato'}">${moeda(vl)}</td></tr>`;
+        tb.innerHTML += `<tr>
+            <td>${dt.toISOString().split("T")[0]}</td><td>${dt.toTimeString().split(" ")[0]}</td>
+            <td>${i.placa}</td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade}</td>
+            <td>${i.uf}</td><td>${i.tipoCombustivel}</td><td class="num">${numero(i.litros)}</td>
+            <td class="num">${moeda(i.valorTransacao)}</td><td class="num ${vl > 6.5 ? 'caro' : 'barato'}">${moeda(vl)}</td>
+        </tr>`;
     });
     document.getElementById("total").innerText = moeda(total);
     document.getElementById("litros").innerText = numero(litros);
@@ -170,25 +173,27 @@ function mostrarAba(a) {
 }
 
 function renderGerencial() {
-    // 1. Evolução Diária
+    // 1. Evolução
     let hist = {};
     dados.forEach(i => { let d = i.dataTransacao.split("T")[0]; hist[d] = (hist[d] || 0) + Number(i.valorTransacao); });
     updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Gasto R$', '#3b82f6');
 
-    // 2. Por UF
+    // 2. UF
     let ufs = {};
     dados.forEach(i => { ufs[i.uf] = (ufs[i.uf] || 0) + Number(i.valorTransacao); });
     updateChart('graficoUF', 'doughnut', Object.keys(ufs), Object.values(ufs), 'UF', ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6']);
 
-    // 3. Top Postos
-    let postos = {};
-    dados.forEach(i => { postos[i.nomeReduzidoEstabelecimento] = (postos[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
-    let topPostos = Object.entries(postos).sort((a,b) => b[1] - a[1]).slice(0, 10);
-    updateChart('graficoPostos', 'bar', topPostos.map(x => x[0]), topPostos.map(x => x[1]), 'R$ por Posto', '#10b981', 'y');
+    // 3. Postos
+    let pRank = {};
+    dados.forEach(i => { pRank[i.nomeReduzidoEstabelecimento] = (pRank[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
+    let topP = Object.entries(pRank).sort((a,b) => b[1] - a[1]).slice(0, 10);
+    updateChart('graficoPostos', 'bar', topP.map(x => x[0]), topP.map(x => x[1]), 'R$', '#10b981', 'y');
 
-    // 4. Maiores Valores (Top 5)
-    let maiores = [...dados].sort((a,b) => Number(b.valorTransacao) - Number(a.valorTransacao)).slice(0, 5);
-    document.getElementById("listaMaiores").innerHTML = maiores.map(i => `<tr><td>${i.placa}</td><td>${i.nomeReduzidoEstabelecimento}</td><td class="num caro">${moeda(i.valorTransacao)}</td></tr>`).join("");
+    // 4. Maiores Preços UNITÁRIOS
+    let maioresPrecos = [...dados].sort((a, b) => Number(b.valorLitro || 0) - Number(a.valorLitro || 0)).slice(0, 5);
+    document.getElementById("listaMaioresPrecos").innerHTML = maioresPrecos.map(i => `
+        <tr><td>${i.placa}</td><td><small>${i.nomeReduzidoEstabelecimento}</small></td><td class="num caro">${moeda(i.valorLitro)}</td></tr>
+    `).join("");
 }
 
 function updateChart(id, type, labels, data, label, color, axis = 'x') {
@@ -204,7 +209,7 @@ function baixarExcel() {
     let t = document.querySelector("table").outerHTML;
     let blob = new Blob(["\ufeff", t], { type: "application/vnd.ms-excel" });
     let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download = "relatorio.xls"; a.click();
+    a.href = URL.createObjectURL(blob); a.download = "relatorio_abastecimento.xls"; a.click();
 }
 </script>
 </body>
