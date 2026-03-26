@@ -35,8 +35,9 @@ def consultar(data_inicio, data_fim):
 
     return []
 
-@app.route("/api/transacoes")
-def api_transacoes():
+@app.route("/")
+def home():
+    return "API rodando"
 
     hoje = datetime.now()
     inicio_mes = hoje.replace(day=1)
