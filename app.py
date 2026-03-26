@@ -1,151 +1,64 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Painel BI Abastecimento</title>
+from flask import Flask, jsonify
+from datetime import datetime, timedelta
+import requests
 
-<style>
-body {
-    font-family: Arial;
-    background: #0f172a;
-    color: white;
-    padding: 20px;
-}
+app = Flask(__name__)
 
-h1 {
-    margin-bottom: 20px;
-}
+URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
+AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
+CODIGO_CLIENTE = 122840
 
-input {
-    padding: 8px;
-    margin: 5px;
-    border-radius: 6px;
-    border: none;
-}
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+def consultar(data_inicio, data_fim):
+    payload = {
+        "codigoCliente": CODIGO_CLIENTE,
+        "codigoTipoCartao": 4,
+        "dataTransacaoInicial": data_inicio,
+        "dataTransacaoFinal": data_fim,
+        "considerarTransacao": "T",
+        "ordem": "S",
+        "validacao": "S"
+    }
 
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #334155;
-}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": AUTHORIZATION
+    }
 
-th {
-    background: #1e293b;
-}
+    try:
+        response = requests.post(URL, json=payload, headers=headers, timeout=30)
+        if response.status_code == 200:
+            data = response.json()
+            return data.get("transacoes", [])
+    except Exception as e:
+        print("Erro:", e)
 
-td {
-    text-align: right;
-}
+    return []
 
-td.texto {
-    text-align: left;
-}
-</style>
-</head>
 
-<body>
+@app.route("/")
+def home():
+    return "API rodando"
 
-<h1>📊 Painel Abastecimento</h1>
 
-<input id="filtroPlaca" placeholder="Placa">
-<input id="filtroCidade" placeholder="Cidade">
+@app.route("/api/transacoes")
+def transacoes():
+    hoje = datetime.now()
 
-<table>
-<thead>
-<tr>
-<th>Data</th>
-<th>Hora</th>
-<th>Placa</th>
-<th>Posto</th>
-<th>Cidade</th>
-<th>UF</th>
-<th>Produto</th>
-<th>Litros</th>
-<th>Total</th>
-<th>Litro</th>
-</tr>
-</thead>
-<tbody id="tabela"></tbody>
-</table>
+    # 🔥 PEGA ÚLTIMOS 7 DIAS (GARANTE QUE VEM DADO)
+    inicio = hoje - timedelta(days=7)
 
-<script>
-let dados = [];
+    data_inicio = inicio.strftime("%Y-%m-%dT00:00:00")
+    data_fim = hoje.strftime("%Y-%m-%dT23:59:59")
 
-// 🔹 FORMATAR
-function moeda(v) {
-    return Number(v || 0).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
-}
+    dados = consultar(data_inicio, data_fim)
 
-function numero(v) {
-    return Number(v || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2
-    });
-}
+    return jsonify({
+        "dados": dados,
+        "total": len(dados),
+        "ultima_atualizacao": datetime.now().strftime("%d/%m/%Y %H:%M")
+    })
 
-// 🔹 BUSCAR API
-fetch("https://painel-abastecimento-api.onrender.com/api/transacoes")
-.then(r => r.json())
-.then(res => {
-    dados = res.dados || [];
-    render(dados);
-});
 
-// 🔹 RENDER
-function render(lista) {
-    const tabela = document.getElementById("tabela");
-    tabela.innerHTML = "";
-
-    lista.forEach(i => {
-
-        let data = "";
-        let hora = "";
-
-        if (i.dataTransacao) {
-            const dt = new Date(i.dataTransacao);
-            data = dt.toLocaleDateString("pt-BR");
-            hora = dt.toLocaleTimeString("pt-BR");
-        }
-
-        tabela.innerHTML += `
-        <tr>
-            <td>${data}</td>
-            <td>${hora}</td>
-            <td class="texto">${i.placa || ""}</td>
-            <td class="texto">${i.nomeReduzidoEstabelecimento || ""}</td>
-            <td class="texto">${i.nomeCidade || ""}</td>
-            <td>${i.uf || ""}</td>
-            <td class="texto">${i.tipoCombustivel || ""}</td>
-            <td>${numero(i.litros)}</td>
-            <td>${moeda(i.valorTransacao)}</td>
-            <td>${moeda(i.valorLitro)}</td>
-        </tr>`;
-    });
-}
-
-// 🔹 FILTROS
-document.getElementById("filtroPlaca").addEventListener("input", filtrar);
-document.getElementById("filtroCidade").addEventListener("input", filtrar);
-
-function filtrar() {
-    const placa = filtroPlaca.value.toLowerCase();
-    const cidade = filtroCidade.value.toLowerCase();
-
-    const filtrado = dados.filter(i =>
-        (i.placa || "").toLowerCase().includes(placa) &&
-        (i.nomeCidade || "").toLowerCase().includes(cidade)
-    );
-
-    render(filtrado);
-}
-</script>
-
-</body>
-</html>
+if __name__ == "__main__":
+    app.run()
