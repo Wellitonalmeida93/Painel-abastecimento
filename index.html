@@ -7,54 +7,37 @@
 <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; }
     .container { padding: 15px; }
-    
     h1 { font-size: 22px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
     
-    /* Botões de Aba */
     .tabs { margin-bottom: 15px; display: flex; gap: 5px; }
-    button { 
-        background: #2563eb; border: none; color: white; padding: 7px 15px; 
-        border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px;
-    }
-    .btn-sheets { background: #10b981; } /* Cor verde para o Sheets */
+    button { background: #2563eb; border: none; color: white; padding: 7px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+    .btn-sheets { background: #10b981; }
 
-    /* KPIs Quadrados */
+    /* KPIs */
     .kpis { display: flex; gap: 10px; margin-bottom: 15px; }
-    .kpi { 
-        background: #1e293b; padding: 12px; border-radius: 6px; flex: 1; 
-        border: 1px solid #334155;
-    }
-    .kpi label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 5px; }
+    .kpi { background: #1e293b; padding: 12px; border-radius: 6px; flex: 1; border: 1px solid #334155; }
+    .kpi label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px; text-transform: uppercase; }
     .kpi span { font-size: 18px; font-weight: bold; }
 
-    /* Filtros em LINHA ÚNICA */
-    .filtros { 
-        display: flex; flex-wrap: wrap; gap: 8px; background: #1e293b; 
-        padding: 10px; border-radius: 6px; margin-bottom: 15px; align-items: center;
-    }
-    .filtros input, .filtros select { 
-        padding: 6px; border-radius: 4px; border: 1px solid #334155; 
-        background: #0f172a; color: white; font-size: 13px;
-    }
+    /* Filtros */
+    .filtros { display: flex; flex-wrap: wrap; gap: 8px; background: #1e293b; padding: 10px; border-radius: 6px; margin-bottom: 15px; align-items: center; }
+    .filtros input, .filtros select { padding: 6px; border-radius: 4px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 12px; }
 
-    /* Tabela Densa */
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: #1e293b; font-size: 13px; }
+    /* Tabelas */
+    .table-container { overflow-x: auto; background: #1e293b; border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { padding: 8px 10px; border-bottom: 1px solid #334155; text-align: left; }
-    th { background: #334155; color: #94a3b8; font-weight: normal; text-transform: uppercase; font-size: 11px; }
-    
+    th { background: #334155; color: #94a3b8; font-weight: normal; text-transform: uppercase; }
     .num { text-align: right; }
     .caro { color: #f87171; font-weight: bold; }
     .barato { color: #4ade80; font-weight: bold; }
 
-    /* Estilo para o Iframe do Google Sheets */
-    iframe {
-        width: 100%;
-        height: 80vh;
-        border: none;
-        background: white;
-        border-radius: 8px;
-    }
+    /* Layout Gerencial */
+    .grid-gerencial { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 10px; }
+    .card-chart { background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
+    .card-chart h3 { font-size: 14px; margin-top: 0; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+    
+    iframe { width: 100%; height: 80vh; border: none; background: white; border-radius: 8px; }
 </style>
 </head>
 <body>
@@ -63,89 +46,97 @@
     <h1>📊 Painel BI Abastecimento</h1>
 
     <div class="tabs">
-        <button onclick="mostrarAba('operacional')">Abastecimentos</button>
-        <button onclick="mostrarAba('gerencial')">Analises Gerencias</button>
-        <button class="btn-sheets" onclick="mostrarAba('sheets')">Valores Postos</button>
+        <button onclick="mostrarAba('operacional')">Abastecimento Operacional</button>
+        <button onclick="mostrarAba('gerencial')">KPI Gerencial</button>
+        <button class="btn-sheets" onclick="mostrarAba('sheets')">Valores Posto</button>
     </div>
 
     <div id="aba-operacional">
         <div class="kpis">
             <div class="kpi"><label>Total</label><span id="total">R$ 0,00</span></div>
             <div class="kpi"><label>Litros</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média</label><span id="media">R$ 0,00</span></div>
+            <div class="kpi"><label>Média/L</label><span id="media">R$ 0,00</span></div>
         </div>
-
         <div class="filtros">
-            <input id="filtroPlaca" placeholder="Placa" style="width:100px">
-            <input id="filtroCidade" placeholder="Cidade" style="width:140px">
+            <input id="filtroPlaca" placeholder="Placa" style="width:90px">
+            <input id="filtroCidade" placeholder="Cidade" style="width:120px">
             <input type="date" id="filtroDataInicio">
             <input type="date" id="filtroDataFim">
             <select id="filtroPosto"><option value="">Posto</option></select>
             <select id="filtroUF"><option value="">UF</option></select>
-            <select id="filtroProduto"><option value="">Produto</option></select>
             <button onclick="baixarExcel()" style="background:#475569">Excel</button>
         </div>
-
         <div class="table-container">
             <table>
                 <thead>
-                    <tr>
-                        <th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th>
-                        <th>Cidade</th><th>UF</th><th>Produto</th>
-                        <th class="num">Litros</th><th class="num">Total</th><th class="num">Litro</th>
-                    </tr>
+                    <tr><th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Litro</th></tr>
                 </thead>
                 <tbody id="tabela"></tbody>
             </table>
         </div>
     </div>
 
-    <div id="aba-gerencial" style="display:none; padding-top:20px;">
-        <canvas id="grafico" style="max-height: 500px;"></canvas>
+    <div id="aba-gerencial" style="display:none;">
+        <div class="grid-gerencial">
+            <div class="card-chart">
+                <h3>📈 Evolução de Gastos Diários</h3>
+                <canvas id="graficoEvolucao"></canvas>
+            </div>
+            <div class="card-chart">
+                <h3>🌍 Gasto por Estado (UF)</h3>
+                <canvas id="graficoUF"></canvas>
+            </div>
+        </div>
+        <div class="grid-gerencial">
+            <div class="card-chart">
+                <h3>🏆 Top 10 Postos (Maior Faturamento)</h3>
+                <canvas id="graficoPostos"></canvas>
+            </div>
+            <div class="card-chart">
+                <h3>🚨 Maiores Abastecimentos (Top 5)</h3>
+                <table style="margin-top:10px">
+                    <thead><tr><th>Placa</th><th>Posto</th><th class="num">Valor</th></tr></thead>
+                    <tbody id="listaMaiores"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div id="aba-sheets" style="display:none; padding-top:10px;">
+    <div id="aba-sheets" style="display:none;">
         <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?widget=true&amp;headers=false"></iframe>
     </div>
 </div>
 
 <script>
 let dados = [];
-let meuGrafico = null;
+let charts = {};
 
 const moeda = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-const numero = v => Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const numero = v => Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 
-/* CARREGAR JSON */
-fetch("transacoes.json")
-    .then(r => r.json())
-    .then(j => {
-        dados = j;
-        preencherFiltros();
-        render(dados);
-    });
+fetch("transacoes.json").then(r => r.json()).then(j => {
+    dados = j;
+    preencherFiltros();
+    render(dados);
+});
 
 function preencherFiltros() {
-    let postos = new Set(), ufs = new Set(), prod = new Set();
+    let postos = new Set(), ufs = new Set();
     dados.forEach(i => {
         if (i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
         if (i.uf) ufs.add(i.uf);
-        if (i.tipoCombustivel) prod.add(i.tipoCombustivel);
     });
-    postos.forEach(p => filtroPosto.innerHTML += `<option value="${p}">${p}</option>`);
-    ufs.forEach(u => filtroUF.innerHTML += `<option value="${u}">${u}</option>`);
-    prod.forEach(p => filtroProduto.innerHTML += `<option value="${p}">${p}</option>`);
+    Array.from(postos).sort().forEach(p => filtroPosto.innerHTML += `<option value="${p}">${p}</option>`);
+    Array.from(ufs).sort().forEach(u => filtroUF.innerHTML += `<option value="${u}">${u}</option>`);
 }
 
-/* FILTROS */
-document.querySelectorAll("input, select").forEach(i => i.addEventListener("input", () => {
+document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", () => {
     const f = dados.filter(i => {
         let ok = true;
         if (filtroPlaca.value && !(i.placa || "").toLowerCase().includes(filtroPlaca.value.toLowerCase())) ok = false;
         if (filtroCidade.value && !(i.nomeCidade || "").toLowerCase().includes(filtroCidade.value.toLowerCase())) ok = false;
         if (filtroPosto.value && i.nomeReduzidoEstabelecimento !== filtroPosto.value) ok = false;
         if (filtroUF.value && i.uf !== filtroUF.value) ok = false;
-        if (filtroProduto.value && i.tipoCombustivel !== filtroProduto.value) ok = false;
         if (i.dataTransacao) {
             let d = i.dataTransacao.split("T")[0];
             if (filtroDataInicio.value && d < filtroDataInicio.value) ok = false;
@@ -156,59 +147,56 @@ document.querySelectorAll("input, select").forEach(i => i.addEventListener("inpu
     render(f);
 }));
 
-/* RENDER TABELA */
 function render(lista) {
     let tb = document.getElementById("tabela");
     tb.innerHTML = "";
     let total = 0, litros = 0;
-
     lista.forEach(i => {
-        let dt = new Date(i.dataTransacao);
-        let d = dt.toISOString().split("T")[0];
-        let h = dt.toTimeString().split(" ")[0];
-        let vl = Number(i.valorLitro || 0);
-        let corPreco = vl > 6.5 ? "caro" : "barato";
-
         total += Number(i.valorTransacao || 0);
         litros += Number(i.litros || 0);
-
-        tb.innerHTML += `
-            <tr>
-                <td>${d}</td><td>${h}</td><td>${i.placa}</td>
-                <td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade}</td>
-                <td>${i.uf}</td><td>${i.tipoCombustivel}</td>
-                <td class="num">${numero(i.litros)}</td>
-                <td class="num">${moeda(i.valorTransacao)}</td>
-                <td class="num ${corPreco}">${moeda(i.valorLitro)}</td>
-            </tr>`;
+        let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
+        let vl = Number(i.valorLitro || 0);
+        tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]}</td><td>${dt.toTimeString().split(" ")[0]}</td><td>${i.placa}</td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade}</td><td>${i.uf}</td><td>${i.tipoCombustivel}</td><td class="num">${numero(i.litros)}</td><td class="num">${moeda(i.valorTransacao)}</td><td class="num ${vl > 6.5 ? 'caro' : 'barato'}">${moeda(vl)}</td></tr>`;
     });
-
     document.getElementById("total").innerText = moeda(total);
     document.getElementById("litros").innerText = numero(litros);
     document.getElementById("media").innerText = moeda(total / litros || 0);
 }
 
-/* NAVEGAÇÃO */
 function mostrarAba(a) {
-    document.getElementById("aba-operacional").style.display = a === 'operacional' ? "block" : "none";
-    document.getElementById("aba-gerencial").style.display = a === 'gerencial' ? "block" : "none";
-    document.getElementById("aba-sheets").style.display = a === 'sheets' ? "block" : "none";
-    if (a === 'gerencial') gerarGrafico();
+    ['aba-operacional', 'aba-gerencial', 'aba-sheets'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById('aba-' + a).style.display = 'block';
+    if (a === 'gerencial') renderGerencial();
 }
 
-function gerarGrafico() {
+function renderGerencial() {
+    // 1. Evolução Diária
     let hist = {};
-    dados.forEach(i => {
-        let d = i.dataTransacao.split("T")[0];
-        hist[d] = (hist[d] || 0) + Number(i.valorTransacao);
-    });
-    if (meuGrafico) meuGrafico.destroy();
-    meuGrafico = new Chart(document.getElementById("grafico"), {
-        type: "line",
-        data: {
-            labels: Object.keys(hist).sort(),
-            datasets: [{ label: "Gasto R$", data: Object.values(hist), borderColor: "#2563eb", tension: 0.1 }]
-        }
+    dados.forEach(i => { let d = i.dataTransacao.split("T")[0]; hist[d] = (hist[d] || 0) + Number(i.valorTransacao); });
+    updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Gasto R$', '#3b82f6');
+
+    // 2. Por UF
+    let ufs = {};
+    dados.forEach(i => { ufs[i.uf] = (ufs[i.uf] || 0) + Number(i.valorTransacao); });
+    updateChart('graficoUF', 'doughnut', Object.keys(ufs), Object.values(ufs), 'UF', ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6']);
+
+    // 3. Top Postos
+    let postos = {};
+    dados.forEach(i => { postos[i.nomeReduzidoEstabelecimento] = (postos[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
+    let topPostos = Object.entries(postos).sort((a,b) => b[1] - a[1]).slice(0, 10);
+    updateChart('graficoPostos', 'bar', topPostos.map(x => x[0]), topPostos.map(x => x[1]), 'R$ por Posto', '#10b981', 'y');
+
+    // 4. Maiores Valores (Top 5)
+    let maiores = [...dados].sort((a,b) => Number(b.valorTransacao) - Number(a.valorTransacao)).slice(0, 5);
+    document.getElementById("listaMaiores").innerHTML = maiores.map(i => `<tr><td>${i.placa}</td><td>${i.nomeReduzidoEstabelecimento}</td><td class="num caro">${moeda(i.valorTransacao)}</td></tr>`).join("");
+}
+
+function updateChart(id, type, labels, data, label, color, axis = 'x') {
+    if (charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id), {
+        type: type,
+        data: { labels: labels, datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, tension: 0.3 }] },
+        options: { indexAxis: axis, responsive: true, plugins: { legend: { display: type === 'doughnut' } } }
     });
 }
 
@@ -216,9 +204,7 @@ function baixarExcel() {
     let t = document.querySelector("table").outerHTML;
     let blob = new Blob(["\ufeff", t], { type: "application/vnd.ms-excel" });
     let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "Relatorio.xls";
-    a.click();
+    a.href = URL.createObjectURL(blob); a.download = "relatorio.xls"; a.click();
 }
 </script>
 </body>
