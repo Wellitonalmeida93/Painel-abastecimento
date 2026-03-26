@@ -1,165 +1,436 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Painel BI Abastecimento</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI | Gestão de Abastecimento</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-main: #020617;
+            --bg-card: #1e293b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
 
-<style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #0f172a;
-    color: #e2e8f0;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.container { padding: 20px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
 
-button {
-    background: #2563eb;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    margin-right: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        .container { padding: 24px; max-width: 1600px; margin: auto; }
 
-.kpis {
-    display: flex;
-    gap: 15px;
-    margin: 15px 0;
-}
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
 
-.kpi {
-    background: #1e293b;
-    padding: 15px;
-    border-radius: 10px;
-    flex: 1;
-}
+        .logo-section h1 { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .logo-section span { color: var(--accent); }
 
-.kpi span {
-    font-size: 20px;
-    font-weight: bold;
-}
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #1e293b;
-}
+        .nav-tabs button {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-th, td {
-    padding: 8px;
-    border-bottom: 1px solid #334155;
-}
+        .nav-tabs button.active { background: var(--accent); color: white; }
+        .nav-tabs button:hover:not(.active) { background: #334155; color: white; }
 
-th { background: #334155; }
+        /* KPIs */
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
 
-td { text-align: right; }
-.texto { text-align: left; }
+        .kpi-card {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
 
-</style>
+        .kpi-card::after {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--accent);
+        }
+
+        .kpi-label { color: var(--text-secondary); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-value { font-size: 2rem; font-weight: 700; margin-top: 8px; display: block; }
+
+        /* Filters */
+        .filter-section {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .filter-group { display: flex; flex-direction: column; gap: 8px; }
+        .filter-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
+        
+        .filter-group input, .filter-group select {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .btn-export {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-export:hover { opacity: 0.9; }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { 
+            background: #1e293b; 
+            padding: 16px; 
+            text-align: left; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        tr:hover { background: #2d3748; }
+
+        /* Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-diesel { background: #422006; color: #fbbf24; }
+        .badge-arla { background: #172554; color: #60a5fa; }
+        
+        .price-tag { font-weight: 600; }
+        .caro { color: var(--danger); }
+        .barato { color: var(--success); }
+
+        /* Gerencial */
+        .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .chart-container { background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+        .list-group { list-style: none; margin-top: 15px; }
+        .list-item { 
+            display: flex; justify-content: space-between; padding: 12px 0; 
+            border-bottom: 1px solid var(--border); font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
+    <header>
+        <div class="logo-section">
+            <h1><i data-lucide="fuel"></i> Gestão <span>TicketLog</span></h1>
+        </div>
+        <div class="nav-tabs">
+            <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')">
+                <i data-lucide="layout-dashboard"></i> Operacional
+            </button>
+            <button id="btn-gerencial" onclick="mostrarAba('gerencial')">
+                <i data-lucide="pie-chart"></i> Gerencial
+            </button>
+        </div>
+    </header>
 
-<h1>📊 Painel BI Abastecimento</h1>
+    <div id="aba-operacional">
+        <div class="kpis">
+            <div class="kpi-card">
+                <span class="kpi-label">Total Gasto</span>
+                <span class="kpi-value" id="total">R$ 0,00</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Volume Total (L)</span>
+                <span class="kpi-value" id="litros">0,00</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Preço Médio / L</span>
+                <span class="kpi-value" id="media">R$ 0,00</span>
+            </div>
+        </div>
 
-<button onclick="mostrarAba('operacional')">Operacional</button>
-<button onclick="mostrarAba('planilha')">Planilha</button>
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>PLACA</label>
+                <input type="text" id="filtroPlaca" placeholder="Filtrar placa...">
+            </div>
+            <div class="filter-group">
+                <label>POSTO</label>
+                <select id="filtroPosto"><option value="">Todos os Postos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>PRODUTO</label>
+                <select id="filtroProduto"><option value="">Todos</option></select>
+            </div>
+            <div class="filter-group">
+                <label>DATA INÍCIO</label>
+                <input type="date" id="filtroDataInicio">
+            </div>
+            <div class="filter-group">
+                <label>DATA FIM</label>
+                <input type="date" id="filtroDataFim">
+            </div>
+            <div class="filter-group" style="justify-content: flex-end;">
+                <button class="btn-export" onclick="baixarExcel()">
+                    <i data-lucide="download"></i> Excel
+                </button>
+            </div>
+        </div>
 
-<!-- OPERACIONAL -->
-<div id="aba-operacional">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Placa</th>
+                        <th>Posto</th>
+                        <th>Cidade/UF</th>
+                        <th>Produto</th>
+                        <th>Litros</th>
+                        <th>Total</th>
+                        <th>Vl. Litro</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela"></tbody>
+            </table>
+        </div>
+    </div>
 
-<div class="kpis">
-    <div class="kpi">Total<br><span id="total"></span></div>
-    <div class="kpi">Litros<br><span id="litros"></span></div>
-    <div class="kpi">Média<br><span id="media"></span></div>
-</div>
-
-<table>
-<thead>
-<tr>
-<th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th>
-<th>Cidade</th><th>UF</th><th>Produto</th>
-<th>Litros</th><th>Total</th><th>Litro</th>
-</tr>
-</thead>
-<tbody id="tabela"></tbody>
-</table>
-
-</div>
-
-<!-- PLANILHA -->
-<div id="aba-planilha" style="display:none">
-    <h2>📄 Planilha</h2>
-    <p>Dados carregados do JSON local</p>
-</div>
-
+    <div id="aba-gerencial" style="display:none">
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 style="margin-bottom:20px">Evolução de Gastos Diários</h3>
+                <canvas id="graficoLine"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Top 10 Veículos (Gasto)</h3>
+                <div id="rankingVeiculos" class="list-group"></div>
+            </div>
+        </div>
+        
+        <div class="charts-grid" style="margin-top:24px">
+            <div class="chart-container">
+                <h3>Resumo por UF</h3>
+                <div id="resumoUF" class="list-group"></div>
+            </div>
+            <div class="chart-container">
+                <h3 style="color:var(--danger)">Alertas de Preço Alto (> R$ 7.20)</h3>
+                <div id="listaAlertas" class="list-group"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-let dados=[];
+let dados = [];
+let chartInstance = null;
 
-const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const numero=v=>Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
+const moeda = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const numero = v => Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/* 🔹 VOLTA PRO JSON LOCAL */
+/* INICIALIZAÇÃO */
 fetch("transacoes.json")
-.then(r=>r.json())
-.then(j=>{
-    console.log("JSON OK", j);
-    dados=j;
-    render(dados);
-})
-.catch(e=>console.error("ERRO JSON", e));
-
-function mostrarAba(a){
-    document.getElementById("aba-operacional").style.display="none";
-    document.getElementById("aba-planilha").style.display="none";
-    document.getElementById("aba-"+a).style.display="block";
-}
-
-function render(lista){
-    let tb=document.getElementById("tabela");
-    tb.innerHTML="";
-
-    let total=0,litros=0;
-
-    lista.forEach(i=>{
-
-        let d="", h="";
-        if(i.dataTransacao){
-            let dt=new Date(i.dataTransacao);
-            d=dt.toISOString().split("T")[0];
-            h=dt.toTimeString().split(" ")[0];
-        }
-
-        total+=Number(i.valorTransacao||0);
-        litros+=Number(i.litros||0);
-
-        tb.innerHTML+=`
-        <tr>
-        <td>${d}</td>
-        <td>${h}</td>
-        <td class="texto">${i.placa||""}</td>
-        <td class="texto">${i.nomeReduzidoEstabelecimento||""}</td>
-        <td class="texto">${i.nomeCidade||""}</td>
-        <td>${i.uf||""}</td>
-        <td class="texto">${i.tipoCombustivel||""}</td>
-        <td>${numero(i.litros)}</td>
-        <td>${moeda(i.valorTransacao)}</td>
-        <td>${moeda(i.valorLitro)}</td>
-        </tr>`;
+    .then(r => r.json())
+    .then(j => {
+        dados = j;
+        preencherFiltrosIniciais();
+        render(dados);
+        lucide.createIcons();
     });
 
-    document.getElementById("total").innerText=moeda(total);
-    document.getElementById("litros").innerText=numero(litros);
-    document.getElementById("media").innerText=moeda(total/litros||0);
+function preencherFiltrosIniciais() {
+    let postos = new Set(), prods = new Set();
+    dados.forEach(i => {
+        if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
+        if(i.tipoCombustivel) prods.add(i.tipoCombustivel);
+    });
+    Array.from(postos).sort().forEach(p => filtroPosto.innerHTML += `<option value="${p}">${p}</option>`);
+    Array.from(prods).sort().forEach(p => filtroProduto.innerHTML += `<option value="${p}">${p}</option>`);
+}
+
+/* NAVEGAÇÃO */
+function mostrarAba(aba) {
+    document.getElementById("aba-operacional").style.display = aba === 'operacional' ? "block" : "none";
+    document.getElementById("aba-gerencial").style.display = aba === 'gerencial' ? "block" : "none";
+    
+    document.getElementById("btn-operacional").classList.toggle("active", aba === 'operacional');
+    document.getElementById("btn-gerencial").classList.toggle("active", aba === 'gerencial');
+
+    if(aba === "gerencial") setTimeout(renderGerencial, 100);
+}
+
+/* FILTROS EVENTOS */
+document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", () => {
+    const f = dados.filter(i => {
+        let match = true;
+        if(filtroPlaca.value && !i.placa.toLowerCase().includes(filtroPlaca.value.toLowerCase())) match = false;
+        if(filtroPosto.value && i.nomeReduzidoEstabelecimento !== filtroPosto.value) match = false;
+        if(filtroProduto.value && i.tipoCombustivel !== filtroProduto.value) match = false;
+        
+        if(i.dataTransacao){
+            let d = i.dataTransacao.split("T")[0];
+            if(filtroDataInicio.value && d < filtroDataInicio.value) match = false;
+            if(filtroDataFim.value && d > filtroDataFim.value) match = false;
+        }
+        return match;
+    });
+    render(f);
+}));
+
+/* RENDER OPERACIONAL */
+function render(lista) {
+    const tb = document.getElementById("tabela");
+    tb.innerHTML = "";
+    let total = 0, litros = 0;
+
+    lista.forEach(i => {
+        total += Number(i.valorTransacao || 0);
+        litros += Number(i.litros || 0);
+
+        let dataFormatada = i.dataTransacao ? new Date(i.dataTransacao).toLocaleString("pt-BR") : "-";
+        let badgeColor = i.tipoCombustivel.toLowerCase().includes("diesel") ? "badge-diesel" : "badge-arla";
+        let statusPreco = Number(i.valorLitro) > 7.2 ? "caro" : "barato";
+
+        tb.innerHTML += `
+            <tr>
+                <td>${dataFormatada}</td>
+                <td><strong style="color:var(--accent)">${i.placa}</strong></td>
+                <td>${i.nomeReduzidoEstabelecimento}</td>
+                <td><small>${i.nomeCidade} / ${i.uf}</small></td>
+                <td><span class="badge ${badgeColor}">${i.tipoCombustivel}</span></td>
+                <td>${numero(i.litros)}</td>
+                <td><strong>${moeda(i.valorTransacao)}</strong></td>
+                <td class="price-tag ${statusPreco}">${moeda(i.valorLitro)}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("total").innerText = moeda(total);
+    document.getElementById("litros").innerText = numero(litros);
+    document.getElementById("media").innerText = moeda(total / litros || 0);
+}
+
+/* RENDER GERENCIAL */
+function renderGerencial() {
+    // 1. Gráfico de Evolução
+    let hist = {};
+    dados.forEach(i => {
+        let d = i.dataTransacao.split("T")[0];
+        hist[d] = (hist[d] || 0) + Number(i.valorTransacao);
+    });
+
+    const ctx = document.getElementById('graficoLine').getContext('2d');
+    if(chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Object.keys(hist).sort(),
+            datasets: [{
+                label: 'Gasto R$',
+                data: Object.values(hist),
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // 2. Ranking Veículos
+    let vRank = {};
+    dados.forEach(i => vRank[i.placa] = (vRank[i.placa] || 0) + Number(i.valorTransacao));
+    
+    const rankingDiv = document.getElementById("rankingVeiculos");
+    rankingDiv.innerHTML = Object.entries(vRank).sort((a,b)=>b[1]-a[1]).slice(0,10)
+        .map(v => `<div class="list-item"><span>${v[0]}</span><strong>${moeda(v[1])}</strong></div>`).join("");
+
+    // 3. Alertas
+    const alertasDiv = document.getElementById("listaAlertas");
+    alertasDiv.innerHTML = dados.filter(i => Number(i.valorLitro) > 7.2)
+        .slice(0, 8).map(i => `<div class="list-item"><span>${i.placa} @ ${i.nomeCidade}</span><span class="caro">${moeda(i.valorLitro)}</span></div>`).join("");
+}
+
+function baixarExcel(){
+    let t = document.querySelector("table").outerHTML;
+    let blob = new Blob(["\ufeff", t], {type: "application/vnd.ms-excel"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Relatorio_Abastecimento.xls";
+    a.click();
 }
 </script>
 
