@@ -2,25 +2,53 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Abastecimento</title>
+<title>Painel BI Abastecimento</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body {
     font-family: Arial;
+    margin: 0;
     background: #0f172a;
+    color: #e2e8f0;
+}
+
+.container { padding: 20px; }
+
+button {
+    background: #2563eb;
+    border: none;
     color: white;
-    padding: 20px;
+    padding: 8px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-h1 {
-    margin-bottom: 20px;
+.kpis {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
 }
 
-.card {
+.kpi {
     background: #1e293b;
     padding: 15px;
     border-radius: 10px;
-    margin-bottom: 20px;
+    flex: 1;
+}
+
+.kpi span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.filtros input, .filtros select {
+    padding: 6px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
 }
 
 table {
@@ -30,101 +58,256 @@ table {
 }
 
 th, td {
-    padding: 10px;
+    padding: 8px;
     border-bottom: 1px solid #334155;
 }
 
-th {
-    background: #334155;
-}
+th { background: #334155; }
 
-input {
-    padding: 8px;
-    margin-right: 10px;
-}
+td { text-align: right; }
+.texto { text-align: left; }
+
+.caro { color: #f87171; font-weight: bold; }
+.medio { color: #facc15; }
+.barato { color: #4ade80; }
+
+ul { padding-left: 20px; }
+
 </style>
 </head>
 
 <body>
 
-<h1>🚛 Painel de Abastecimento</h1>
+<div class="container">
 
-<div class="card">
-    <strong>Total Registros:</strong> <span id="total">0</span>
+<h1>📊 Painel BI Abastecimento</h1>
+
+<button onclick="mostrarAba('operacional')">Operacional</button>
+<button onclick="mostrarAba('gerencial')">Gerencial</button>
+
+<!-- OPERACIONAL -->
+<div id="aba-operacional">
+
+<div class="kpis">
+    <div class="kpi">Total<br><span id="total"></span></div>
+    <div class="kpi">Litros<br><span id="litros"></span></div>
+    <div class="kpi">Média<br><span id="media"></span></div>
 </div>
 
-<input type="text" id="filtroPlaca" placeholder="Filtrar placa">
+<div class="filtros">
+    <input id="filtroPlaca" placeholder="Placa">
+    <input id="filtroCidade" placeholder="Cidade">
+    <input type="date" id="filtroDataInicio">
+    <input type="date" id="filtroDataFim">
+
+    <select id="filtroPosto"><option value="">Posto</option></select>
+    <select id="filtroUF"><option value="">UF</option></select>
+    <select id="filtroProduto"><option value="">Produto</option></select>
+
+    <button onclick="baixarExcel()">Excel</button>
+</div>
 
 <table>
 <thead>
 <tr>
-<th>Data</th>
-<th>Placa</th>
-<th>Posto</th>
-<th>Cidade</th>
-<th>Produto</th>
-<th>Litros</th>
-<th>Total</th>
+<th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th>
+<th>Cidade</th><th>UF</th><th>Produto</th>
+<th>Litros</th><th>Total</th><th>Litro</th>
 </tr>
 </thead>
 <tbody id="tabela"></tbody>
 </table>
 
+</div>
+
+<!-- GERENCIAL -->
+<div id="aba-gerencial" style="display:none">
+
+<h2>📈 Análise Gerencial</h2>
+
+<canvas id="grafico"></canvas>
+
+<h3>🚚 Consumo por Veículo</h3>
+<ul id="veiculos"></ul>
+
+<h3>🏆 Ranking Postos</h3>
+<ul id="ranking"></ul>
+
+<h3>🚨 Alertas</h3>
+<ul id="alertas"></ul>
+
+</div>
+
+</div>
+
 <script>
-let dados = [];
+let dados=[];
 
-function formatarMoeda(v) {
-    return Number(v || 0).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
-}
+const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const numero=v=>Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 
-function carregar() {
-    fetch("/api/transacoes")
-        .then(r => r.json())
-        .then(res => {
-            console.log("DADOS:", res);
-
-            dados = res;
-            document.getElementById("total").innerText = dados.length;
-
-            render(dados);
-        });
-}
-
-function render(lista) {
-    const tabela = document.getElementById("tabela");
-    tabela.innerHTML = "";
-
-    lista.forEach(item => {
-        const dt = new Date(item.dataTransacao);
-
-        tabela.innerHTML += `
-        <tr>
-            <td>${dt.toLocaleDateString()}</td>
-            <td>${item.placa || ""}</td>
-            <td>${item.nomeReduzidoEstabelecimento || ""}</td>
-            <td>${item.nomeCidade || ""}</td>
-            <td>${item.tipoCombustivel || ""}</td>
-            <td>${item.litros || 0}</td>
-            <td>${formatarMoeda(item.valorTransacao)}</td>
-        </tr>
-        `;
-    });
-}
-
-document.getElementById("filtroPlaca").addEventListener("input", function() {
-    const valor = this.value.toLowerCase();
-
-    const filtrado = dados.filter(d =>
-        (d.placa || "").toLowerCase().includes(valor)
-    );
-
-    render(filtrado);
+/* LOAD */
+fetch("transacoes.json")
+.then(r=>r.json())
+.then(j=>{
+    dados=j;
+    preencherFiltros();
+    render(dados);
 });
 
-carregar();
+/* ABAS */
+function mostrarAba(a){
+    document.getElementById("aba-operacional").style.display="none";
+    document.getElementById("aba-gerencial").style.display="none";
+    document.getElementById("aba-"+a).style.display="block";
+
+    if(a==="gerencial") gerarAnalises();
+}
+
+/* FILTROS */
+function preencherFiltros(){
+    let postos=new Set(),ufs=new Set(),prod=new Set();
+
+    dados.forEach(i=>{
+        if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
+        if(i.uf) ufs.add(i.uf);
+        if(i.tipoCombustivel) prod.add(i.tipoCombustivel);
+    });
+
+    postos.forEach(p=>filtroPosto.innerHTML+=`<option>${p}</option>`);
+    ufs.forEach(u=>filtroUF.innerHTML+=`<option>${u}</option>`);
+    prod.forEach(p=>filtroProduto.innerHTML+=`<option>${p}</option>`);
+}
+
+document.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",filtrar));
+
+function filtrar(){
+    const f=dados.filter(i=>{
+        let ok=true;
+
+        if(filtroPlaca.value && !(i.placa||"").toLowerCase().includes(filtroPlaca.value.toLowerCase())) ok=false;
+        if(filtroCidade.value && !(i.nomeCidade||"").toLowerCase().includes(filtroCidade.value.toLowerCase())) ok=false;
+
+        if(filtroPosto.value && i.nomeReduzidoEstabelecimento!==filtroPosto.value) ok=false;
+        if(filtroUF.value && i.uf!==filtroUF.value) ok=false;
+        if(filtroProduto.value && i.tipoCombustivel!==filtroProduto.value) ok=false;
+
+        if(i.dataTransacao){
+            let d=i.dataTransacao.split("T")[0];
+            if(filtroDataInicio.value && d<filtroDataInicio.value) ok=false;
+            if(filtroDataFim.value && d>filtroDataFim.value) ok=false;
+        }
+
+        return ok;
+    });
+
+    render(f);
+}
+
+/* TABELA */
+function render(lista){
+    let tb=document.getElementById("tabela");
+    tb.innerHTML="";
+
+    let total=0,litros=0;
+
+    lista.forEach(i=>{
+
+        let d="", h="";
+        if(i.dataTransacao){
+            let dt=new Date(i.dataTransacao);
+            d=dt.toISOString().split("T")[0];
+            h=dt.toTimeString().split(" ")[0];
+        }
+
+        let cor="";
+        let vl=Number(i.valorLitro||0);
+        if(vl>=7.5) cor="caro";
+        else if(vl>=6.5) cor="medio";
+        else cor="barato";
+
+        total+=Number(i.valorTransacao||0);
+        litros+=Number(i.litros||0);
+
+        tb.innerHTML+=`
+        <tr>
+        <td>${d}</td>
+        <td>${h}</td>
+        <td class="texto">${i.placa||""}</td>
+        <td class="texto">${i.nomeReduzidoEstabelecimento||""}</td>
+        <td class="texto">${i.nomeCidade||""}</td>
+        <td>${i.uf||""}</td>
+        <td class="texto">${i.tipoCombustivel||""}</td>
+        <td>${numero(i.litros)}</td>
+        <td>${moeda(i.valorTransacao)}</td>
+        <td class="${cor}">${moeda(i.valorLitro)}</td>
+        </tr>`;
+    });
+
+    document.getElementById("total").innerText=moeda(total);
+    document.getElementById("litros").innerText=numero(litros);
+    document.getElementById("media").innerText=moeda(total/litros||0);
+}
+
+/* EXCEL */
+function baixarExcel(){
+    let t=document.querySelector("table").outerHTML;
+    let blob=new Blob(["\ufeff",t],{type:"application/vnd.ms-excel"});
+    let a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="relatorio.xls";
+    a.click();
+}
+
+/* ANALISES */
+function gerarAnalises(){
+
+    let consumo={};
+
+    dados.forEach(i=>{
+        if(i.dataTransacao){
+            let d=i.dataTransacao.split("T")[0];
+            consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
+        }
+    });
+
+    new Chart(document.getElementById("grafico"),{
+        type:"line",
+        data:{
+            labels:Object.keys(consumo),
+            datasets:[{label:"Gasto Diário",data:Object.values(consumo)}]
+        }
+    });
+
+    let veic={};
+    dados.forEach(i=>{
+        veic[i.placa]=(veic[i.placa]||0)+Number(i.valorTransacao||0);
+    });
+
+    veiculos.innerHTML="";
+    Object.entries(veic).sort((a,b)=>b[1]-a[1]).slice(0,10)
+    .forEach(v=>{
+        veiculos.innerHTML+=`<li>${v[0]} - ${moeda(v[1])}</li>`;
+    });
+
+    let rank={};
+    dados.forEach(i=>{
+        rank[i.nomeReduzidoEstabelecimento]=(rank[i.nomeReduzidoEstabelecimento]||0)+Number(i.valorTransacao||0);
+    });
+
+    ranking.innerHTML="";
+    Object.entries(rank).sort((a,b)=>b[1]-a[1]).slice(0,10)
+    .forEach(r=>{
+        ranking.innerHTML+=`<li>${r[0]} - ${moeda(r[1])}</li>`;
+    });
+
+    alertas.innerHTML="";
+    dados.forEach(i=>{
+        if(Number(i.valorLitro)>7.5){
+            alertas.innerHTML+=`<li>${i.nomeCidade} - ${moeda(i.valorLitro)}</li>`;
+        }
+    });
+}
 </script>
 
 </body>
