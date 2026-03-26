@@ -44,20 +44,19 @@ def home():
 @app.route("/api/transacoes")
 def transacoes():
     hoje = datetime.now()
-
-    # 🔥 PEGA ÚLTIMOS 7 DIAS (GARANTE QUE VEM DADO)
     inicio = hoje - timedelta(days=7)
 
     data_inicio = inicio.strftime("%Y-%m-%dT00:00:00")
     data_fim = hoje.strftime("%Y-%m-%dT23:59:59")
 
+    print("🔎 Buscando de:", data_inicio, "até", data_fim)
+
     dados = consultar(data_inicio, data_fim)
 
-    return jsonify({
-        "dados": dados,
-        "total": len(dados),
-        "ultima_atualizacao": datetime.now().strftime("%d/%m/%Y %H:%M")
-    })
+    print("✅ TOTAL RETORNADO:", len(dados))
+
+    # 🔥 RETORNA DIRETO SEM INVENTAR
+    return jsonify(dados)
 
 
 if __name__ == "__main__":
