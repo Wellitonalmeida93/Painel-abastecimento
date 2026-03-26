@@ -1,20 +1,24 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from datetime import datetime, timedelta
 import requests
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".")
 
 URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 CODIGO_CLIENTE = 122840
 
 
-def consultar(data_inicio, data_fim):
+def consultar():
+    hoje = datetime.now()
+    inicio = hoje - timedelta(days=7)
+
     payload = {
         "codigoCliente": CODIGO_CLIENTE,
         "codigoTipoCartao": 4,
-        "dataTransacaoInicial": data_inicio,
-        "dataTransacaoFinal": data_fim,
+        "dataTransacaoInicial": inicio.strftime("%Y-%m-%dT00:00:00"),
+        "dataTransacaoFinal": hoje.strftime("%Y-%m-%dT23:59:59"),
         "considerarTransacao": "T",
         "ordem": "S",
         "validacao": "S"
@@ -26,38 +30,39 @@ def consultar(data_inicio, data_fim):
     }
 
     try:
-        response = requests.post(URL, json=payload, headers=headers, timeout=30)
+        response = requests.post(URL, json=payload, headers=headers, timeout=40)
+
+        print("STATUS:", response.status_code)
+
         if response.status_code == 200:
             data = response.json()
-            return data.get("transacoes", [])
+            transacoes = data.get("transacoes", [])
+            print("TOTAL:", len(transacoes))
+            return transacoes
+
+        else:
+            print("ERRO API:", response.text)
+
     except Exception as e:
-        print("Erro:", e)
+        print("ERRO GERAL:", str(e))
 
     return []
 
 
-@app.route("/")
-def home():
-    return "API rodando"
-
-
+# 🔹 ROTA API
 @app.route("/api/transacoes")
 def transacoes():
-    hoje = datetime.now()
-    inicio = hoje - timedelta(days=7)
-
-    data_inicio = inicio.strftime("%Y-%m-%dT00:00:00")
-    data_fim = hoje.strftime("%Y-%m-%dT23:59:59")
-
-    print("🔎 Buscando de:", data_inicio, "até", data_fim)
-
-    dados = consultar(data_inicio, data_fim)
-
-    print("✅ TOTAL RETORNADO:", len(dados))
-
-    # 🔥 RETORNA DIRETO SEM INVENTAR
+    dados = consultar()
     return jsonify(dados)
 
 
+# 🔹 SERVIR INDEX
+@app.route("/")
+def home():
+    return send_from_directory(".", "index.html")
+
+
+# 🔹 RENDER (PORTA DINÂMICA)
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
