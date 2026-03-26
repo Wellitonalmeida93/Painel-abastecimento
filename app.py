@@ -42,8 +42,10 @@ def consultar_transacoes(data_inicio, data_fim, considerar):
         print("Status:", response.status_code)
 
         if response.status_code == 200:
-            data = response.json()
-            print("Resposta API:", data)
+    data = response.json()
+    print("Resposta API:", data)
+
+    return data.get("transacoes", [])
 
             if data.get("sucesso"):
                 return data.get("transacoes", [])
