@@ -5,63 +5,104 @@
 <title>Painel BI Abastecimento</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; }
-    .container { padding: 15px; }
-    h1 { font-size: 22px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    /* Estilos Gerais */
+    body { font-family: Arial, sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+    .container { padding: 15px; max-width: 100%; margin: auto; }
     
+    /* 🔹 NOVO: Estilo do Cabeçalho com Logo */
+    header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #334155;
+        padding-bottom: 15px;
+    }
+    .logo {
+        height: 60px; /* Ajuste a altura conforme necessário */
+        border-radius: 8px; /* Opcional: bordas arredondadas */
+    }
+    h1 { font-size: 24px; margin: 0; }
+    
+    /* Botões de Aba */
     .tabs { margin-bottom: 15px; display: flex; gap: 5px; }
-    button { background: #2563eb; border: none; color: white; padding: 7px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
-    .btn-sheets { background: #10b981; }
+    button { 
+        background: #2563eb; border: none; color: white; padding: 8px 15px; 
+        border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px;
+    }
+    button:hover { background: #1d4ed8; }
+    .btn-planilha { background: #10b981; }
 
+    /* KPIs */
     .kpis { display: flex; gap: 10px; margin-bottom: 15px; }
-    .kpi { background: #1e293b; padding: 12px; border-radius: 6px; flex: 1; border: 1px solid #334155; }
-    .kpi label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 5px; text-transform: uppercase; }
-    .kpi span { font-size: 18px; font-weight: bold; }
+    .kpi { 
+        background: #1e293b; padding: 12px; border-radius: 6px; flex: 1; 
+        border: 1px solid #334155;
+    }
+    .kpi label { font-size: 12px; color: #94a3b8; display: block; margin-bottom: 5px; }
+    .kpi span { font-size: 20px; font-weight: bold; }
 
-    .filtros { display: flex; flex-wrap: wrap; gap: 8px; background: #1e293b; padding: 10px; border-radius: 6px; margin-bottom: 15px; align-items: center; }
-    .filtros input, .filtros select { padding: 6px; border-radius: 4px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 12px; }
-
+    /* Filtros */
+    .filtros { 
+        display: flex; flex-wrap: wrap; gap: 8px; background: #1e293b; 
+        padding: 10px; border-radius: 6px; margin-bottom: 15px; align-items: center;
+    }
+    .filtros input, .filtros select { 
+        padding: 6px; border-radius: 4px; border: 1px solid #334155; 
+        background: #0f172a; color: white; font-size: 13px; outline: none;
+    }
+    
+    /* Tabela Densa */
     .table-container { overflow-x: auto; background: #1e293b; border-radius: 6px; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th, td { padding: 8px 10px; border-bottom: 1px solid #334155; text-align: left; }
-    th { background: #334155; color: #94a3b8; font-weight: normal; text-transform: uppercase; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px; border-bottom: 1px solid #334155; text-align: left; }
+    th { background: #334155; color: #94a3b8; font-weight: normal; text-transform: uppercase; font-size: 11px; }
+    tr:hover { background: #1e293b; filter: brightness(1.2); }
+    
     .num { text-align: right; }
     .caro { color: #f87171; font-weight: bold; }
     .barato { color: #4ade80; font-weight: bold; }
 
+    /* Layout Gerencial */
     .grid-gerencial { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 10px; }
     .card-chart { background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
     .card-chart h3 { font-size: 14px; margin-top: 0; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 8px; margin-bottom: 10px; }
-    
-    iframe { width: 100%; height: 80vh; border: none; background: white; border-radius: 8px; }
+
+    /* Iframe do Google Sheets */
+    iframe { width: 100%; height: 75vh; border: none; border-radius: 8px; background: white; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📊 Painel BI Abastecimento</h1>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Qkk8L3RleHQ+PC9zdmc+';">
+        <h1>Painel BI Abastecimento</h1>
+    </header>
 
     <div class="tabs">
-        <button onclick="mostrarAba('operacional')">Abastecimentos Operacionais</button>
+        <button onclick="mostrarAba('operacional')">Abasteicmentos</button>
         <button onclick="mostrarAba('gerencial')">KPI Gerencial</button>
-        <button class="btn-sheets" onclick="mostrarAba('sheets')">Valores Diesel</button>
+        <button class="btn-planilha" onclick="mostrarAba('google_sheets')">Valores Diesel</button>
     </div>
 
     <div id="aba-operacional">
         <div class="kpis">
             <div class="kpi"><label>Total Gasto</label><span id="total">R$ 0,00</span></div>
             <div class="kpi"><label>Litros Totais</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Preço Médio/L</label><span id="media">R$ 0,00</span></div>
+            <div class="kpi"><label>Média R$/L</label><span id="media">R$ 0,00</span></div>
         </div>
+
         <div class="filtros">
-            <input id="filtroPlaca" placeholder="Placa" style="width:90px">
-            <input id="filtroCidade" placeholder="Cidade" style="width:120px">
+            <input id="filtroPlaca" placeholder="Placa" style="width:100px">
+            <input id="filtroCidade" placeholder="Cidade" style="width:140px">
             <input type="date" id="filtroDataInicio">
             <input type="date" id="filtroDataFim">
             <select id="filtroPosto"><option value="">Posto</option></select>
             <select id="filtroUF"><option value="">UF</option></select>
             <button onclick="baixarExcel()" style="background:#475569">Excel</button>
         </div>
+
         <div class="table-container">
             <table>
                 <thead>
@@ -90,15 +131,15 @@
             </div>
             <div class="card-chart">
                 <h3>🚨 Maiores Preços por Litro (Top 5)</h3>
-                <table style="width:100%">
-                    <thead><tr><th>Placa</th><th>Posto</th><th class="num">Preço/L</th></tr></thead>
+                <table style="width:100%; border-collapse: collapse; font-size: 12px;">
+                    <thead><tr><th style="color:#94a3b8; text-transform:uppercase;">Placa</th><th style="color:#94a3b8; text-transform:uppercase;">Posto</th><th class="num" style="color:#94a3b8; text-transform:uppercase;">Preço/L</th></tr></thead>
                     <tbody id="listaMaioresPrecos"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <div id="aba-sheets" style="display:none;">
+    <div id="aba-google_sheets" style="display:none; padding-top:10px;">
         <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?widget=true&amp;headers=false"></iframe>
     </div>
 </div>
@@ -110,12 +151,14 @@ let charts = {};
 const moeda = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const numero = v => Number(v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 
-/* CARGA INICIAL */
-fetch("transacoes.json").then(r => r.json()).then(j => {
-    dados = j;
-    preencherFiltros();
-    render(dados);
-});
+/* CARREGAR JSON */
+fetch("transacoes.json")
+    .then(r => r.json())
+    .then(j => {
+        dados = j;
+        preencherFiltros();
+        render(dados);
+    });
 
 function preencherFiltros() {
     let postos = new Set(), ufs = new Set();
@@ -127,7 +170,7 @@ function preencherFiltros() {
     Array.from(ufs).sort().forEach(u => filtroUF.innerHTML += `<option value="${u}">${u}</option>`);
 }
 
-/* FILTRAGEM DINÂMICA */
+/* FILTROS */
 document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", () => {
     const f = dados.filter(i => {
         let match = true;
@@ -149,47 +192,51 @@ function render(lista) {
     let tb = document.getElementById("tabela");
     tb.innerHTML = "";
     let total = 0, litros = 0;
+
     lista.forEach(i => {
         total += Number(i.valorTransacao || 0);
         litros += Number(i.litros || 0);
         let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
         let vl = Number(i.valorLitro || 0);
+        let corPreco = vl > 6.5 ? "caro" : "barato"; // Ajuste o limite se quiser
+
         tb.innerHTML += `<tr>
             <td>${dt.toISOString().split("T")[0]}</td><td>${dt.toTimeString().split(" ")[0]}</td>
             <td>${i.placa}</td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade}</td>
             <td>${i.uf}</td><td>${i.tipoCombustivel}</td><td class="num">${numero(i.litros)}</td>
-            <td class="num">${moeda(i.valorTransacao)}</td><td class="num ${vl > 6.5 ? 'caro' : 'barato'}">${moeda(vl)}</td>
+            <td class="num">${moeda(i.valorTransacao)}</td><td class="num ${corPreco}">${moeda(i.valorLitro)}</td>
         </tr>`;
     });
+
     document.getElementById("total").innerText = moeda(total);
     document.getElementById("litros").innerText = numero(litros);
     document.getElementById("media").innerText = moeda(total / litros || 0);
 }
 
 function mostrarAba(a) {
-    ['aba-operacional', 'aba-gerencial', 'aba-sheets'].forEach(id => document.getElementById(id).style.display = 'none');
+    ['aba-operacional', 'aba-gerencial', 'aba-google_sheets'].forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('aba-' + a).style.display = 'block';
     if (a === 'gerencial') renderGerencial();
 }
 
 function renderGerencial() {
-    // 1. Evolução
+    // 1. Evolução Diária
     let hist = {};
     dados.forEach(i => { let d = i.dataTransacao.split("T")[0]; hist[d] = (hist[d] || 0) + Number(i.valorTransacao); });
     updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Gasto R$', '#3b82f6');
 
-    // 2. UF
+    // 2. Por UF
     let ufs = {};
     dados.forEach(i => { ufs[i.uf] = (ufs[i.uf] || 0) + Number(i.valorTransacao); });
     updateChart('graficoUF', 'doughnut', Object.keys(ufs), Object.values(ufs), 'UF', ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6']);
 
-    // 3. Postos
-    let pRank = {};
-    dados.forEach(i => { pRank[i.nomeReduzidoEstabelecimento] = (pRank[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
-    let topP = Object.entries(pRank).sort((a,b) => b[1] - a[1]).slice(0, 10);
-    updateChart('graficoPostos', 'bar', topP.map(x => x[0]), topP.map(x => x[1]), 'R$', '#10b981', 'y');
+    // 3. Top Postos
+    let postos = {};
+    dados.forEach(i => { postos[i.nomeReduzidoEstabelecimento] = (postos[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
+    let topPostos = Object.entries(postos).sort((a,b) => b[1] - a[1]).slice(0, 10);
+    updateChart('graficoPostos', 'bar', topPostos.map(x => x[0]), topPostos.map(x => x[1]), 'R$', '#10b981', 'y');
 
-    // 4. Maiores Preços UNITÁRIOS
+    // 4. Maiores Preços UNITÁRIOS (Top 5)
     let maioresPrecos = [...dados].sort((a, b) => Number(b.valorLitro || 0) - Number(a.valorLitro || 0)).slice(0, 5);
     document.getElementById("listaMaioresPrecos").innerHTML = maioresPrecos.map(i => `
         <tr><td>${i.placa}</td><td><small>${i.nomeReduzidoEstabelecimento}</small></td><td class="num caro">${moeda(i.valorLitro)}</td></tr>
@@ -209,7 +256,7 @@ function baixarExcel() {
     let t = document.querySelector("table").outerHTML;
     let blob = new Blob(["\ufeff", t], { type: "application/vnd.ms-excel" });
     let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download = "relatorio_abastecimento.xls"; a.click();
+    a.href = URL.createObjectURL(blob); a.download = "relatorio.xls"; a.click();
 }
 </script>
 </body>
