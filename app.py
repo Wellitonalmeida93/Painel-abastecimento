@@ -1,129 +1,151 @@
-from flask import Flask, jsonify
-from datetime import datetime, timedelta
-import requests
-import time
-import threading
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel BI Abastecimento</title>
 
-app = Flask(__name__)
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+}
 
-URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
-AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
-CODIGO_CLIENTE = 122840
+h1 {
+    margin-bottom: 20px;
+}
 
-TIPOS_CONSIDERACAO = ["V", "T"]
+input {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 6px;
+    border: none;
+}
 
-# 🔹 CACHE GLOBAL
-cache_dados = []
-ultima_atualizacao = None
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #334155;
+}
 
-# 🔹 CONSULTA API (COM LOG)
-def consultar_transacoes(data_inicio, data_fim, considerar):
-    print(f"🔎 Consultando: {data_inicio} | Tipo: {considerar}")
+th {
+    background: #1e293b;
+}
 
-    payload = {
-        "codigoCliente": CODIGO_CLIENTE,
-        "codigoTipoCartao": 4,
-        "dataTransacaoInicial": data_inicio,
-        "dataTransacaoFinal": data_fim,
-        "considerarTransacao": considerar,
-        "ordem": "S",
-        "validacao": "S"
-    }
+td {
+    text-align: right;
+}
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": AUTHORIZATION
-    }
+td.texto {
+    text-align: left;
+}
+</style>
+</head>
 
-    try:
-        response = requests.post(URL, json=payload, headers=headers, timeout=30)
+<body>
 
-        print("Status:", response.status_code)
+<h1>📊 Painel Abastecimento</h1>
 
-        if response.status_code == 200:
-    data = response.json()
-    print("Resposta API:", data)
+<input id="filtroPlaca" placeholder="Placa">
+<input id="filtroCidade" placeholder="Cidade">
 
-    return data.get("transacoes", [])
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Hora</th>
+<th>Placa</th>
+<th>Posto</th>
+<th>Cidade</th>
+<th>UF</th>
+<th>Produto</th>
+<th>Litros</th>
+<th>Total</th>
+<th>Litro</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
 
-            if data.get("sucesso"):
-                return data.get("transacoes", [])
-            else:
-                print("❌ API respondeu mas sem sucesso:", data.get("mensagem"))
-        else:
-            print("❌ Erro HTTP:", response.text)
+<script>
+let dados = [];
 
-    except Exception as e:
-        print("🚨 ERRO NA REQUISIÇÃO:", e)
+// 🔹 FORMATAR
+function moeda(v) {
+    return Number(v || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
 
-    return []
+function numero(v) {
+    return Number(v || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2
+    });
+}
 
+// 🔹 BUSCAR API
+fetch("https://painel-abastecimento-api.onrender.com/api/transacoes")
+.then(r => r.json())
+.then(res => {
+    dados = res.dados || [];
+    render(dados);
+});
 
-# 🔹 REMOVE DUPLICADOS
-def remover_duplicados(transacoes):
-    unicos = {}
-    for t in transacoes:
-        chave = t.get("codigoTransacao")
-        if chave not in unicos:
-            unicos[chave] = t
-    return list(unicos.values())
+// 🔹 RENDER
+function render(lista) {
+    const tabela = document.getElementById("tabela");
+    tabela.innerHTML = "";
 
+    lista.forEach(i => {
 
-# 🔹 ATUALIZAÇÃO COMPLETA
-def atualizar_dados():
-    global cache_dados, ultima_atualizacao
+        let data = "";
+        let hora = "";
 
-    print("🔄 Iniciando atualização...")
+        if (i.dataTransacao) {
+            const dt = new Date(i.dataTransacao);
+            data = dt.toLocaleDateString("pt-BR");
+            hora = dt.toLocaleTimeString("pt-BR");
+        }
 
-    hoje = datetime.now()
-    inicio_mes = hoje.replace(day=1)
+        tabela.innerHTML += `
+        <tr>
+            <td>${data}</td>
+            <td>${hora}</td>
+            <td class="texto">${i.placa || ""}</td>
+            <td class="texto">${i.nomeReduzidoEstabelecimento || ""}</td>
+            <td class="texto">${i.nomeCidade || ""}</td>
+            <td>${i.uf || ""}</td>
+            <td class="texto">${i.tipoCombustivel || ""}</td>
+            <td>${numero(i.litros)}</td>
+            <td>${moeda(i.valorTransacao)}</td>
+            <td>${moeda(i.valorLitro)}</td>
+        </tr>`;
+    });
+}
 
-    data_atual = inicio_mes
-    todas = []
+// 🔹 FILTROS
+document.getElementById("filtroPlaca").addEventListener("input", filtrar);
+document.getElementById("filtroCidade").addEventListener("input", filtrar);
 
-    while data_atual <= hoje:
-        inicio = data_atual.strftime("%Y-%m-%dT00:00:00")
-        fim = data_atual.strftime("%Y-%m-%dT23:59:59")
+function filtrar() {
+    const placa = filtroPlaca.value.toLowerCase();
+    const cidade = filtroCidade.value.toLowerCase();
 
-        for tipo in TIPOS_CONSIDERACAO:
-            resultado = consultar_transacoes(inicio, fim, tipo)
-            print(f"➡️ Retornou {len(resultado)} registros")
-            todas.extend(resultado)
+    const filtrado = dados.filter(i =>
+        (i.placa || "").toLowerCase().includes(placa) &&
+        (i.nomeCidade || "").toLowerCase().includes(cidade)
+    );
 
-        data_atual += timedelta(days=1)
-        time.sleep(1)
+    render(filtrado);
+}
+</script>
 
-    cache_dados = remover_duplicados(todas)
-    ultima_atualizacao = datetime.now()
-
-    print(f"✅ FINALIZADO: {len(cache_dados)} registros no total")
-
-
-# 🔹 LOOP BACKGROUND
-def loop_atualizacao():
-    while True:
-        atualizar_dados()
-        time.sleep(300)  # 5 minutos
-
-
-# 🔹 INICIA THREAD
-threading.Thread(target=loop_atualizacao, daemon=True).start()
-
-
-# 🔹 ROTAS
-@app.route("/")
-def home():
-    return "API rodando"
-
-@app.route("/api/transacoes")
-def api_transacoes():
-    return jsonify({
-        "total": len(cache_dados),
-        "ultima_atualizacao": str(ultima_atualizacao),
-        "dados": cache_dados
-    })
-
-
-if __name__ == "__main__":
-    app.run()
+</body>
+</html>
