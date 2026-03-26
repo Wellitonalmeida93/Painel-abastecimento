@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel BI Abastecimento</title>
+<title>Painel de Abastecimento Pizzattog</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -15,6 +15,16 @@ body {
 }
 
 .container { padding: 20px; }
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header img {
+    height: 60px;
+}
 
 button {
     background: #2563eb;
@@ -71,8 +81,12 @@ td { text-align: right; }
 .medio { color: #facc15; }
 .barato { color: #4ade80; }
 
-ul { padding-left: 20px; }
-
+iframe {
+    width: 100%;
+    height: 700px;
+    border: none;
+    border-radius: 10px;
+}
 </style>
 </head>
 
@@ -80,10 +94,16 @@ ul { padding-left: 20px; }
 
 <div class="container">
 
-<h1>📊 Painel BI Abastecimento</h1>
+<div class="header">
+    <img src=Logo.png">
+    <h1> Painel de Abastecimento Pizzattog</h1>
+</div>
+
+<br>
 
 <button onclick="mostrarAba('operacional')">Operacional</button>
 <button onclick="mostrarAba('gerencial')">Gerencial</button>
+<button onclick="mostrarAba('postos')">Valores Postos</button>
 
 <!-- OPERACIONAL -->
 <div id="aba-operacional">
@@ -138,6 +158,15 @@ ul { padding-left: 20px; }
 
 </div>
 
+<!-- NOVA ABA PLANILHA -->
+<div id="aba-postos" style="display:none">
+
+<h2>⛽ Valores dos Postos</h2>
+
+<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?gid=0&single=true"></iframe>
+
+</div>
+
 </div>
 
 <script>
@@ -159,6 +188,8 @@ fetch("transacoes.json")
 function mostrarAba(a){
     document.getElementById("aba-operacional").style.display="none";
     document.getElementById("aba-gerencial").style.display="none";
+    document.getElementById("aba-postos").style.display="none";
+
     document.getElementById("aba-"+a).style.display="block";
 
     if(a==="gerencial") gerarAnalises();
@@ -276,35 +307,6 @@ function gerarAnalises(){
         data:{
             labels:Object.keys(consumo),
             datasets:[{label:"Gasto Diário",data:Object.values(consumo)}]
-        }
-    });
-
-    let veic={};
-    dados.forEach(i=>{
-        veic[i.placa]=(veic[i.placa]||0)+Number(i.valorTransacao||0);
-    });
-
-    veiculos.innerHTML="";
-    Object.entries(veic).sort((a,b)=>b[1]-a[1]).slice(0,10)
-    .forEach(v=>{
-        veiculos.innerHTML+=`<li>${v[0]} - ${moeda(v[1])}</li>`;
-    });
-
-    let rank={};
-    dados.forEach(i=>{
-        rank[i.nomeReduzidoEstabelecimento]=(rank[i.nomeReduzidoEstabelecimento]||0)+Number(i.valorTransacao||0);
-    });
-
-    ranking.innerHTML="";
-    Object.entries(rank).sort((a,b)=>b[1]-a[1]).slice(0,10)
-    .forEach(r=>{
-        ranking.innerHTML+=`<li>${r[0]} - ${moeda(r[1])}</li>`;
-    });
-
-    alertas.innerHTML="";
-    dados.forEach(i=>{
-        if(Number(i.valorLitro)>7.5){
-            alertas.innerHTML+=`<li>${i.nomeCidade} - ${moeda(i.valorLitro)}</li>`;
         }
     });
 }
