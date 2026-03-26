@@ -17,8 +17,10 @@ cache_dados = []
 ultima_atualizacao = None
 
 
-# 🔹 CONSULTA API
+# 🔹 CONSULTA API (COM LOG)
 def consultar_transacoes(data_inicio, data_fim, considerar):
+    print(f"🔎 Consultando: {data_inicio} | Tipo: {considerar}")
+
     payload = {
         "codigoCliente": CODIGO_CLIENTE,
         "codigoTipoCartao": 4,
@@ -36,12 +38,22 @@ def consultar_transacoes(data_inicio, data_fim, considerar):
 
     try:
         response = requests.post(URL, json=payload, headers=headers, timeout=30)
+
+        print("Status:", response.status_code)
+
         if response.status_code == 200:
             data = response.json()
+            print("Resposta API:", data)
+
             if data.get("sucesso"):
                 return data.get("transacoes", [])
-    except:
-        pass
+            else:
+                print("❌ API respondeu mas sem sucesso:", data.get("mensagem"))
+        else:
+            print("❌ Erro HTTP:", response.text)
+
+    except Exception as e:
+        print("🚨 ERRO NA REQUISIÇÃO:", e)
 
     return []
 
@@ -56,11 +68,11 @@ def remover_duplicados(transacoes):
     return list(unicos.values())
 
 
-# 🔹 CONSULTA COMPLETA
+# 🔹 ATUALIZAÇÃO COMPLETA
 def atualizar_dados():
     global cache_dados, ultima_atualizacao
 
-    print("🔄 Atualizando dados em background...")
+    print("🔄 Iniciando atualização...")
 
     hoje = datetime.now()
     inicio_mes = hoje.replace(day=1)
@@ -74,6 +86,7 @@ def atualizar_dados():
 
         for tipo in TIPOS_CONSIDERACAO:
             resultado = consultar_transacoes(inicio, fim, tipo)
+            print(f"➡️ Retornou {len(resultado)} registros")
             todas.extend(resultado)
 
         data_atual += timedelta(days=1)
@@ -82,16 +95,17 @@ def atualizar_dados():
     cache_dados = remover_duplicados(todas)
     ultima_atualizacao = datetime.now()
 
-    print(f"✅ Atualizado: {len(cache_dados)} registros")
+    print(f"✅ FINALIZADO: {len(cache_dados)} registros no total")
 
 
-# 🔹 THREAD BACKGROUND
+# 🔹 LOOP BACKGROUND
 def loop_atualizacao():
     while True:
         atualizar_dados()
-        time.sleep(300)  # atualiza a cada 5 min
+        time.sleep(300)  # 5 minutos
 
 
+# 🔹 INICIA THREAD
 threading.Thread(target=loop_atualizacao, daemon=True).start()
 
 
