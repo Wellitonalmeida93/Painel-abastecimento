@@ -165,7 +165,7 @@ td { text-align: right; }
 let dados=[];
 
 /* API */
-fetch("/api/transacoes")
+fetch("https://painel-abastecimento-api.onrender.com/api/transacoes")
 .then(r=>r.json())
 .then(j=>{
     dados=j;
