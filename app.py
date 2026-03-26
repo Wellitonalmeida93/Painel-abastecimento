@@ -14,7 +14,7 @@ def consultar(data_inicio, data_fim):
         "codigoTipoCartao": 4,
         "dataTransacaoInicial": data_inicio,
         "dataTransacaoFinal": data_fim,
-        "considerarTransacao": "T",
+        "considerarTransacao": "V",
         "ordem": "S",
         "validacao": "S"
     }
