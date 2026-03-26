@@ -50,10 +50,9 @@ def consultar():
 
 
 # 🔹 ROTA API
-@app.route("/api/transacoes")
-def transacoes():
-    dados = consultar()
-    return jsonify(dados)
+@app.route("/api/teste")
+def teste():
+    return jsonify({"status": "ok"})
 
 
 # 🔹 SERVIR INDEX
