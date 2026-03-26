@@ -11,6 +11,10 @@ CODIGO_CLIENTE = 122840
 
 TIPOS_CONSIDERACAO = ["V", "T"]
 
+# 🔹 CACHE
+cache_dados = []
+cache_tempo = None
+
 # 🔹 CONSULTA API COM RETRY
 def consultar_transacoes(data_inicio, data_fim, considerar, tentativas=3):
     payload = {
@@ -84,11 +88,22 @@ def home():
     return "API rodando"
 
 
-# 🔹 ROTA PRINCIPAL
+# 🔹 ROTA PRINCIPAL (COM CACHE)
 @app.route("/api/transacoes")
 def api_transacoes():
-    dados = consultar_periodo()
-    return jsonify(dados)
+    global cache_dados, cache_tempo
+
+    agora = datetime.now()
+
+    # Atualiza a cada 5 minutos
+    if not cache_dados or not cache_tempo or (agora - cache_tempo).seconds > 300:
+        print("🔄 Atualizando dados...")
+        cache_dados = consultar_periodo()
+        cache_tempo = agora
+    else:
+        print("⚡ Usando cache")
+
+    return jsonify(cache_dados)
 
 
 if __name__ == "__main__":
