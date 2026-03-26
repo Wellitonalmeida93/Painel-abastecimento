@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
-from datetime import datetime, timedelta
+from datetime import datetime
 import requests
-import time
 
 app = Flask(__name__)
 
@@ -35,9 +34,16 @@ def consultar(data_inicio, data_fim):
 
     return []
 
+
+# ✅ ROTA TESTE
 @app.route("/")
 def home():
     return "API rodando"
+
+
+# ✅ ROTA PRINCIPAL (ESSA É A IMPORTANTE)
+@app.route("/api/transacoes")
+def api_transacoes():
 
     hoje = datetime.now()
     inicio_mes = hoje.replace(day=1)
@@ -48,6 +54,7 @@ def home():
     dados = consultar(data_inicio, data_fim)
 
     return jsonify(dados)
+
 
 if __name__ == "__main__":
     app.run()
