@@ -1,25 +1,24 @@
-from flask import Flask, jsonify, send_from_directory
-from datetime import datetime, timedelta
 import requests
-import os
+import pandas as pd
+from datetime import datetime, timedelta
+import json
+import time
 
-app = Flask(__name__, static_folder=".")
-
+# 🔹 CONFIG
 URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 CODIGO_CLIENTE = 122840
 
+TIPOS_CONSIDERACAO = ["V", "T"]
 
-def consultar():
-    hoje = datetime.now()
-    inicio = hoje - timedelta(days=7)
-
+# 🔹 CONSULTA API
+def consultar_transacoes(data_inicio, data_fim, considerar, tentativas=3):
     payload = {
         "codigoCliente": CODIGO_CLIENTE,
         "codigoTipoCartao": 4,
-        "dataTransacaoInicial": inicio.strftime("%Y-%m-%dT00:00:00"),
-        "dataTransacaoFinal": hoje.strftime("%Y-%m-%dT23:59:59"),
-        "considerarTransacao": "T",
+        "dataTransacaoInicial": data_inicio,
+        "dataTransacaoFinal": data_fim,
+        "considerarTransacao": considerar,
         "ordem": "S",
         "validacao": "S"
     }
@@ -29,45 +28,118 @@ def consultar():
         "Authorization": AUTHORIZATION
     }
 
-    try:
-        response = requests.post(URL, json=payload, headers=headers, timeout=40)
+    for tentativa in range(tentativas):
+        try:
+            response = requests.post(URL, json=payload, headers=headers, timeout=30)
 
-        print("STATUS:", response.status_code)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("sucesso"):
+                    return data.get("transacoes", [])
+                else:
+                    print(f"Erro API: {data.get('mensagem')}")
+                    return []
+            else:
+                print(f"Erro HTTP {response.status_code}")
 
-        if response.status_code == 200:
-            data = response.json()
-            transacoes = data.get("transacoes", [])
-            print("TOTAL:", len(transacoes))
-            return transacoes
-        else:
-            print("ERRO API:", response.text)
+        except requests.exceptions.Timeout:
+            print("Timeout, tentando novamente...")
+        except requests.exceptions.RequestException as e:
+            print(f"Erro conexão: {e}")
 
-    except Exception as e:
-        print("ERRO GERAL:", str(e))
+        time.sleep(5)
 
     return []
 
+# 🔹 REMOVE DUPLICADOS
+def remover_duplicados(transacoes):
+    unicos = {}
+    for t in transacoes:
+        chave = t.get("codigoTransacao")
+        if chave not in unicos:
+            unicos[chave] = t
+    return list(unicos.values())
 
-# 🔹 TESTE
-@app.route("/api/teste")
-def teste():
-    return jsonify({"status": "ok"})
+# 🔹 CONSULTA PERÍODO (MÊS INTEIRO AUTOMÁTICO)
+def consultar_mes_atual():
+    hoje = datetime.now()
+    inicio_mes = hoje.replace(day=1)
+    
+    # último dia do mês
+    if hoje.month == 12:
+        proximo_mes = hoje.replace(year=hoje.year+1, month=1, day=1)
+    else:
+        proximo_mes = hoje.replace(month=hoje.month+1, day=1)
+    
+    fim_mes = proximo_mes - timedelta(days=1)
 
+    data_atual = inicio_mes
+    todas = []
 
-# 🔥 ROTA QUE FALTAVA
-@app.route("/api/transacoes")
-def transacoes():
-    dados = consultar()
-    return jsonify(dados)
+    while data_atual <= fim_mes:
+        inicio = data_atual.strftime("%Y-%m-%dT00:00:00")
+        fim = data_atual.strftime("%Y-%m-%dT23:59:59")
 
+        print(f"Consultando {data_atual.date()}")
 
-# 🔹 INDEX
-@app.route("/")
-def home():
-    return send_from_directory(".", "index.html")
+        for considerar in TIPOS_CONSIDERACAO:
+            resultado = consultar_transacoes(inicio, fim, considerar)
+            todas.extend(resultado)
 
+        data_atual += timedelta(days=1)
+        time.sleep(1)
 
-# 🔹 RENDER
+    return remover_duplicados(todas)
+
+# 🔹 TRANSFORMA PARA TABELA
+def transformar_para_tabela(transacoes):
+    linhas = []
+
+    for t in transacoes:
+        data_hora = t.get("dataTransacao")
+
+        data = ""
+        hora = ""
+
+        if data_hora:
+            dt = datetime.fromisoformat(data_hora)
+            data = dt.strftime("%Y-%m-%d")
+            hora = dt.strftime("%H:%M:%S")
+
+        linhas.append({
+            "Data": data,
+            "Hora": hora,
+            "Placa": t.get("placa"),
+            "Posto": t.get("nomeReduzidoEstabelecimento"),
+            "Cidade": t.get("nomeCidade"),
+            "UF": t.get("uf"),
+            "Produto": t.get("tipoCombustivel"),
+            "Litros": t.get("litros"),
+            "Valor Total": t.get("valorTransacao"),
+            "Valor Unitário": t.get("valorLitro"),
+            "Cartão": t.get("numeroCartao"),
+            "Tipo": t.get("considerarTransacao")
+        })
+
+    return pd.DataFrame(linhas)
+
+# 🔹 EXECUÇÃO
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    print("🔄 Buscando dados do mês atual...")
+
+    transacoes = consultar_mes_atual()
+
+    print(f"Total de transações: {len(transacoes)}")
+
+    # 🔹 Excel
+    df = transformar_para_tabela(transacoes)
+    nome_excel = "abastecimentos_mes_atual.xlsx"
+    df.to_excel(nome_excel, index=False)
+
+    print(f"Excel gerado: {nome_excel}")
+
+    # 🔹 JSON (USADO NO SITE)
+    with open("transacoes.json", "w", encoding="utf-8") as f:
+        json.dump(transacoes, f, ensure_ascii=False, indent=2)
+
+    print("JSON atualizado com sucesso!")
