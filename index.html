@@ -84,6 +84,7 @@ ul { padding-left: 20px; }
 
 <button onclick="mostrarAba('operacional')">Operacional</button>
 <button onclick="mostrarAba('gerencial')">Gerencial</button>
+<button onclick="mostrarAba('planilha')">Planilha</button>
 
 <!-- OPERACIONAL -->
 <div id="aba-operacional">
@@ -138,6 +139,20 @@ ul { padding-left: 20px; }
 
 </div>
 
+<!-- NOVA ABA PLANILHA -->
+<div id="aba-planilha" style="display:none">
+
+<h2>📊 Dados da Planilha</h2>
+
+<button onclick="carregarSheets()">🔄 Atualizar</button>
+
+<table>
+    <thead id="cabecalhoSheets"></thead>
+    <tbody id="tabelaSheets"></tbody>
+</table>
+
+</div>
+
 </div>
 
 <script>
@@ -159,6 +174,8 @@ fetch("transacoes.json")
 function mostrarAba(a){
     document.getElementById("aba-operacional").style.display="none";
     document.getElementById("aba-gerencial").style.display="none";
+    document.getElementById("aba-planilha").style.display="none";
+
     document.getElementById("aba-"+a).style.display="block";
 
     if(a==="gerencial") gerarAnalises();
@@ -249,63 +266,40 @@ function render(lista){
     document.getElementById("media").innerText=moeda(total/litros||0);
 }
 
-/* EXCEL */
-function baixarExcel(){
-    let t=document.querySelector("table").outerHTML;
-    let blob=new Blob(["\ufeff",t],{type:"application/vnd.ms-excel"});
-    let a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="relatorio.xls";
-    a.click();
+/* GOOGLE SHEETS */
+function csvParaJson(csv){
+    const linhas=csv.split("\n").filter(l=>l.trim()!=="");
+    const headers=linhas[0].split(",");
+
+    return linhas.slice(1).map(l=>{
+        const valores=l.split(",");
+        let obj={};
+        headers.forEach((h,i)=>obj[h.trim()]=valores[i]);
+        return obj;
+    });
 }
 
-/* ANALISES */
-function gerarAnalises(){
+function carregarSheets(){
+    fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pub?output=csv")
+    .then(r=>r.text())
+    .then(csv=>{
+        const dados=csvParaJson(csv);
 
-    let consumo={};
+        let tabela=document.getElementById("tabelaSheets");
+        let cab=document.getElementById("cabecalhoSheets");
 
-    dados.forEach(i=>{
-        if(i.dataTransacao){
-            let d=i.dataTransacao.split("T")[0];
-            consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
-        }
-    });
+        tabela.innerHTML="";
+        cab.innerHTML="";
 
-    new Chart(document.getElementById("grafico"),{
-        type:"line",
-        data:{
-            labels:Object.keys(consumo),
-            datasets:[{label:"Gasto Diário",data:Object.values(consumo)}]
-        }
-    });
+        if(!dados.length) return;
 
-    let veic={};
-    dados.forEach(i=>{
-        veic[i.placa]=(veic[i.placa]||0)+Number(i.valorTransacao||0);
-    });
+        let headers=Object.keys(dados[0]);
 
-    veiculos.innerHTML="";
-    Object.entries(veic).sort((a,b)=>b[1]-a[1]).slice(0,10)
-    .forEach(v=>{
-        veiculos.innerHTML+=`<li>${v[0]} - ${moeda(v[1])}</li>`;
-    });
+        cab.innerHTML="<tr>"+headers.map(h=>`<th>${h}</th>`).join("")+"</tr>";
 
-    let rank={};
-    dados.forEach(i=>{
-        rank[i.nomeReduzidoEstabelecimento]=(rank[i.nomeReduzidoEstabelecimento]||0)+Number(i.valorTransacao||0);
-    });
-
-    ranking.innerHTML="";
-    Object.entries(rank).sort((a,b)=>b[1]-a[1]).slice(0,10)
-    .forEach(r=>{
-        ranking.innerHTML+=`<li>${r[0]} - ${moeda(r[1])}</li>`;
-    });
-
-    alertas.innerHTML="";
-    dados.forEach(i=>{
-        if(Number(i.valorLitro)>7.5){
-            alertas.innerHTML+=`<li>${i.nomeCidade} - ${moeda(i.valorLitro)}</li>`;
-        }
+        dados.forEach(l=>{
+            tabela.innerHTML+=`<tr>${headers.map(h=>`<td>${l[h]||""}</td>`).join("")}</tr>`;
+        });
     });
 }
 </script>
