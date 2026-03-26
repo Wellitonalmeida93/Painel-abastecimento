@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel de Abastecimento Pizzattog</title>
+<title>Painel BI Abastecimento</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -15,16 +15,6 @@ body {
 }
 
 .container { padding: 20px; }
-
-.header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header img {
-    height: 60px;
-}
 
 button {
     background: #2563eb;
@@ -54,13 +44,6 @@ button {
     font-weight: bold;
 }
 
-.filtros input, .filtros select {
-    padding: 6px;
-    margin: 5px;
-    border-radius: 5px;
-    border: none;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -77,16 +60,6 @@ th { background: #334155; }
 td { text-align: right; }
 .texto { text-align: left; }
 
-.caro { color: #f87171; font-weight: bold; }
-.medio { color: #facc15; }
-.barato { color: #4ade80; }
-
-iframe {
-    width: 100%;
-    height: 700px;
-    border: none;
-    border-radius: 10px;
-}
 </style>
 </head>
 
@@ -94,16 +67,10 @@ iframe {
 
 <div class="container">
 
-<div class="header">
-    <img src=Logo.png">
-    <h1> Painel de Abastecimento Pizzattog</h1>
-</div>
-
-<br>
+<h1>📊 Painel BI Abastecimento</h1>
 
 <button onclick="mostrarAba('operacional')">Operacional</button>
-<button onclick="mostrarAba('gerencial')">Gerencial</button>
-<button onclick="mostrarAba('postos')">Valores Postos</button>
+<button onclick="mostrarAba('planilha')">Planilha</button>
 
 <!-- OPERACIONAL -->
 <div id="aba-operacional">
@@ -112,19 +79,6 @@ iframe {
     <div class="kpi">Total<br><span id="total"></span></div>
     <div class="kpi">Litros<br><span id="litros"></span></div>
     <div class="kpi">Média<br><span id="media"></span></div>
-</div>
-
-<div class="filtros">
-    <input id="filtroPlaca" placeholder="Placa">
-    <input id="filtroCidade" placeholder="Cidade">
-    <input type="date" id="filtroDataInicio">
-    <input type="date" id="filtroDataFim">
-
-    <select id="filtroPosto"><option value="">Posto</option></select>
-    <select id="filtroUF"><option value="">UF</option></select>
-    <select id="filtroProduto"><option value="">Produto</option></select>
-
-    <button onclick="baixarExcel()">Excel</button>
 </div>
 
 <table>
@@ -140,31 +94,10 @@ iframe {
 
 </div>
 
-<!-- GERENCIAL -->
-<div id="aba-gerencial" style="display:none">
-
-<h2>📈 Análise Gerencial</h2>
-
-<canvas id="grafico"></canvas>
-
-<h3>🚚 Consumo por Veículo</h3>
-<ul id="veiculos"></ul>
-
-<h3>🏆 Ranking Postos</h3>
-<ul id="ranking"></ul>
-
-<h3>🚨 Alertas</h3>
-<ul id="alertas"></ul>
-
-</div>
-
-<!-- NOVA ABA PLANILHA -->
-<div id="aba-postos" style="display:none">
-
-<h2>⛽ Valores dos Postos</h2>
-
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?gid=0&single=true"></iframe>
-
+<!-- PLANILHA -->
+<div id="aba-planilha" style="display:none">
+    <h2>📄 Planilha</h2>
+    <p>Dados carregados do JSON local</p>
 </div>
 
 </div>
@@ -175,67 +108,22 @@ let dados=[];
 const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const numero=v=>Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 
-/* LOAD */
+/* 🔹 VOLTA PRO JSON LOCAL */
 fetch("transacoes.json")
 .then(r=>r.json())
 .then(j=>{
+    console.log("JSON OK", j);
     dados=j;
-    preencherFiltros();
     render(dados);
-});
+})
+.catch(e=>console.error("ERRO JSON", e));
 
-/* ABAS */
 function mostrarAba(a){
     document.getElementById("aba-operacional").style.display="none";
-    document.getElementById("aba-gerencial").style.display="none";
-    document.getElementById("aba-postos").style.display="none";
-
+    document.getElementById("aba-planilha").style.display="none";
     document.getElementById("aba-"+a).style.display="block";
-
-    if(a==="gerencial") gerarAnalises();
 }
 
-/* FILTROS */
-function preencherFiltros(){
-    let postos=new Set(),ufs=new Set(),prod=new Set();
-
-    dados.forEach(i=>{
-        if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
-        if(i.uf) ufs.add(i.uf);
-        if(i.tipoCombustivel) prod.add(i.tipoCombustivel);
-    });
-
-    postos.forEach(p=>filtroPosto.innerHTML+=`<option>${p}</option>`);
-    ufs.forEach(u=>filtroUF.innerHTML+=`<option>${u}</option>`);
-    prod.forEach(p=>filtroProduto.innerHTML+=`<option>${p}</option>`);
-}
-
-document.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",filtrar));
-
-function filtrar(){
-    const f=dados.filter(i=>{
-        let ok=true;
-
-        if(filtroPlaca.value && !(i.placa||"").toLowerCase().includes(filtroPlaca.value.toLowerCase())) ok=false;
-        if(filtroCidade.value && !(i.nomeCidade||"").toLowerCase().includes(filtroCidade.value.toLowerCase())) ok=false;
-
-        if(filtroPosto.value && i.nomeReduzidoEstabelecimento!==filtroPosto.value) ok=false;
-        if(filtroUF.value && i.uf!==filtroUF.value) ok=false;
-        if(filtroProduto.value && i.tipoCombustivel!==filtroProduto.value) ok=false;
-
-        if(i.dataTransacao){
-            let d=i.dataTransacao.split("T")[0];
-            if(filtroDataInicio.value && d<filtroDataInicio.value) ok=false;
-            if(filtroDataFim.value && d>filtroDataFim.value) ok=false;
-        }
-
-        return ok;
-    });
-
-    render(f);
-}
-
-/* TABELA */
 function render(lista){
     let tb=document.getElementById("tabela");
     tb.innerHTML="";
@@ -251,12 +139,6 @@ function render(lista){
             h=dt.toTimeString().split(" ")[0];
         }
 
-        let cor="";
-        let vl=Number(i.valorLitro||0);
-        if(vl>=7.5) cor="caro";
-        else if(vl>=6.5) cor="medio";
-        else cor="barato";
-
         total+=Number(i.valorTransacao||0);
         litros+=Number(i.litros||0);
 
@@ -271,44 +153,13 @@ function render(lista){
         <td class="texto">${i.tipoCombustivel||""}</td>
         <td>${numero(i.litros)}</td>
         <td>${moeda(i.valorTransacao)}</td>
-        <td class="${cor}">${moeda(i.valorLitro)}</td>
+        <td>${moeda(i.valorLitro)}</td>
         </tr>`;
     });
 
     document.getElementById("total").innerText=moeda(total);
     document.getElementById("litros").innerText=numero(litros);
     document.getElementById("media").innerText=moeda(total/litros||0);
-}
-
-/* EXCEL */
-function baixarExcel(){
-    let t=document.querySelector("table").outerHTML;
-    let blob=new Blob(["\ufeff",t],{type:"application/vnd.ms-excel"});
-    let a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="relatorio.xls";
-    a.click();
-}
-
-/* ANALISES */
-function gerarAnalises(){
-
-    let consumo={};
-
-    dados.forEach(i=>{
-        if(i.dataTransacao){
-            let d=i.dataTransacao.split("T")[0];
-            consumo[d]=(consumo[d]||0)+Number(i.valorTransacao||0);
-        }
-    });
-
-    new Chart(document.getElementById("grafico"),{
-        type:"line",
-        data:{
-            labels:Object.keys(consumo),
-            datasets:[{label:"Gasto Diário",data:Object.values(consumo)}]
-        }
-    });
 }
 </script>
 
