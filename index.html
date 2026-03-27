@@ -14,12 +14,13 @@
     :root {
         --bg-main: #0b0f19;
         --bg-card: #111827;
-        --pizzatto-red: #dc2626; /* Vermelho da Logo */
-        --pizzatto-orange: #f97316; /* Laranja da Logo */
+        --bg-input: #1e293b; /* Fundo dos filtros mais claro que o fundo do site */
+        --pizzatto-red: #dc2626; 
+        --pizzatto-orange: #f97316; 
         --text-primary: #f8fafc;
         --text-secondary: #94a3b8;
-        --border: #1f2937;
-        --success: #4ade80;
+        --border: #334155;
+        --success: #10b981;
         --danger: #f87171;
     }
 
@@ -42,110 +43,82 @@
         overflow: hidden;
     }
 
-    /* Brilho de Fundo Laranja Sutil */
     header::after {
-        content: "";
-        position: absolute;
-        left: -50%; top: -100%;
-        width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%);
-        pointer-events: none;
+        content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none;
     }
 
     .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
-
-    /* 🔹 SOLUÇÃO PONTO 1: Container Branco para Logo PizzattoLog se destacar */
-    .logo-container {
-        background: white;
-        padding: 10px 20px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
-    }
-    .logo-relatorio {
-        height: 60px; /* Tamanho ideal para não distorcer */
-        width: auto;
-    }
-
+    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .logo-relatorio { height: 60px; width: auto; }
     .cabecalho-titulos { display: flex; flex-direction: column; }
-    .cabecalho-titulos h1 {
-        font-size: 30px;
-        font-weight: 700;
-        margin: 0;
-        color: var(--text-primary);
-        letter-spacing: -0.5px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    /* Ícone de Bomba Laranja */
+    .cabecalho-titulos h1 { font-size: 30px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
     .icon-bomba { color: var(--pizzatto-orange); width: 32px; height: 32px; }
     .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
-
-    .cabecalho-subtitulo {
-        font-size: 13px;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-top: 6px;
-        font-weight: 600;
-    }
+    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
 
     /* --- NAVEGAÇÃO --- */
     .tabs { margin-bottom: 20px; display: flex; gap: 8px; }
     .tabs button { 
-        background: var(--pizzatto-red); 
-        border: none; color: white; padding: 12px 22px; 
-        border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;
-        transition: 0.3s;
-        display: flex; align-items: center; gap: 10px;
+        background: var(--pizzatto-red); border: none; color: white; padding: 12px 22px; 
+        border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px;
     }
     .tabs button:hover { background: #b91c1c; transform: translateY(-1px); }
     .tabs button.active { background: #991b1b; border-bottom: 3px solid var(--pizzatto-orange); }
-    .btn-sheets { background: #10b981 !important; } /* Mantém o verde pro Sheets */
+    .btn-sheets { background: #10b981 !important; } 
     .btn-sheets:hover { background: #059669 !important; }
 
     /* --- DASHBOARD ELEMENTS --- */
     .kpis { display: flex; gap: 15px; margin-bottom: 20px; }
-    .kpi { 
-        background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; 
-        border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-        border-left: 5px solid var(--pizzatto-orange); /* Detalhe Laranja */
-    }
+    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
     .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
     .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
 
-    /* 🔹 SOLUÇÃO PONTO 2: Filtros e Botão Excel Mantidos */
+    /* 🔹 FILTROS PROFISSIONAIS ATUALIZADOS */
     .filtros { 
-        display: flex; flex-wrap: wrap; gap: 10px; background: var(--bg-card); 
-        padding: 15px; border-radius: 10px; margin-bottom: 20px; align-items: center;
-        border: 1px solid var(--border);
+        display: flex; flex-wrap: wrap; gap: 12px; background: var(--bg-card); 
+        padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: center;
+        border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
-    .filtros input, .filtros select { 
-        padding: 10px; border-radius: 6px; border: 1px solid var(--border); 
-        background: var(--bg-input); color: white; font-size: 13px; outline: none;
-        transition: 0.2s;
-    }
-    .filtros input:focus, .filtros select:focus { border-color: var(--pizzatto-orange); }
     
+    .filtros input, .filtros select { 
+        padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); 
+        background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none;
+        transition: 0.3s; 
+        color-scheme: dark; /* 👈 Faz o ícone do calendário ficar branco e visível! */
+    }
+    
+    .filtros input::placeholder { color: #64748b; }
+    .filtros input:focus, .filtros select:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    
+    /* 👈 Corrige o fundo branco feio nas opções de Cidades/Postos */
+    .filtros select option { background: var(--bg-input); color: var(--text-primary); }
+
+    /* 🔹 NOVO BOTÃO EXCEL */
+    .btn-excel {
+        background: var(--success); color: white; border: none; padding: 10px 20px; 
+        border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; 
+        display: flex; align-items: center; gap: 8px; margin-left: auto; transition: 0.3s;
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+    }
+    .btn-excel:hover { background: #059669; transform: translateY(-2px); }
+
+    /* TABELAS */
     .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #1f2937; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-    tr:hover { background: rgba(255,255,255,0.02); }
+    th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+    tr:hover { background: rgba(255,255,255,0.03); }
     
-    /* 🔹 SOLUÇÃO PONTO 3: Placa na cor padrão e Números no padrão brasileiro */
     .num { text-align: right; font-family: monospace; font-size: 14px; }
-    .placa-tabela { color: var(--text-primary); font-weight: bold; } /* Placa neutra/clara */
-    
+    .placa-tabela { color: var(--text-primary); font-weight: bold; } 
     .caro { color: var(--danger); font-weight: bold; }
     .barato { color: var(--success); font-weight: bold; }
 
     /* --- GERENCIAL --- */
     .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
     .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
-    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
+    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
 
     iframe { width: 100%; height: 80vh; border: none; border-radius: 12px; background: white; }
 </style>
@@ -156,11 +129,12 @@
     <header>
         <div class="cabecalho-conteudo">
             <div class="logo-container">
-                <img src="logo.png?v=2" alt="PizzattoLog" class="logo-relatorio">
+                <img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio">
             </div>
             <div class="cabecalho-titulos">
                 <h1>
-                    <i data-lucide="fuel" class="icon-bomba"></i> <span class="bi-destaque">BI</span> Painel de Abastecimento
+                    <i data-lucide="fuel" class="icon-bomba"></i>
+                    <span class="bi-destaque">BI</span> Painel de Abastecimento
                 </h1>
                 <span class="cabecalho-subtitulo">PizzattoLog Transportes | Monitoramento Ticket Log</span>
             </div>
@@ -187,13 +161,13 @@
         </div>
 
         <div class="filtros">
-            <input id="filtroPlaca" placeholder="Filtrar Placa..." style="width:110px">
-            <input id="filtroCidade" placeholder="Cidade..." style="width:150px">
-            <input type="date" id="filtroDataInicio">
-            <input type="date" id="filtroDataFim">
-            <select id="filtroPosto"><option value="">Postos (Todos)</option></select>
-            <select id="filtroUF"><option value="">UF</option></select>
-            <button onclick="baixarExcel()" style="background:#475569; margin-left: auto;">
+            <input id="filtroPlaca" placeholder="🚗 Filtrar Placa..." style="width:130px">
+            <input id="filtroCidade" placeholder="🏙️ Cidade..." style="width:150px">
+            <input type="date" id="filtroDataInicio" title="Data Inicial">
+            <input type="date" id="filtroDataFim" title="Data Final">
+            <select id="filtroPosto" style="max-width: 250px;"><option value="">⛽ Postos (Todos)</option></select>
+            <select id="filtroUF"><option value="">🌎 UF</option></select>
+            <button class="btn-excel" onclick="baixarExcel()">
                 <i data-lucide="download"></i> Baixar Excel
             </button>
         </div>
@@ -215,18 +189,27 @@
     <div id="aba-gerencial" style="display:none;">
         <div class="grid-gerencial">
             <div class="card-chart">
-                <h3>📈 Evolução Mensal de Despesas (R$)</h3>
+                <h3><i data-lucide="trending-up" style="color:var(--pizzatto-red)"></i> Evolução Diária (R$)</h3>
                 <div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div>
             </div>
             <div class="card-chart">
-                <h3>📊 Gastos por Estado (UF) - Top a Bottom</h3>
+                <h3><i data-lucide="map-pin" style="color:var(--pizzatto-orange)"></i> Gastos por Estado (UF)</h3>
                 <div style="height: 350px;"><canvas id="graficoUF"></canvas></div>
             </div>
         </div>
         <div class="grid-gerencial">
-            <div class="card-chart" style="grid-column: span 2;">
-                <h3>🏆 Ranking de Postos (Maiores Gastos)</h3>
+            <div class="card-chart">
+                <h3><i data-lucide="award" style="color:var(--pizzatto-orange)"></i> Ranking de Postos (Maiores Gastos)</h3>
                 <div style="height: 400px;"><canvas id="graficoPostos"></canvas></div>
+            </div>
+            <div class="card-chart">
+                <h3><i data-lucide="alert-triangle" style="color:var(--danger)"></i> Top 10 Preços Unitários Mais Altos</h3>
+                <table style="width:100%">
+                    <thead>
+                        <tr><th>Placa</th><th>Produto</th><th class="num">Preço/L</th></tr>
+                    </thead>
+                    <tbody id="listaMaioresPrecos"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -240,11 +223,9 @@
     let dados = [];
     let charts = {};
 
-    /* FUNÇÕES DE FORMATAÇÃO PONTO 3: Padrão brasileiro */
     const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    /* CARREGAMENTO DE DADOS E ÍCONES */
     fetch("transacoes.json")
         .then(r => r.json())
         .then(j => {
@@ -264,8 +245,7 @@
         Array.from(ufs).sort().forEach(u => filtroUF.innerHTML += `<option value="${u}">${u}</option>`);
     }
 
-    /* SISTEMA DE FILTRAGEM */
-    document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", () => {
+    document.querySelectorAll(".filtros input, .filtros select").forEach(el => el.addEventListener("input", () => {
         const f = dados.filter(i => {
             let ok = true;
             if (filtroPlaca.value && !(i.placa || "").toLowerCase().includes(filtroPlaca.value.toLowerCase())) ok = false;
@@ -308,7 +288,6 @@
         document.getElementById("media").innerText = moedaPTBR(total / litros || 0);
     }
 
-    /* NAVEGAÇÃO */
     function mostrarAba(a) {
         ['aba-operacional', 'aba-gerencial', 'aba-sheets'].forEach(id => document.getElementById(id).style.display = 'none');
         document.getElementById('aba-' + a).style.display = 'block';
@@ -320,24 +299,28 @@
     }
 
     function renderGerencial() {
-        // 1. Evolução Diária
         let hist = {};
         dados.forEach(i => { if(i.dataTransacao){ let d = i.dataTransacao.split("T")[0]; hist[d] = (hist[d] || 0) + Number(i.valorTransacao); } });
-        updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Despesa R$', '#dc2626'); // Vermelho
+        updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Despesa R$', '#dc2626');
 
-        // 🔹 SOLUÇÃO PONTO 4: Gasto por UF - Barras Deitadas Ordenadas Decrescente
         let ufsRaw = {};
         dados.forEach(i => { if(i.uf) ufsRaw[i.uf] = (ufsRaw[i.uf] || 0) + Number(i.valorTransacao); });
-        
-        // Ordena UF do maior gasto pro menor
         let ufsSorted = Object.entries(ufsRaw).sort((a,b) => b[1] - a[1]);
-        updateChart('graficoUF', 'bar', ufsSorted.map(x=>x[0]), ufsSorted.map(x=>x[1]), 'Total por UF', '#3b82f6', 'y'); // Azul, indexAxis='y'
+        updateChart('graficoUF', 'bar', ufsSorted.map(x=>x[0]), ufsSorted.map(x=>x[1]), 'Total por UF', '#3b82f6', 'y');
 
-        // 3. Top Postos (Barras em pé, ordenado)
         let pRank = {};
         dados.forEach(i => { pRank[i.nomeReduzidoEstabelecimento] = (pRank[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
         let topP = Object.entries(pRank).sort((a,b) => b[1] - a[1]).slice(0, 10);
-        updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'Faturamento R$', '#f97316'); // Laranja, indexAxis='x'
+        updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'Faturamento R$', '#f97316');
+
+        let maioresP = [...dados].sort((a,b) => Number(b.valorLitro || 0) - Number(a.valorLitro || 0)).slice(0, 10);
+        document.getElementById("listaMaioresPrecos").innerHTML = maioresP.map(i => `
+            <tr>
+                <td><strong>${i.placa}</strong></td>
+                <td><span style="color:var(--pizzatto-orange); font-size:11px;">${i.tipoCombustivel || '-'}</span><br><small style="color:#64748b">${(i.nomeReduzidoEstabelecimento || '').substring(0,20)}</small></td>
+                <td class="num caro">${moedaPTBR(i.valorLitro)}</td>
+            </tr>
+        `).join("");
     }
 
     function updateChart(id, type, labels, data, label, color, axis = 'x') {
@@ -349,40 +332,52 @@
                 indexAxis: axis, responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { labels: { color: '#94a3b8' } } },
                 scales: { 
-                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#1f2937' } }, 
-                    x: { ticks: { color: '#94a3b8' }, grid: { display: axis === 'x' ? false : true, color: '#1f2937' } } 
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, 
+                    x: { ticks: { color: '#94a3b8' }, grid: { display: axis === 'x' ? false : true, color: '#1e293b' } } 
                 }
             }
         });
     }
 
     function baixarExcel() {
-        let table = document.querySelector("table");
-        if(!table) return;
+        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
         
-        let header = [];
-        table.querySelectorAll("th").forEach(th => header.push(th.innerText));
-        
-        let csv = [header.join(";")];
-        
+        let filtroP = document.getElementById("filtroPlaca").value.toLowerCase();
+        let filtroC = document.getElementById("filtroCidade").value.toLowerCase();
+        let filtroPo = document.getElementById("filtroPosto").value;
+        let filtroU = document.getElementById("filtroUF").value;
+        let filtroDI = document.getElementById("filtroDataInicio").value;
+        let filtroDF = document.getElementById("filtroDataFim").value;
+
         dados.filter(i => {
             let ok = true;
-            if (filtroPlaca.value && !(i.placa || "").toLowerCase().includes(filtroPlaca.value.toLowerCase())) ok = false;
-            // ... (mesma lógica de filtro da renderização para garantir consistência)
+            if (filtroP && !(i.placa || "").toLowerCase().includes(filtroP)) ok = false;
+            if (filtroC && !(i.nomeCidade || "").toLowerCase().includes(filtroC)) ok = false;
+            if (filtroPo && i.nomeReduzidoEstabelecimento !== filtroPo) ok = false;
+            if (filtroU && i.uf !== filtroU) ok = false;
+            if (i.dataTransacao) {
+                let d = i.dataTransacao.split("T")[0];
+                if (filtroDI && d < filtroDI) ok = false;
+                if (filtroDF && d > filtroDF) ok = false;
+            }
             return ok;
         }).forEach(i => {
-            let dt = new Date(i.dataTransacao);
-            csv.push([
-                dt.toISOString().split("T")[0], dt.toTimeString().split(" ")[0],
-                i.placa, i.nomeReduzidoEstabelecimento, i.nomeCidade, i.uf,
-                i.tipoCombustivel, i.litros, i.valorTransacao, i.valorLitro
-            ].join(";"));
+            let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
+            let data = d.toISOString().split("T")[0];
+            let hora = d.toTimeString().split(" ")[0];
+            // Formatando os números para Excel em PT-BR (usando vírgula decimal)
+            let litros = Number(i.litros || 0).toFixed(2).replace('.', ',');
+            let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
+            let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
+            
+            csv.push(`${data};${hora};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel};${litros};${vTotal};${vLitro}`);
         });
 
-        let csvString = csv.join("\n");
-        let blob = new Blob(["\ufeff", csvString], { type: "text/csv;charset=utf-8" });
+        let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
         let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob); a.download = "relatorio_abastecimento.csv"; a.click();
+        a.href = URL.createObjectURL(blob); 
+        a.download = "PizzattoLog_Abastecimentos.csv"; 
+        a.click();
     }
 </script>
 </body>
