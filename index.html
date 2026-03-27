@@ -226,14 +226,18 @@
     const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    fetch("transacoes.json")
-        .then(r => r.json())
-        .then(j => {
-            dados = j;
-            preencherFiltros();
-            render(dados);
-            lucide.createIcons();
-        });
+   fetch("/api/dados") // 👈 A mágica acontece aqui! Agora ele chama o seu servidor Python.
+    .then(r => r.json())
+    .then(j => {
+        dados = j;
+        preencherFiltros();
+        render(dados);
+        lucide.createIcons();
+    })
+    .catch(erro => {
+        console.error("Erro ao buscar dados da Ticket Log:", erro);
+        alert("Opa! Não foi possível carregar os dados mais recentes.");
+    });
 
     function preencherFiltros() {
         let postos = new Set(), ufs = new Set();
