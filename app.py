@@ -58,7 +58,7 @@ def atualizar_dados_no_fundo():
         return
     atualizando = True
     
-    print("🤖 Iniciando o Robô de Fundo: Buscando o mês atual de trás pra frente...")
+    print("🤖 Iniciando o Robô: Limpando duplicadas e buscando dados...")
     
     hoje = datetime.now()
     inicio_mes = hoje.replace(day=1)
@@ -72,15 +72,25 @@ def atualizar_dados_no_fundo():
         novas_transacoes = buscar_um_dia(data_atual)
         todas_transacoes.extend(novas_transacoes)
         
-        # Já atualiza o cache na mesma hora! Assim a tela já começa a mostrar os dados
-        unicos = {t.get("codigoTransacao"): t for t in todas_transacoes if t.get("codigoTransacao")}
+        # 🔹 A MÁGICA DA DESDUPLICAÇÃO IMPLACÁVEL 🔹
+        # Cria uma chave única: Placa + Data/Hora Exata + Valor
+        unicos = {}
+        for t in todas_transacoes:
+            placa = t.get("placa", "SEM_PLACA")
+            data_t = t.get("dataTransacao", "SEM_DATA")
+            valor = t.get("valorTransacao", 0)
+            
+            # Se a Ticket Log mandar 2, 3 ou 10 vezes a mesma coisa, só passa 1!
+            chave_blindada = f"{placa}_{data_t}_{valor}"
+            unicos[chave_blindada] = t
+            
         cache_dados = list(unicos.values())
         
         # Desce um dia e pausa para não irritar a Ticket Log
         data_atual -= timedelta(days=1)
         time.sleep(1)
         
-    print(f"✅ ROBÔ TERMINOU! O mês inteiro foi carregado ({len(cache_dados)} transações).")
+    print(f"✅ ROBÔ TERMINOU! Mês fechado com valores reais: {len(cache_dados)} transações limpas.")
     atualizando = False
     
     # Programa para rodar de novo daqui a 2 horas (7200 segundos) automaticamente
@@ -96,7 +106,7 @@ def index():
 
 @app.route('/api/dados')
 def api_dados():
-    # O site pede os dados, a gente devolve a memória na hora (Zero espera!)
+    # O site pede os dados, a gente devolve a memória na hora
     return jsonify(cache_dados)
 
 @app.route('/<path:path>')
