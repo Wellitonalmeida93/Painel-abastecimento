@@ -166,7 +166,9 @@
             <input type="date" id="filtroDataInicio" title="Data Inicial">
             <input type="date" id="filtroDataFim" title="Data Final">
             <select id="filtroPosto" style="max-width: 250px;"><option value="">⛽ Postos (Todos)</option></select>
+            <select id="filtroProduto" style="max-width: 180px;"><option value="">🛢️ Produto (Todos)</option></select>
             <select id="filtroUF"><option value="">🌎 UF</option></select>
+            
             <button class="btn-excel" onclick="baixarExcel()">
                 <i data-lucide="download"></i> Baixar Excel
             </button>
@@ -187,6 +189,18 @@
     </div>
 
     <div id="aba-gerencial" style="display:none;">
+         <div class="filtros">
+            <input id="filtroPlaca" placeholder="🚗 Filtrar Placa..." style="width:130px">
+            <input id="filtroCidade" placeholder="🏙️ Cidade..." style="width:150px">
+            <input type="date" id="filtroDataInicio" title="Data Inicial">
+            <input type="date" id="filtroDataFim" title="Data Final">
+            <select id="filtroPosto" style="max-width: 250px;"><option value="">⛽ Postos (Todos)</option></select>
+            <select id="filtroProduto" style="max-width: 180px;"><option value="">🛢️ Produto (Todos)</option></select>
+            <select id="filtroUF"><option value="">🌎 UF</option></select>
+            
+            <button class="btn-excel" onclick="baixarExcel()">
+                <i data-lucide="download"></i> Baixar Excel
+            </button>
         <div class="grid-gerencial">
             <div class="card-chart">
                 <h3><i data-lucide="trending-up" style="color:var(--pizzatto-red)"></i> Evolução Diária (R$)</h3>
