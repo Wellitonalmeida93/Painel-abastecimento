@@ -10,7 +10,6 @@ URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/sea
 TOKEN = "W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55" 
 CODIGO_CLIENTE = 122840
 
-# Memória temporária (cache) de 10 minutos para não travar o site
 cache_dados = []
 ultima_atualizacao = None
 
@@ -18,12 +17,10 @@ def buscar_na_ticketlog():
     global cache_dados, ultima_atualizacao
     
     agora = datetime.now()
-    
-    # Se já buscou nos últimos 10 minutos, devolve rápido da memória
     if cache_dados and ultima_atualizacao and (agora - ultima_atualizacao).total_seconds() < 600:
         return cache_dados
 
-    print("🔄 Buscando dados na Ticket Log (Dia por Dia)...")
+    print("🔄 Iniciando busca limpa na Ticket Log (Dia por Dia)...")
     
     todas_transacoes = []
     headers = {
@@ -35,27 +32,25 @@ def buscar_na_ticketlog():
     mes_atual = agora.month
     dia_hoje = agora.day
 
-    # Loop mágico: do dia 1 até o dia atual
     for dia in range(1, dia_hoje + 1):
-        # Monta a data inicial e final para aquele dia específico
         data_inicial = f"{ano_atual}-{mes_atual:02d}-{dia:02d}T00:00:00"
         data_final = f"{ano_atual}-{mes_atual:02d}-{dia:02d}T23:59:59"
         
-        print(f"Buscando dia {dia:02d}/{mes_atual:02d}...")
-        
         for tipo in ["V", "T"]:
+            # PAYLOAD LIMPO: Sem filtros fantasmas!
             payload = {
                 "codigoCliente": CODIGO_CLIENTE, 
-                "codigoTipoCartao": 4,
                 "dataTransacaoInicial": data_inicial, 
                 "dataTransacaoFinal": data_final,
-                "considerarTransacao": tipo, 
-                "ordem": "S", 
-                "validacao": "S"
+                "considerarTransacao": tipo
             }
+            
             try:
-                # Timeout curto para não prender o servidor se um dia falhar
                 resp = requests.post(URL, json=payload, headers=headers, timeout=15)
+                
+                # MEGA RAIO-X: Imprime exatamente o que a API devolveu
+                print(f"Dia {dia:02d} (Tipo {tipo}) -> Status: {resp.status_code} | Resposta: {resp.text[:150]}...")
+                
                 if resp.status_code == 200:
                     dados = resp.json()
                     if dados.get("sucesso"):
@@ -64,17 +59,13 @@ def buscar_na_ticketlog():
             except Exception as e:
                 print(f"❌ Erro de conexão no dia {dia}: {e}")
 
-    # Remove transações duplicadas (caso a API mande repetido)
     unicos = {t.get("codigoTransacao"): t for t in todas_transacoes if t.get("codigoTransacao")}
-    
-    # Salva na memória
     cache_dados = list(unicos.values())
     ultima_atualizacao = agora
     
-    print(f"✅ Concluído! {len(cache_dados)} abastecimentos encontrados no total.")
+    print(f"✅ FIM DA BUSCA! {len(cache_dados)} abastecimentos encontrados.")
     return cache_dados
 
-# --- ROTAS DO SITE ---
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
@@ -90,5 +81,4 @@ def base_static(path):
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
-    # Threaded=True ajuda a não travar o servidor enquanto ele faz o loop dos dias
     app.run(host='0.0.0.0', port=port, threaded=True)
