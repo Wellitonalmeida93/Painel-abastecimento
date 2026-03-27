@@ -29,7 +29,7 @@
     .container { padding: 20px; max-width: 1600px; margin: auto; }
     h1, h2, h3 { font-family: 'Poppins', sans-serif; }
 
-    /* --- CABEÇALHO --- */
+    /* --- CABEÇALHO PROFISSIONAL --- */
     header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
     header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
     .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
@@ -291,7 +291,7 @@
         let ufArray = Object.keys(ufStats).map(uf => {
             let p = ufStats[uf].prim; let u = ufStats[uf].ult; let d = u - p; let pct = p > 0 ? (d/p)*100 : 0;
             return { uf: uf, dif: d, pct: pct, regiao: mapaRegioes[uf] || 'OUTROS' };
-        }).filter(x => x.prim !== 0); // Oculta se não teve calculo válido
+        }).filter(x => x.prim !== 0);
 
         // Card 3: MAIOR ESTADO
         if(ufArray.length > 0) {
@@ -307,7 +307,7 @@
         
         let htmlRegioes = '';
         Object.keys(regioesAgrupadas).sort().forEach(reg => {
-            let ufsRegiao = regioesAgrupadas[reg].sort((a,b) => b.dif - a.dif); // Ordena maior pro menor
+            let ufsRegiao = regioesAgrupadas[reg].sort((a,b) => b.dif - a.dif); 
             let linhasUf = ufsRegiao.map(i => {
                 let cls = i.dif > 0 ? 'uf-alta' : (i.dif < 0 ? 'uf-baixa' : 'uf-neutro');
                 let snl = i.dif > 0 ? '+' : '';
@@ -354,7 +354,28 @@
         if (charts[id]) charts[id].destroy();
         charts[id] = new Chart(document.getElementById(id), { type: type, data: { labels: labels, datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, tension: 0.3, fill: type === 'line' }] }, options: { indexAxis: axis, responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: axis === 'x' ? false : true, color: '#1e293b' } } } } });
     }
-    function baixarExcel() { /* Funcionalidade mantida idêntica para poupar espaço de texto */ }
+
+    // BOTÃO EXCEL CORRIGIDO
+    function baixarExcel() {
+        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
+        dadosFiltrados.forEach(i => {
+            let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
+            let data = d.toISOString().split("T")[0];
+            let hora = d.toTimeString().split(" ")[0];
+            // Formatando os números para Excel em PT-BR (usando vírgula)
+            let litros = Number(i.litros || 0).toFixed(2).replace('.', ',');
+            let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
+            let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
+            
+            csv.push(`${data};${hora};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro}`);
+        });
+
+        let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob); 
+        a.download = "PizzattoLog_Abastecimentos.csv"; 
+        a.click();
+    }
 </script>
 </body>
 </html>
