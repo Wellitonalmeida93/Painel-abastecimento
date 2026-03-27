@@ -2,22 +2,23 @@ import os
 import requests
 from datetime import datetime, timedelta
 from flask import Flask, send_from_directory, jsonify
+import threading
+import time
 
 app = Flask(__name__, static_folder='.')
 
-# 🔹 CONFIGURAÇÕES EXATAS DO SEU SCRIPT
+# 🔹 CONFIGURAÇÕES DA TICKET LOG
 URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 CODIGO_CLIENTE = 122840
 
-def buscar_teste_um_dia():
-    print("\n" + "="*50)
-    print("🔄 INICIANDO TESTE DE 1 DIA (Ontem)...")
-    
-    # Pegando a data de ontem para garantir que tem abastecimentos fechados
-    ontem = datetime.now() - timedelta(days=1)
-    data_str = ontem.strftime("%Y-%m-%d")
-    
+# Memória global do site
+cache_dados = []
+atualizando = False
+
+def buscar_um_dia(data_alvo):
+    """Busca os abastecimentos de apenas 1 dia específico"""
+    data_str = data_alvo.strftime("%Y-%m-%d")
     inicio = f"{data_str}T00:00:00"
     fim = f"{data_str}T23:59:59"
     
@@ -26,7 +27,7 @@ def buscar_teste_um_dia():
         "Authorization": AUTHORIZATION
     }
     
-    todas_transacoes = []
+    transacoes_dia = []
     
     for considerar in ["V", "T"]:
         payload = {
@@ -38,29 +39,55 @@ def buscar_teste_um_dia():
             "ordem": "S",
             "validacao": "S"
         }
-        
-        print(f"\n👉 Enviando Payload ({considerar}): {payload}")
-        
         try:
-            resp = requests.post(URL, json=payload, headers=headers, timeout=20)
-            print(f"👈 Resposta HTTP: {resp.status_code}")
-            
+            resp = requests.post(URL, json=payload, headers=headers, timeout=15)
             if resp.status_code == 200:
                 data = resp.json()
                 if data.get("sucesso"):
-                    qtd = len(data.get("transacoes", []))
-                    print(f"✅ SUCESSO! Encontrou {qtd} transações do tipo {considerar}.")
-                    todas_transacoes.extend(data.get("transacoes", []))
-                else:
-                    print(f"⚠️ Erro da API Ticket Log: {data.get('mensagem')}")
-            else:
-                print(f"❌ Erro HTTP Completo: {resp.text}")
-                
+                    transacoes_dia.extend(data.get("transacoes", []))
         except Exception as e:
-            print(f"❌ Erro fatal de conexão: {e}")
+            print(f"Erro no dia {data_str}: {e}")
             
-    print("="*50 + "\n")
-    return todas_transacoes
+    return transacoes_dia
+
+def atualizar_dados_no_fundo():
+    """O Robô que roda escondido buscando o mês inteiro sem travar o site"""
+    global cache_dados, atualizando
+    
+    if atualizando:
+        return
+    atualizando = True
+    
+    print("🤖 Iniciando o Robô de Fundo: Buscando o mês atual de trás pra frente...")
+    
+    hoje = datetime.now()
+    inicio_mes = hoje.replace(day=1)
+    
+    data_atual = hoje
+    todas_transacoes = []
+    
+    # Busca de HOJE descendo até o DIA 1
+    while data_atual >= inicio_mes:
+        print(f"   ⏳ Baixando dados de {data_atual.strftime('%d/%m/%Y')}...")
+        novas_transacoes = buscar_um_dia(data_atual)
+        todas_transacoes.extend(novas_transacoes)
+        
+        # Já atualiza o cache na mesma hora! Assim a tela já começa a mostrar os dados
+        unicos = {t.get("codigoTransacao"): t for t in todas_transacoes if t.get("codigoTransacao")}
+        cache_dados = list(unicos.values())
+        
+        # Desce um dia e pausa para não irritar a Ticket Log
+        data_atual -= timedelta(days=1)
+        time.sleep(1)
+        
+    print(f"✅ ROBÔ TERMINOU! O mês inteiro foi carregado ({len(cache_dados)} transações).")
+    atualizando = False
+    
+    # Programa para rodar de novo daqui a 2 horas (7200 segundos) automaticamente
+    threading.Timer(7200, atualizar_dados_no_fundo).start()
+
+# LIGA O ROBÔ ASSIM QUE O SERVIDOR ACORDAR
+threading.Thread(target=atualizar_dados_no_fundo, daemon=True).start()
 
 # --- ROTAS DO SITE ---
 @app.route('/')
@@ -69,8 +96,8 @@ def index():
 
 @app.route('/api/dados')
 def api_dados():
-    dados = buscar_teste_um_dia()
-    return jsonify(dados)
+    # O site pede os dados, a gente devolve a memória na hora (Zero espera!)
+    return jsonify(cache_dados)
 
 @app.route('/<path:path>')
 def base_static(path):
