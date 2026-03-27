@@ -1,77 +1,91 @@
 import os
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, send_from_directory, jsonify
+import time
 
 app = Flask(__name__, static_folder='.')
 
-# --- CONFIGURAÇÕES TICKET LOG ---
+# 🔹 CONFIGURAÇÕES EXATAS DO SEU CÓDIGO ORIGINAL
 URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
-TOKEN = "W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55" 
+AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 CODIGO_CLIENTE = 122840
+TIPOS_CONSIDERACAO = ["V", "T"]
 
+# Memória temporária (cache) de 10 minutos
 cache_dados = []
 ultima_atualizacao = None
 
 def buscar_na_ticketlog():
     global cache_dados, ultima_atualizacao
     
-    agora = datetime.now()
-    if cache_dados and ultima_atualizacao and (agora - ultima_atualizacao).total_seconds() < 600:
+    hoje = datetime.now()
+    
+    # Se já buscou nos últimos 10 minutos, devolve rápido da memória
+    if cache_dados and ultima_atualizacao and (hoje - ultima_atualizacao).total_seconds() < 600:
         return cache_dados
 
-    print("🔄 Iniciando busca limpa na Ticket Log (Dia por Dia)...")
+    print("🔄 Buscando dados do mês atual (Lógica Original PizzattoLog)...")
     
-    todas_transacoes = []
+    inicio_mes = hoje.replace(day=1)
+    data_atual = inicio_mes
+    todas = []
+    
     headers = {
-        "Content-Type": "application/json", 
-        "Authorization": f"Basic {TOKEN}" 
+        "Content-Type": "application/json",
+        "Authorization": AUTHORIZATION
     }
-    
-    ano_atual = agora.year
-    mes_atual = agora.month
-    dia_hoje = agora.day
 
-    for dia in range(1, dia_hoje + 1):
-        data_inicial = f"{ano_atual}-{mes_atual:02d}-{dia:02d}T00:00:00"
-        data_final = f"{ano_atual}-{mes_atual:02d}-{dia:02d}T23:59:59"
+    # Loop igualzinho ao seu original, parando no dia de hoje
+    while data_atual <= hoje:
+        inicio = data_atual.strftime("%Y-%m-%dT00:00:00")
+        fim = data_atual.strftime("%Y-%m-%dT23:59:59")
         
-        for tipo in ["V", "T"]:
-            # PAYLOAD LIMPO: Sem filtros fantasmas!
+        print(f"Consultando {data_atual.date()}...")
+        
+        for considerar in TIPOS_CONSIDERACAO:
+            # PAYLOAD IDÊNTICO AO SEU SCRIPT
             payload = {
-                "codigoCliente": CODIGO_CLIENTE, 
-                "dataTransacaoInicial": data_inicial, 
-                "dataTransacaoFinal": data_final,
-                "considerarTransacao": tipo
+                "codigoCliente": CODIGO_CLIENTE,
+                "codigoTipoCartao": 4,
+                "dataTransacaoInicial": inicio,
+                "dataTransacaoFinal": fim,
+                "considerarTransacao": considerar,
+                "ordem": "S",
+                "validacao": "S"
             }
             
             try:
-                resp = requests.post(URL, json=payload, headers=headers, timeout=15)
-                
-                # MEGA RAIO-X: Imprime exatamente o que a API devolveu
-                print(f"Dia {dia:02d} (Tipo {tipo}) -> Status: {resp.status_code} | Resposta: {resp.text[:150]}...")
-                
-                if resp.status_code == 200:
-                    dados = resp.json()
-                    if dados.get("sucesso"):
-                        transacoes_do_dia = dados.get("transacoes", [])
-                        todas_transacoes.extend(transacoes_do_dia)
+                response = requests.post(URL, json=payload, headers=headers, timeout=15)
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("sucesso"):
+                        todas.extend(data.get("transacoes", []))
             except Exception as e:
-                print(f"❌ Erro de conexão no dia {dia}: {e}")
+                print(f"❌ Erro na conexão: {e}")
+                
+        data_atual += timedelta(days=1)
+        # Um pequeno sleep para não irritar a API da Ticket Log
+        time.sleep(0.5)
 
-    unicos = {t.get("codigoTransacao"): t for t in todas_transacoes if t.get("codigoTransacao")}
-    cache_dados = list(unicos.values())
-    ultima_atualizacao = agora
+    # REMOVE DUPLICADOS (Sua mesma função, mas otimizada)
+    unicos = {t.get("codigoTransacao"): t for t in todas if t.get("codigoTransacao")}
     
-    print(f"✅ FIM DA BUSCA! {len(cache_dados)} abastecimentos encontrados.")
+    # Atualiza a memória
+    cache_dados = list(unicos.values())
+    ultima_atualizacao = hoje
+    
+    print(f"✅ SUCESSO ABSOLUTO! {len(cache_dados)} transações encontradas.")
     return cache_dados
 
+# --- ROTAS DO SITE ---
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
 
 @app.route('/api/dados')
 def api_dados():
+    # A tela HTML vai bater aqui, e o Python entrega os dados
     dados = buscar_na_ticketlog()
     return jsonify(dados)
 
