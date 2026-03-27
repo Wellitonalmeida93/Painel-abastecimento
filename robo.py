@@ -12,8 +12,9 @@ def buscar_dados_mes():
     print("🔄 Iniciando a busca de dados na Ticket Log (Modo Robô)...")
     
     hoje = datetime.now()
-    inicio_mes = hoje.replace(day=1)
-    data_atual = inicio_mes
+    # Pega o dia 1º de Janeiro do ano atual (assim funciona para 2026, 2027...)
+    inicio_ano = hoje.replace(month=1, day=1) 
+    data_atual = inicio_ano
     
     todas_transacoes = []
     
