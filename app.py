@@ -2,8 +2,7 @@ import os
 import requests
 from datetime import datetime, timedelta
 from flask import Flask, send_from_directory, jsonify
-import threading
-import time
+from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__, static_folder='.')
 
@@ -12,12 +11,10 @@ URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/sea
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 CODIGO_CLIENTE = 122840
 
-# Memória global do site
 cache_dados = []
-atualizando = False
+ultima_atualizacao = None
 
 def buscar_um_dia(data_alvo):
-    """Busca os abastecimentos de apenas 1 dia específico"""
     data_str = data_alvo.strftime("%Y-%m-%d")
     inicio = f"{data_str}T00:00:00"
     fim = f"{data_str}T23:59:59"
@@ -28,7 +25,6 @@ def buscar_um_dia(data_alvo):
     }
     
     transacoes_dia = []
-    
     for considerar in ["V", "T"]:
         payload = {
             "codigoCliente": CODIGO_CLIENTE,
@@ -50,54 +46,48 @@ def buscar_um_dia(data_alvo):
             
     return transacoes_dia
 
-def atualizar_dados_no_fundo():
-    """O Robô que roda escondido buscando o mês inteiro sem travar o site"""
-    global cache_dados, atualizando
-    
-    if atualizando:
-        return
-    atualizando = True
-    
-    print("🤖 Iniciando o Robô: Limpando duplicadas e buscando dados...")
-    
+def buscar_na_ticketlog():
+    global cache_dados, ultima_atualizacao
     hoje = datetime.now()
-    inicio_mes = hoje.replace(day=1)
     
-    data_atual = hoje
+    # Se já buscou nos últimos 10 minutos, devolve na hora!
+    if cache_dados and ultima_atualizacao and (hoje - ultima_atualizacao).total_seconds() < 600:
+        return cache_dados
+
+    print("🔄 Iniciando Busca ACELERADA (Dias em Paralelo)...")
+    
+    inicio_mes = hoje.replace(day=1)
+    dias_para_buscar = []
+    data_atual = inicio_mes
+    
+    # Monta a lista de dias do mês até hoje
+    while data_atual <= hoje:
+        dias_para_buscar.append(data_atual)
+        data_atual += timedelta(days=1)
+        
     todas_transacoes = []
     
-    # Busca de HOJE descendo até o DIA 1
-    while data_atual >= inicio_mes:
-        print(f"   ⏳ Baixando dados de {data_atual.strftime('%d/%m/%Y')}...")
-        novas_transacoes = buscar_um_dia(data_atual)
-        todas_transacoes.extend(novas_transacoes)
-        
-        # 🔹 A MÁGICA DA DESDUPLICAÇÃO IMPLACÁVEL 🔹
-        # Cria uma chave única: Placa + Data/Hora Exata + Valor
-        unicos = {}
-        for t in todas_transacoes:
-            placa = t.get("placa", "SEM_PLACA")
-            data_t = t.get("dataTransacao", "SEM_DATA")
-            valor = t.get("valorTransacao", 0)
-            
-            # Se a Ticket Log mandar 2, 3 ou 10 vezes a mesma coisa, só passa 1!
-            chave_blindada = f"{placa}_{data_t}_{valor}"
-            unicos[chave_blindada] = t
-            
-        cache_dados = list(unicos.values())
-        
-        # Desce um dia e pausa para não irritar a Ticket Log
-        data_atual -= timedelta(days=1)
-        time.sleep(1)
-        
-    print(f"✅ ROBÔ TERMINOU! Mês fechado com valores reais: {len(cache_dados)} transações limpas.")
-    atualizando = False
-    
-    # Programa para rodar de novo daqui a 2 horas (7200 segundos) automaticamente
-    threading.Timer(7200, atualizar_dados_no_fundo).start()
+    # 🚀 MÁGICA: 10 buscas ao mesmo tempo para burlar o limite de tempo do Render!
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        resultados = executor.map(buscar_um_dia, dias_para_buscar)
+        for res in resultados:
+            todas_transacoes.extend(res)
 
-# LIGA O ROBÔ ASSIM QUE O SERVIDOR ACORDAR
-threading.Thread(target=atualizar_dados_no_fundo, daemon=True).start()
+    # 🔹 A DESDUPLICAÇÃO IMPLACÁVEL (Para bater os 66 mil do Excel) 🔹
+    unicos = {}
+    for t in todas_transacoes:
+        placa = t.get("placa", "SEM_PLACA")
+        data_t = t.get("dataTransacao", "SEM_DATA")
+        valor = t.get("valorTransacao", 0)
+        
+        chave_blindada = f"{placa}_{data_t}_{valor}"
+        unicos[chave_blindada] = t
+        
+    cache_dados = list(unicos.values())
+    ultima_atualizacao = hoje
+    
+    print(f"✅ SUCESSO! {len(cache_dados)} transações carregadas perfeitamente.")
+    return cache_dados
 
 # --- ROTAS DO SITE ---
 @app.route('/')
@@ -106,8 +96,8 @@ def index():
 
 @app.route('/api/dados')
 def api_dados():
-    # O site pede os dados, a gente devolve a memória na hora
-    return jsonify(cache_dados)
+    dados = buscar_na_ticketlog()
+    return jsonify(dados)
 
 @app.route('/<path:path>')
 def base_static(path):
@@ -115,4 +105,4 @@ def base_static(path):
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, threaded=True)
