@@ -1,0 +1,36 @@
+name: Atualizador Automático Ticket Log
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Roda no minuto zero de toda hora (ex: 14:00, 15:00)
+  workflow_dispatch: # Cria um botão mágico para você testar na hora que quiser
+
+permissions:
+  contents: write # Permissão obrigatória para o robô poder salvar o JSON novo
+
+jobs:
+  atualizar-dados:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Baixando os arquivos
+        uses: actions/checkout@v3
+
+      - name: 🐍 Preparando o Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Instalando ferramentas
+        run: pip install requests
+
+      - name: 🤖 Rodando o Robô (Buscando Ticket Log)
+        run: python robo.py
+
+      - name: 💾 Salvando JSON e Atualizando o Site
+        run: |
+          git config --global user.name "Robô PizzattoLog"
+          git config --global user.email "robo@pizzattolog.com"
+          git add transacoes.json
+          git commit -m "🔄 Atualização automática do Painel" || echo "Sem mudanças nesta hora."
+          git push
