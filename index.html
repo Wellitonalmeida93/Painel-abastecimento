@@ -98,25 +98,21 @@
     .caro { color: var(--danger); font-weight: bold; }
     .barato { color: var(--success); font-weight: bold; }
 
-    /* --- GERENCIAL --- */
+    /* --- GERENCIAL E INTELIGÊNCIA --- */
     .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
     .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
     .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
     iframe { width: 100%; height: 80vh; border: none; border-radius: 12px; background: white; }
 
-    /* --- INTELIGÊNCIA --- */
+    /* --- BARRAS INTELIGÊNCIA --- */
     .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
     .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-    .intel-header h2 { font-size: 20px; margin: 0; color: var(--text-primary); }
-    .badge-intel { background: var(--bg-input); color: var(--text-secondary); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-    
+    .intel-header h2 { font-size: 18px; margin: 0; color: var(--text-primary); font-family: 'Poppins', sans-serif;}
     .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
     .bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
     .fill-alta { background: var(--danger); }
     .fill-baixa { background: var(--success); }
     .fill-neutro { background: #64748b; }
-    .txt-alta { color: var(--danger); font-weight: bold; }
-    .txt-baixa { color: var(--success); font-weight: bold; }
 </style>
 </head>
 <body>
@@ -171,12 +167,11 @@
             <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
             <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
         </div>
-
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Data</th><th>Hora</th><th>Placa</th><th>Posto de Combustível</th>
+                        <th>Data</th><th>Hora</th><th>Placa</th><th>Posto</th>
                         <th>Cidade</th><th>UF</th><th>Produto</th>
                         <th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th>
                     </tr>
@@ -211,29 +206,53 @@
     </div>
 
     <div id="aba-intel" style="display:none;">
-        <div class="intel-container">
-            <div class="intel-header">
-                <h2>Variação Intradiária (Hora a Hora)</h2>
-                <span class="badge-intel">Baseado no seu consumo real</span>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="intel-container" style="padding: 20px;">
+                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">
+                    🔴 Variação no Período Filtrado (Início vs Fim)
+                </p>
+                <div style="display: flex; align-items: baseline; gap: 10px;">
+                    <h2 id="cardVarValor" style="font-size: 38px; margin: 0; font-weight: 900; color: var(--text-primary);">R$ 0,00</h2>
+                    <span id="cardVarLabel" style="font-size: 13px; font-weight: bold; color: var(--text-secondary);">--</span>
+                </div>
             </div>
             
-            <table style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th style="background: transparent; border-bottom: 2px solid var(--border);">Período</th>
-                        <th style="background: transparent; border-bottom: 2px solid var(--border);">Intensidade</th>
-                        <th class="num" style="background: transparent; border-bottom: 2px solid var(--border);">Preço Médio / L</th>
-                        <th class="num" style="background: transparent; border-bottom: 2px solid var(--border);">Δ Flutuação</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaIntel">
-                    </tbody>
-            </table>
-            
-            <div style="display: flex; gap: 15px; margin-top: 20px; font-size: 12px; color: var(--text-secondary); justify-content: center;">
-                <span style="display:flex; align-items:center; gap:5px;"><div style="width:10px;height:10px;background:var(--success);border-radius:2px;"></div> Queda</span>
-                <span style="display:flex; align-items:center; gap:5px;"><div style="width:10px;height:10px;background:var(--danger);border-radius:2px;"></div> Alta</span>
-                <span style="display:flex; align-items:center; gap:5px;"><div style="width:10px;height:10px;background:#64748b;border-radius:2px;"></div> Estável</span>
+            <div class="intel-container" style="padding: 20px;">
+                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">
+                    🟠 Maior Pico Registrado (No Período)
+                </p>
+                <div style="display: flex; align-items: baseline; gap: 10px;">
+                    <h2 id="cardPicoValor" style="font-size: 38px; margin: 0; font-weight: 900; color: var(--pizzatto-orange);">R$ 0,00</h2>
+                    <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="intel-container">
+                <div class="intel-header">
+                    <h2>Evolução Diária do Preço Nacional (Pizzatto)</h2>
+                </div>
+                <div id="listaEvolucaoDiaria" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                    </div>
+            </div>
+
+            <div class="intel-container">
+                <div class="intel-header">
+                    <h2>Variação Intradiária (Hora a Hora)</h2>
+                </div>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="background: transparent; border-bottom: 2px solid var(--border);">Período</th>
+                            <th style="background: transparent; border-bottom: 2px solid var(--border);">Intensidade</th>
+                            <th class="num" style="background: transparent; border-bottom: 2px solid var(--border);">Preço Médio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaIntel">
+                        </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -255,14 +274,13 @@
     fetch("/api/dados?v=" + new Date().getTime())
         .then(r => r.json())
         .then(j => {
-            // ORDENA POR DATA MAIS RECENTE
             dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
             preencherFiltros();
             atualizarTudo();
             lucide.createIcons();
         })
-        .catch(erro => console.error("Erro ao conectar com o robô:", erro));
+        .catch(erro => console.error("Erro ao conectar:", erro));
 
     function preencherFiltros() {
         let postos = new Set(), ufs = new Set(), prods = new Set();
@@ -321,7 +339,6 @@
             </tr>`;
         });
 
-        // O totalizador soma todos os filtrados, não só os 150 exibidos
         let tTotal = 0, tLitros = 0;
         dadosFiltrados.forEach(i => { tTotal += Number(i.valorTransacao || 0); tLitros += Number(i.litros || 0); });
         
@@ -356,57 +373,113 @@
     }
 
     function renderInteligencia() {
-        const blocos = [
-            { label: '00:00 - 09:00', start: 0, end: 8, precos: [] },
-            { label: '09:00 - 12:00', start: 9, end: 11, precos: [] },
-            { label: '12:00 - 15:00', start: 12, end: 14, precos: [] },
-            { label: '15:00 - 18:00', start: 15, end: 17, precos: [] },
-            { label: '18:00 - 21:00', start: 18, end: 20, precos: [] },
-            { label: '21:00 - 23:59', start: 21, end: 23, precos: [] }
-        ];
+        if(dadosFiltrados.length === 0) {
+            document.getElementById('tabelaIntel').innerHTML = '';
+            document.getElementById('listaEvolucaoDiaria').innerHTML = '<p style="color:var(--text-secondary); text-align:center; padding: 20px;">Sem dados no período.</p>';
+            return;
+        }
 
-        dadosFiltrados.forEach(d => {
-            if(!d.dataTransacao) return;
-            const hr = new Date(d.dataTransacao).getHours();
-            const vl = Number(d.valorLitro || 0);
-            if(vl > 0) {
-                let block = blocos.find(b => hr >= b.start && hr <= b.end);
-                if(block) block.precos.push(vl);
-            }
+        // 1. ORDENA DO MAIS ANTIGO PARA O MAIS NOVO (Para cálculos cronológicos perfeitos)
+        let dadosCronologicos = [...dadosFiltrados].sort((a,b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
+        let precosValidos = dadosCronologicos.filter(d => Number(d.valorLitro) > 0);
+
+        // 2. CARDS DE ALERTA NO TOPO
+        if(precosValidos.length > 0) {
+            let pPrimeiro = Number(precosValidos[0].valorLitro);
+            let pUltimo = Number(precosValidos[precosValidos.length - 1].valorLitro);
+            let dif = pUltimo - pPrimeiro;
+            
+            let corVar = dif > 0 ? 'var(--danger)' : (dif < 0 ? 'var(--success)' : 'var(--text-secondary)');
+            let sinal = dif > 0 ? '+' : '';
+            
+            document.getElementById('cardVarValor').innerText = `${sinal}R$ ${Math.abs(dif).toFixed(2)}`;
+            document.getElementById('cardVarValor').style.color = corVar;
+            document.getElementById('cardVarLabel').innerText = `De R$ ${pPrimeiro.toFixed(2)} para R$ ${pUltimo.toFixed(2)}`;
+
+            let picoObj = precosValidos.reduce((max, obj) => Number(obj.valorLitro) > Number(max.valorLitro) ? obj : max, precosValidos[0]);
+            document.getElementById('cardPicoValor').innerText = `R$ ${Number(picoObj.valorLitro).toFixed(2)}`;
+            document.getElementById('cardPicoLabel').innerText = `${picoObj.nomeReduzidoEstabelecimento} (${picoObj.uf})`;
+        }
+
+        // 3. EVOLUÇÃO DIÁRIA (Mapa de Calor)
+        let dias = {};
+        dadosCronologicos.forEach(d => {
+            let dia = d.dataTransacao.split("T")[0];
+            if(!dias[dia]) dias[dia] = { s: 0, c: 0 };
+            dias[dia].s += Number(d.valorLitro);
+            dias[dia].c += 1;
         });
 
-        let html = '';
+        let htmlDiario = '';
+        let listaDias = Object.keys(dias);
+        let medias = listaDias.map(d => dias[d].s / dias[d].c);
+        let minM = Math.min(...medias);
+        let maxM = Math.max(...medias);
+        let range = maxM - minM || 1;
+
+        listaDias.forEach(dia => {
+            let media = dias[dia].s / dias[dia].c;
+            let percentual = (media - minM) / range;
+            
+            let corBarra = 'var(--success)'; 
+            if(percentual > 0.4) corBarra = 'var(--pizzatto-orange)';
+            if(percentual > 0.8) corBarra = 'var(--danger)';
+
+            let larg = 15 + (percentual * 85); 
+            let dtFmt = dia.split('-').reverse().slice(0,2).join('/'); 
+
+            htmlDiario += `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 12px; color: var(--text-secondary); width: 45px; text-align: right;">${dtFmt}</span>
+                    <div style="flex: 1; height: 16px; background: var(--bg-input); border-radius: 4px; overflow: hidden;">
+                        <div style="width: ${larg}%; height: 100%; background: ${corBarra}; border-radius: 4px;"></div>
+                    </div>
+                    <span class="num" style="font-size: 13px; font-weight: bold; width: 60px;">R$ ${media.toFixed(2)}</span>
+                </div>
+            `;
+        });
+        document.getElementById('listaEvolucaoDiaria').innerHTML = htmlDiario;
+
+        // 4. VARIAÇÃO INTRADIÁRIA (Hora a Hora)
+        const blocos = [
+            { label: '00h - 09h', start: 0, end: 8, precos: [] },
+            { label: '09h - 12h', start: 9, end: 11, precos: [] },
+            { label: '12h - 15h', start: 12, end: 14, precos: [] },
+            { label: '15h - 18h', start: 15, end: 17, precos: [] },
+            { label: '18h - 21h', start: 18, end: 20, precos: [] },
+            { label: '21h - 23h', start: 21, end: 23, precos: [] }
+        ];
+
+        dadosCronologicos.forEach(d => {
+            const hr = new Date(d.dataTransacao).getHours();
+            let b = blocos.find(x => hr >= x.start && hr <= x.end);
+            if(b) b.precos.push(Number(d.valorLitro));
+        });
+
+        let htmlIntra = '';
         let precoAnterior = null;
 
         blocos.forEach(b => {
             if(b.precos.length === 0) return;
-            let media = b.precos.reduce((acc, curr) => acc + curr, 0) / b.precos.length;
+            let media = b.precos.reduce((a, c) => a + c, 0) / b.precos.length;
             let dif = 0;
-            let corClasse = 'txt-neutro';
-            let fillClasse = 'fill-neutro';
-            let sinal = '';
-            let percentBar = '10%';
+            let fillCls = 'fill-neutro';
+            let pct = '20%';
 
             if(precoAnterior !== null) {
                 dif = media - precoAnterior;
-                if(dif > 0.005) { corClasse = 'txt-alta'; fillClasse = 'fill-alta'; sinal = '+'; percentBar = '60%'; }
-                else if(dif < -0.005) { corClasse = 'txt-baixa'; fillClasse = 'fill-baixa'; percentBar = '60%'; }
+                if(dif > 0.005) { fillCls = 'fill-alta'; pct = '80%'; }
+                else if(dif < -0.005) { fillCls = 'fill-baixa'; pct = '80%'; }
             }
             precoAnterior = media;
 
-            let badgeHtml = dif === 0 ? `<span style="background:var(--bg-input); padding:4px 8px; border-radius:4px; font-size:12px;">R$ 0,00</span>` : 
-                `<span class="${corClasse}" style="background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:4px; font-size:12px;">${sinal} R$ ${Math.abs(dif).toFixed(2)}</span>`;
-
-            html += `<tr>
-                <td style="font-weight:bold;">${b.label}</td>
-                <td><div class="bar-bg"><div class="bar-fill ${fillClasse}" style="width: ${percentBar};"></div></div></td>
-                <td class="num" style="font-size:16px; font-weight:800; color:var(--text-primary)">R$ ${media.toFixed(2)}</td>
-                <td class="num">${badgeHtml}</td>
+            htmlIntra += `<tr>
+                <td style="font-weight:bold; font-size: 13px;">${b.label}</td>
+                <td><div class="bar-bg"><div class="bar-fill ${fillCls}" style="width: ${pct};"></div></div></td>
+                <td class="num" style="font-size:15px; font-weight:bold;">R$ ${media.toFixed(2)}</td>
             </tr>`;
         });
-
-        if(html === '') html = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Nenhum dado encontrado para este filtro.</td></tr>';
-        document.getElementById('tabelaIntel').innerHTML = html;
+        document.getElementById('tabelaIntel').innerHTML = htmlIntra;
     }
 
     function mostrarAba(a) {
