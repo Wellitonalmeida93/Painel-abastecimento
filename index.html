@@ -4,571 +4,174 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BI | Gestão de Abastecimento | PizzattoLog</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-
 <style>
-    :root {
-        --bg-main: #0b0f19; --bg-card: #111827; --bg-input: #1e293b; 
-        --pizzatto-red: #dc2626; --pizzatto-orange: #f97316; 
-        --text-primary: #f8fafc; --text-secondary: #94a3b8;
-        --border: #334155; --success: #10b981; --danger: #f87171; --blue: #3b82f6;
-    }
-    body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
+    :root { --bg-main: #0b0f19; --bg-card: #111827; --bg-input: #1e293b; --pizzatto-red: #dc2626; --pizzatto-orange: #f97316; --text-primary: #f8fafc; --text-secondary: #94a3b8; --border: #334155; --success: #10b981; --danger: #f87171; --blue: #3b82f6; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-main); color: var(--text-primary); }
     .container { padding: 20px; max-width: 1600px; margin: auto; }
-    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
-
     #tela-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
-    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; overflow: hidden; }
-    .login-box::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(255,255,255,0) 60%); pointer-events: none; }
-    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
-    .login-logo img { height: 50px; }
-    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
-    .login-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
-    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
-    .login-box input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
-    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 2; position: relative;}
-    .login-box button:hover { background: #b91c1c; transform: translateY(-2px); }
-    #msg-erro { color: var(--danger); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; }
-
-    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
-    header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
-    .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
-    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
-    .logo-relatorio { height: 60px; width: auto; }
-    .cabecalho-titulos { display: flex; flex-direction: column; }
-    .cabecalho-titulos h1 { font-size: 30px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
-    .icon-bomba { color: var(--pizzatto-orange); width: 32px; height: 32px; }
-    .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
-    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
-
-    .tabs { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .tabs button { background: var(--bg-input); border: none; color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
-    .tabs button:hover { background: #334155; color: white; transform: translateY(-1px); }
-    .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); border-bottom: 3px solid var(--pizzatto-orange); }
-    .btn-sheets { background: #064e3b !important; border-color: #065f46 !important; } 
-    .btn-sheets:hover { background: #059669 !important; }
-    .btn-sheets.active { background: #10b981 !important; border-bottom: 3px solid #047857 !important; color: white !important;}
-
-    .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
-    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
-    .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
-
-    .filtros { display: flex; flex-wrap: wrap; gap: 15px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .filtro-box { flex: 1; min-width: 140px; } 
-    .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
-    .filtros input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
-    
-    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
-    .btn-excel:hover { background: #059669; transform: translateY(-2px); }
-
-    .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); box-sizing: border-box; }
-    .choices__inner { background-color: var(--bg-input) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; min-height: 38px !important; padding: 2px 8px !important; display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 5px !important; }
-    .choices__input { color: var(--text-primary) !important; background-color: transparent !important; margin: 0 !important;}
-    .choices__input::placeholder { color: #64748b; font-weight: 600; }
-    .choices__list--dropdown, .choices__list[aria-expanded] { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; z-index: 9999 !important; box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important; overflow-y: auto !important; }
-    .choices__list--dropdown::-webkit-scrollbar { width: 8px; }
-    .choices__list--dropdown::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 0 8px 8px 0; }
-    .choices__list--dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    .choices__list--dropdown::-webkit-scrollbar-thumb:hover { background: #64748b; }
-    .choices__list--dropdown .choices__item { color: var(--text-primary) !important; font-size: 13px !important; border-bottom: 1px solid var(--border) !important; background-color: var(--bg-card) !important; }
-    .choices__list--dropdown .choices__item.is-highlighted { background-color: #334155 !important; }
-    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red) !important; border: 1px solid var(--pizzatto-orange) !important; border-radius: 6px !important; font-size: 12px !important; font-weight: bold !important; padding: 4px 8px !important; margin: 0 !important; }
-    .is-open .choices__inner, .is-focused .choices__inner { border-color: var(--pizzatto-orange) !important; box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important; }
-
-    .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
+    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); text-align: center; width: 400px; }
+    .login-logo { background: white; padding: 15px; border-radius: 12px; margin-bottom: 20px; display: inline-block; }
+    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; margin-bottom: 15px; box-sizing: border-box; text-align: center; }
+    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    header { background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .logo-relatorio { height: 50px; background: white; padding: 5px 15px; border-radius: 8px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tabs button { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .tabs button.active { background: var(--pizzatto-red); color: white; }
+    .filtros { display: flex; flex-wrap: wrap; gap: 10px; background: var(--bg-card); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
+    .filtro-box { flex: 1; min-width: 150px; }
+    input, select { background: var(--bg-input); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box; }
+    .kpis { display: flex; gap: 15px; margin-bottom: 20px; }
+    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; border-left: 5px solid var(--pizzatto-orange); border-top: 1px solid var(--border); }
+    .kpi label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; }
+    .kpi span { display: block; font-size: 22px; font-weight: 800; margin-top: 5px; }
+    .table-container { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-    tr:hover { background: rgba(255,255,255,0.03); }
-    .num { text-align: right; font-family: monospace; font-size: 14px; }
-    .caro { color: var(--danger); font-weight: bold; }
-    
-    .badge-tipo { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-top: 2px;}
-    .tipo-frota { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .tipo-agregado { background: rgba(249, 115, 22, 0.15); color: var(--pizzatto-orange); border: 1px solid rgba(249, 115, 22, 0.3); }
-    .tipo-ticketlog { background: #1e293b; color: #94a3b8; border: 1px solid var(--border); }
-
-    .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
-    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-    iframe { width: 100%; border: none; background: white; border-radius: 8px; }
-
-    .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
-    .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-    .intel-header h2 { font-size: 18px; margin: 0; color: var(--text-primary); font-family: 'Poppins', sans-serif;}
-    .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
-    .bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
-    .fill-alta { background: var(--danger); }
-    .fill-baixa { background: var(--success); }
-    .fill-neutro { background: #64748b; }
-    
-    .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); color: var(--text-primary); }
-    .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; font-weight: bold; }
-    .uf-alta { background: rgba(239, 68, 68, 0.05); color: var(--danger); }
-    .uf-baixa { background: rgba(16, 185, 129, 0.05); color: var(--success); }
-    .uf-neutro { color: var(--text-secondary); }
+    th { background: #1e293b; color: #94a3b8; text-align: left; padding: 12px; text-transform: uppercase; font-size: 11px; }
+    td { padding: 12px; border-bottom: 1px solid var(--border); }
+    .badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; display: inline-block; margin-top: 4px; }
+    .badge-origem-frota { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+    .badge-origem-agregado { background: rgba(249, 115, 22, 0.2); color: #fb923c; border: 1px solid #f97316; }
+    .badge-tlog { background: #1e293b; color: #94a3b8; border: 1px solid var(--border); font-size: 9px; }
+    .num { text-align: right; font-family: monospace; }
 </style>
 </head>
 <body>
 
 <div id="tela-login">
     <div class="login-box">
-        <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" onerror="this.style.display='none'"></div>
-        <h2>Acesso Restrito</h2>
-        <p>Insira a senha de administrador para acessar o Painel de Inteligência.</p>
-        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px; vertical-align: -2px;"></i> Senha incorreta! Tente novamente.</div>
-        <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
-        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
+        <div class="login-logo"><img src="logo.png" alt="PizzattoLog" onerror="this.style.display='none'"></div>
+        <h2 style="margin: 0 0 10px 0;">BI PizzattoLog</h2>
+        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">Acesso Restrito</p>
+        <input type="password" id="inputSenha" placeholder="Senha">
+        <button onclick="logar()">Entrar</button>
     </div>
 </div>
 
-<div class="container" id="app-container" style="display: none;">
+<div class="container" id="app" style="display:none;">
     <header>
-        <div class="cabecalho-conteudo">
-            <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio" onerror="this.style.display='none'"></div>
-            <div class="cabecalho-titulos">
-                <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
-                <span class="cabecalho-subtitulo" style="display: flex; align-items: center; gap: 15px;">
-                    PizzattoLog Transportes | Monitoramento Ticket Log
-                    <span id="badgeAtualizacao" style="background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); letter-spacing: 1px;">
-                        <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>
-                        ATUALIZADO: CARREGANDO...
-                    </span>
-                </span>
-            </div>
+        <img src="logo.png" class="logo-relatorio" onerror="this.style.display='none'">
+        <div style="margin-left: 20px;">
+            <h1 style="margin:0; font-size: 24px;">Painel de Abastecimento</h1>
+            <span id="ultimaAtu" style="font-size: 11px; color: var(--success); font-weight: bold;"></span>
         </div>
     </header>
 
     <div class="tabs">
-        <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Abastecimentos</button>
-        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> KPI Gerencial</button>
-        <button id="btn-intel" onclick="mostrarAba('intel')"><i data-lucide="radar"></i> Inteligência</button>
-        <button id="btn-sheets" class="btn-sheets" onclick="mostrarAba('sheets')"><i data-lucide="database"></i> Valores Diesel</button>
+        <button class="active">Abastecimentos</button>
+        <button onclick="baixarExcel()" style="margin-left: auto; background: var(--success); color: white; border:none;">Download Excel</button>
     </div>
 
     <div class="filtros">
-        <div class="filtro-box" style="flex: 1.2;"><select id="filtroCategoria" multiple></select></div>
-        <div class="filtro-box" style="flex: 0.8;"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa..."></div>
-        <div class="filtro-box" style="flex: 1;"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."></div>
-        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataInicio" title="Data Inicial"></div>
-        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataFim" title="Data Final"></div>
-        <div class="filtro-box" style="flex: 1.5;"><select id="filtroPosto" multiple></select></div>
-        <div class="filtro-box" style="flex: 0.8;"><select id="filtroUF" multiple></select></div>
-        <div class="filtro-box" style="flex: 1.5;"><select id="filtroProduto" multiple></select></div>
-        <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Baixar Excel</button>
+        <div class="filtro-box"><select id="fOrigem" multiple></select></div>
+        <div class="filtro-box"><input id="fPlaca" placeholder="Placa..."></div>
+        <div class="filtro-box"><input id="fCidade" placeholder="Cidade..."></div>
+        <div class="filtro-box"><input type="date" id="fD1"></div>
+        <div class="filtro-box"><input type="date" id="fD2"></div>
     </div>
 
-    <div id="aba-operacional">
-        <div class="kpis">
-            <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
-            <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Tipo</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
-                <tbody id="tabela"></tbody>
-            </table>
-        </div>
+    <div class="kpis">
+        <div class="kpi"><label>Total Investido</label><span id="kTotal">R$ 0,00</span></div>
+        <div class="kpi"><label>Litros</label><span id="kLitros">0,00</span></div>
+        <div class="kpi"><label>Média Preço/L</label><span id="kMedia">R$ 0,00</span></div>
     </div>
 
-    <div id="aba-gerencial" style="display:none;">
-        <div class="card-chart" style="margin-bottom: 20px;"><h3><i data-lucide="trending-up" style="color:var(--pizzatto-red)"></i> Evolução Diária (R$)</h3><div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div></div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div class="card-chart"><h3><i data-lucide="map-pin" style="color:var(--pizzatto-orange)"></i> Gastos por Estado (UF)</h3><div style="height: 350px;"><canvas id="graficoUF"></canvas></div></div>
-            <div class="card-chart"><h3><i data-lucide="award" style="color:var(--pizzatto-orange)"></i> Ranking de Postos (Maiores Gastos)</h3><div style="height: 350px;"><canvas id="graficoPostos"></canvas></div></div>
-        </div>
-        <div class="card-chart" style="margin-top: 20px;">
-            <h3><i data-lucide="alert-triangle" style="color:var(--danger)"></i> Top 10 Preços Unitários Mais Altos</h3>
-            <table style="width:100%">
-                <thead><tr><th>Placa</th><th>Produto/Posto</th><th class="num">Preço/L</th></tr></thead>
-                <tbody id="listaMaioresPrecos"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="aba-intel" style="display:none;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;">
-            <div class="intel-container" style="padding: 20px;">
-                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🔴 Variação Média (Início vs Fim)</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardVarValor" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--text-primary);">R$ 0,00</h2>
-                    <span id="cardVarLabel" style="font-size: 13px; font-weight: bold; color: var(--text-secondary);">--</span>
-                </div>
-            </div>
-            <div class="intel-container" style="padding: 20px;">
-                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🟠 Maior Pico Registrado (Posto)</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardPicoValor" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--pizzatto-orange);">R$ 0,00</h2>
-                    <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
-                </div>
-            </div>
-            <div class="intel-container" style="padding: 20px; border-left: 4px solid var(--danger);">
-                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🚨 Estado com Maior Alta</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardEstadoAlta" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--danger);">--</h2>
-                    <span id="cardEstadoValor" style="font-size: 18px; font-weight: bold; color: var(--danger);">+R$ 0,00</span>
-                </div>
-                <p id="cardEstadoPct" style="font-size: 12px; color: var(--text-secondary); margin: 5px 0 0 0;">--</p>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div class="intel-container">
-                <div class="intel-header"><h2>Evolução Diária do Preço Nacional</h2></div>
-                <div id="listaEvolucaoDiaria" style="display: flex; flex-direction: column; gap: 6px; padding-right: 10px;"></div>
-            </div>
-            <div class="intel-container">
-                <div class="intel-header"><h2>Variação Intradiária (Hora a Hora)</h2></div>
-                <table style="width: 100%;">
-                    <thead><tr><th style="background: transparent; border-bottom: 2px solid var(--border);">Período</th><th style="background: transparent; border-bottom: 2px solid var(--border);">Intensidade</th><th class="num" style="background: transparent; border-bottom: 2px solid var(--border);">Preço Médio</th></tr></thead>
-                    <tbody id="tabelaIntel"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="intel-container">
-            <div class="intel-header">
-                <h2>Variação por Estado e Região</h2>
-                <span style="background: var(--bg-input); color: var(--text-secondary); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Início vs Fim do período</span>
-            </div>
-            <div id="gridRegioes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;"></div>
-        </div>
-    </div>
-
-    <div id="aba-sheets" style="display:none;" class="card-chart">
-        <h3 style="margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-            <i data-lucide="database" style="color:#10b981"></i> Base de Valores Diesel (Google Sheets)
-        </h3>
-        <div style="width: 100%; height: 75vh; border-radius: 8px; overflow: hidden;">
-            <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?widget=true&amp;headers=false" style="width: 100%; height: 100%; border: none; background: white;"></iframe>
-        </div>
+    <div class="table-container">
+        <table>
+            <thead><tr><th>Data</th><th>Placa</th><th>Tipo</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Preço/L</th></tr></thead>
+            <tbody id="lista"></tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    lucide.createIcons();
-    let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
-    let choicesInstances = {}; 
-    
-    const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    let dados = []; let escolhas = {};
+    const fmtM = v => "R$ " + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2});
+    const fmtN = v => Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2});
 
-    const mapaRegioes = {
-        'AC':'NORTE', 'AP':'NORTE', 'AM':'NORTE', 'PA':'NORTE', 'RO':'NORTE', 'RR':'NORTE', 'TO':'NORTE',
-        'AL':'NORDESTE', 'BA':'NORDESTE', 'CE':'NORDESTE', 'MA':'NORDESTE', 'PB':'NORDESTE', 'PE':'NORDESTE', 'PI':'NORDESTE', 'RN':'NORDESTE', 'SE':'NORDESTE',
-        'DF':'CENTRO-OESTE', 'GO':'CENTRO-OESTE', 'MT':'CENTRO-OESTE', 'MS':'CENTRO-OESTE',
-        'ES':'SUDESTE', 'MG':'SUDESTE', 'RJ':'SUDESTE', 'SP':'SUDESTE',
-        'PR':'SUL', 'RS':'SUL', 'SC':'SUL'
-    };
-
-    window.onload = function() {
-        if(sessionStorage.getItem('pizzatto_autenticado') === 'true') {
-            liberarAcesso();
-        } else {
-            document.getElementById('inputSenha').focus();
-        }
-    };
-
-    function verificarSenha() {
-        const senha = document.getElementById('inputSenha').value;
-        if(senha === 'Pizzatto_&3gm5zQ742i') {
-            sessionStorage.setItem('pizzatto_autenticado', 'true');
-            liberarAcesso();
-        } else {
-            document.getElementById('msg-erro').style.display = 'block';
-            document.getElementById('inputSenha').value = '';
-            document.getElementById('inputSenha').focus();
+    function logar() {
+        if(document.getElementById('inputSenha').value === 'Pizzatto2026') {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            carregar();
         }
     }
 
-    function liberarAcesso() {
-        document.getElementById('tela-login').style.display = 'none';
-        document.getElementById('app-container').style.display = 'block';
-        iniciarApp(); 
-    }
-
-    function iniciarApp() {
-        fetch("transacoes.json?v=" + new Date().getTime()).then(r => r.json()).then(j => {
-            dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
-            dadosFiltrados = [...dadosBrutos];
-
-            if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
-                let ultimaData = new Date(dadosBrutos[0].dataTransacao);
-                let dataFmt = ultimaData.toLocaleDateString('pt-BR');
-                let horaFmt = ultimaData.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                document.getElementById('badgeAtualizacao').innerHTML = `<i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>ATUALIZADO: ${dataFmt} ÀS ${horaFmt}`;
-            }
-
-            preencherFiltros(); 
-            atualizarTudo(); 
-            lucide.createIcons();
-        }).catch(e => console.error("Erro ao carregar dados:", e));
-    }
-
-    function preencherFiltros() {
-        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set(), categorias = new Set();
-        dadosBrutos.forEach(i => { 
-            if (i.placa && i.placa.trim() !== '') placas.add(i.placa.trim()); 
-            if (i.nomeCidade && i.nomeCidade.trim() !== '') cidades.add(i.nomeCidade.trim()); 
-            if (i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento); 
-            if (i.uf) ufs.add(i.uf); 
-            if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
-            if (i.origemConta) categorias.add(i.origemConta); // A NOSSA COLUNA AQUI
+    function carregar() {
+        fetch('transacoes.json?v=' + Date.now()).then(r => r.json()).then(j => {
+            dados = j;
+            prepararFiltros();
+            filtrar();
         });
-
-        const listaPlacas = document.getElementById('listaPlacas');
-        Array.from(placas).sort().forEach(p => listaPlacas.innerHTML += `<option value="${p}">`);
-        
-        const listaCidades = document.getElementById('listaCidades');
-        Array.from(cidades).sort().forEach(c => listaCidades.innerHTML += `<option value="${c}">`);
-
-        const initChoice = (id, set, placeholder) => {
-            const select = document.getElementById(id);
-            Array.from(set).sort().forEach(val => {
-                let opt = document.createElement('option');
-                opt.value = val;
-                opt.text = val;
-                select.appendChild(opt);
-            });
-            
-            choicesInstances[id] = new Choices(select, {
-                removeItemButton: true, searchEnabled: true, placeholder: true, placeholderValue: placeholder,
-                searchPlaceholderValue: "Pesquisar...", itemSelectText: '', noResultsText: 'Não encontrado', noChoicesText: 'Fim'
-            });
-            select.addEventListener('change', aplicarFiltros);
-        };
-
-        initChoice('filtroCategoria', categorias, '🚚 Frota / Agregado');
-        initChoice('filtroPosto', postos, '⛽ Vários Postos...');
-        initChoice('filtroUF', ufs, '🌎 Várias UFs...');
-        initChoice('filtroProduto', prods, '🛢️ Vários Produtos...');
     }
 
-    document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroCidade').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroDataInicio').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroDataFim').addEventListener("input", aplicarFiltros);
+    function prepararFiltros() {
+        let origens = [...new Set(dados.map(d => d.origemConta))];
+        const sel = document.getElementById('fOrigem');
+        origens.forEach(o => sel.innerHTML += `<option value="${o}">${o}</option>`);
+        escolhas.origem = new Choices(sel, {removeItemButton: true, itemSelectText: ''});
+        sel.addEventListener('change', filtrar);
+        ['fPlaca', 'fCidade', 'fD1', 'fD2'].forEach(id => document.getElementById(id).addEventListener('input', filtrar));
+    }
 
-    function aplicarFiltros() {
-        let fPlaca = document.getElementById('filtroPlaca').value.toLowerCase();
-        let fCidade = document.getElementById('filtroCidade').value.toLowerCase();
-        let dIni = document.getElementById('filtroDataInicio').value;
-        let dFim = document.getElementById('filtroDataFim').value;
+    function filtrar() {
+        const p = document.getElementById('fPlaca').value.toUpperCase();
+        const c = document.getElementById('fCidade').value.toUpperCase();
+        const d1 = document.getElementById('fD1').value;
+        const d2 = document.getElementById('fD2').value;
+        const selOrigens = escolhas.origem.getValue(true);
 
-        const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
-        let fCategoria = getVals('filtroCategoria');
-        let fPosto = getVals('filtroPosto');
-        let fUF = getVals('filtroUF');
-        let fProduto = getVals('filtroProduto');
-
-        dadosFiltrados = dadosBrutos.filter(i => {
+        const filtrados = dados.filter(d => {
             let ok = true;
-            if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
-            if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
-            
-            // FILTRA PELA NOSSA ETIQUETA
-            if (fCategoria.length > 0 && !fCategoria.includes(i.origemConta)) ok = false;
-            if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
-            if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
-            if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
-            
-            if (i.dataTransacao) { 
-                let d = i.dataTransacao.split("T")[0]; 
-                if (dIni && d < dIni) ok = false; 
-                if (dFim && d > dFim) ok = false; 
-            }
+            if(p && !d.placa.includes(p)) ok = false;
+            if(c && !(d.nomeCidade||"").includes(c)) ok = false;
+            if(d1 && d.dataTransacao.split('T')[0] < d1) ok = false;
+            if(d2 && d.dataTransacao.split('T')[0] > d2) ok = false;
+            if(selOrigens.length && !selOrigens.includes(d.origemConta)) ok = false;
             return ok;
         });
-        atualizarTudo();
+
+        desenhar(filtrados);
     }
 
-    function atualizarTudo() { renderOperacional(); if(abaAtual === 'gerencial') renderGerencial(); if(abaAtual === 'intel') renderInteligencia(); }
+    function desenhar(lista) {
+        const corpo = document.getElementById('lista'); corpo.innerHTML = '';
+        let tV = 0, tL = 0;
 
-    function renderOperacional() {
-        let tb = document.getElementById("tabela"); tb.innerHTML = ""; let total = 0, litros = 0;
-        dadosFiltrados.slice(0, 150).forEach(i => {
-            total += Number(i.valorTransacao || 0); litros += Number(i.litros || 0);
-            let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            let dtStr = dt.toISOString().split("T")[0] + " " + dt.toTimeString().split(" ")[0];
-            
-            // NOSSA ETIQUETA COLORIDA
-            let badgeHtml = '';
-            if(i.origemConta === 'FROTA') badgeHtml = '<span class="badge-tipo tipo-frota">FROTA</span>';
-            else if(i.origemConta === 'AGREGADO') badgeHtml = '<span class="badge-tipo tipo-agregado">AGREGADO</span>';
-            else badgeHtml = `<span class="badge-tipo" style="background:#334155; color:#cbd5e1;">${i.origemConta || '-'}</span>`;
-
-            // ETIQUETA DA TICKET LOG (PROPRIO, etc) - Fica pequenininha em cima
-            let badgeTLog = i.tipoFrota ? `<span class="badge-tipo tipo-ticketlog">${i.tipoFrota}</span><br>` : '';
-
-            tb.innerHTML += `<tr>
-                <td>${dtStr}</td>
-                <td><strong style="color:var(--text-primary)">${i.placa}</strong></td>
-                <td>${badgeTLog}${badgeHtml}</td>
-                <td>${i.nomeReduzidoEstabelecimento}</td>
-                <td>${i.nomeCidade || '-'}</td>
-                <td>${i.uf}</td>
-                <td>${i.tipoCombustivel||'-'}</td>
-                <td class="num">${numeroPTBR(i.litros)}</td>
-                <td class="num">${moedaPTBR(i.valorTransacao)}</td>
-                <td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td>
+        lista.forEach(d => {
+            tV += d.valorTransacao; tL += d.litros;
+            const bO = d.origemConta === 'FROTA' ? 'badge-origem-frota' : 'badge-origem-agregado';
+            corpo.innerHTML += `<tr>
+                <td>${d.dataTransacao.replace('T', ' ')}</td>
+                <td><strong>${d.placa}</strong></td>
+                <td><span class="badge badge-tlog">${d.tipoFrota||'S/T'}</span><br><span class="badge ${bO}">${d.origemConta}</span></td>
+                <td>${d.nomeReduzidoEstabelecimento}</td>
+                <td>${d.nomeCidade||'-'}</td>
+                <td>${d.uf}</td>
+                <td>${d.tipoCombustivel}</td>
+                <td class="num">${fmtN(d.litros)}</td>
+                <td class="num">${fmtM(d.valorTransacao)}</td>
+                <td class="num">${fmtM(d.valorLitro)}</td>
             </tr>`;
         });
-        let tTotal = 0, tLitros = 0; dadosFiltrados.forEach(i => { tTotal += Number(i.valorTransacao || 0); tLitros += Number(i.litros || 0); });
-        document.getElementById("total").innerText = moedaPTBR(tTotal); document.getElementById("litros").innerText = numeroPTBR(tLitros); document.getElementById("media").innerText = moedaPTBR(tTotal / tLitros || 0);
-    }
 
-    function renderGerencial() {
-        let hist = {}; dadosFiltrados.forEach(i => { if(i.dataTransacao){ let d = i.dataTransacao.split("T")[0]; hist[d] = (hist[d] || 0) + Number(i.valorTransacao); } });
-        updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Despesa R$', '#dc2626');
-        
-        let ufsRaw = {}; dadosFiltrados.forEach(i => { if(i.uf) ufsRaw[i.uf] = (ufsRaw[i.uf] || 0) + Number(i.valorTransacao); });
-        let ufsSorted = Object.entries(ufsRaw).sort((a,b) => b[1] - a[1]); updateChart('graficoUF', 'bar', ufsSorted.map(x=>x[0]), ufsSorted.map(x=>x[1]), 'Total por UF', '#3b82f6', 'y');
-        
-        let pRank = {}; dadosFiltrados.forEach(i => { pRank[i.nomeReduzidoEstabelecimento] = (pRank[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
-        let topP = Object.entries(pRank).sort((a,b) => b[1] - a[1]).slice(0, 10); updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'Faturamento R$', '#f97316', 'y');
-
-        let maioresP = [...dadosFiltrados].sort((a,b) => Number(b.valorLitro || 0) - Number(a.valorLitro || 0)).slice(0, 10);
-        document.getElementById("listaMaioresPrecos").innerHTML = maioresP.map(i => `
-            <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 10px 15px;"><strong>${i.placa}</strong></td>
-                <td style="padding: 10px 15px;"><span style="color:var(--pizzatto-orange); font-size:11px; font-weight: bold;">${i.tipoCombustivel || '-'}</span><br><small style="color:#94a3b8">${(i.nomeReduzidoEstabelecimento || '').substring(0,25)}</small></td>
-                <td class="num caro" style="padding: 10px 15px; font-size: 14px;">${moedaPTBR(i.valorLitro)}</td>
-            </tr>
-        `).join("");
-    }
-
-    function renderInteligencia() {
-        if(dadosFiltrados.length === 0) return;
-        let dadosCronologicos = [...dadosFiltrados].sort((a,b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
-        let precosValidos = dadosCronologicos.filter(d => Number(d.valorLitro) > 0);
-
-        if(precosValidos.length > 0) {
-            let pPrimeiro = Number(precosValidos[0].valorLitro); let pUltimo = Number(precosValidos[precosValidos.length - 1].valorLitro); let dif = pUltimo - pPrimeiro;
-            document.getElementById('cardVarValor').innerText = `${dif > 0 ? '+' : ''}R$ ${Math.abs(dif).toFixed(2)}`;
-            document.getElementById('cardVarValor').style.color = dif > 0 ? 'var(--danger)' : (dif < 0 ? 'var(--success)' : 'var(--text-secondary)');
-            document.getElementById('cardVarLabel').innerText = `De R$ ${pPrimeiro.toFixed(2)} para R$ ${pUltimo.toFixed(2)}`;
-            let picoObj = precosValidos.reduce((max, obj) => Number(obj.valorLitro) > Number(max.valorLitro) ? obj : max, precosValidos[0]);
-            document.getElementById('cardPicoValor').innerText = `R$ ${Number(picoObj.valorLitro).toFixed(2)}`;
-            document.getElementById('cardPicoLabel').innerText = `${picoObj.nomeReduzidoEstabelecimento} (${picoObj.uf})`;
-        }
-
-        let ufStats = {};
-        precosValidos.forEach(d => {
-            if(!ufStats[d.uf]) ufStats[d.uf] = { prim: Number(d.valorLitro), ult: Number(d.valorLitro) };
-            else ufStats[d.uf].ult = Number(d.valorLitro);
-        });
-
-        let ufArray = Object.keys(ufStats).map(uf => {
-            let p = ufStats[uf].prim; let u = ufStats[uf].ult; let d = u - p; let pct = p > 0 ? (d/p)*100 : 0;
-            return { uf: uf, dif: d, pct: pct, regiao: mapaRegioes[uf] || 'OUTROS' };
-        }).filter(x => x.prim !== 0);
-
-        if(ufArray.length > 0) {
-            let maiorUf = ufArray.reduce((max, obj) => obj.dif > max.dif ? obj : max, ufArray[0]);
-            document.getElementById('cardEstadoAlta').innerText = maiorUf.uf;
-            document.getElementById('cardEstadoValor').innerText = `${maiorUf.dif > 0 ? '+' : ''}R$ ${Math.abs(maiorUf.dif).toFixed(2)}/L`;
-            document.getElementById('cardEstadoPct').innerText = `${maiorUf.pct > 0 ? '+' : ''}${maiorUf.pct.toFixed(2)}% no período`;
-        }
-
-        let regioesAgrupadas = {};
-        ufArray.forEach(item => { if(!regioesAgrupadas[item.regiao]) regioesAgrupadas[item.regiao] = []; regioesAgrupadas[item.regiao].push(item); });
-        
-        let htmlRegioes = '';
-        Object.keys(regioesAgrupadas).sort().forEach(reg => {
-            let ufsRegiao = regioesAgrupadas[reg].sort((a,b) => b.dif - a.dif); 
-            let linhasUf = ufsRegiao.map(i => {
-                let cls = i.dif > 0 ? 'uf-alta' : (i.dif < 0 ? 'uf-baixa' : 'uf-neutro');
-                let snl = i.dif > 0 ? '+' : '';
-                return `<div class="uf-row ${cls}"><span>${i.uf}</span><span>${snl}R$ ${Math.abs(i.dif).toFixed(2)}/L</span><span style="font-size:11px; opacity:0.8; width: 50px; text-align:right;">${snl}${i.pct.toFixed(1)}%</span></div>`;
-            }).join('');
-            htmlRegioes += `<div class="regiao-card"><div class="regiao-titulo">${reg}</div>${linhasUf}</div>`;
-        });
-        document.getElementById('gridRegioes').innerHTML = htmlRegioes;
-
-        let dias = {}; 
-        dadosCronologicos.forEach(d => { 
-            let dia = d.dataTransacao.split("T")[0]; 
-            if(!dias[dia]) dias[dia] = { s: 0, c: 0 }; 
-            dias[dia].s += Number(d.valorLitro); 
-            dias[dia].c += 1; 
-        });
-        
-        let listaDias = Object.keys(dias).sort().reverse().slice(0, 31); 
-        let medias = listaDias.map(d => dias[d].s / dias[d].c);
-        let minM = Math.min(...medias); let maxM = Math.max(...medias); let range = maxM - minM || 1;
-        
-        let htmlDiario = '';
-        listaDias.forEach(dia => {
-            let media = dias[dia].s / dias[dia].c; let pct = (media - minM) / range;
-            let corBarra = pct > 0.8 ? 'var(--danger)' : (pct > 0.4 ? 'var(--pizzatto-orange)' : 'var(--success)');
-            
-            htmlDiario += `
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <span style="font-size: 11px; color: var(--text-secondary); width: 45px; text-align: right;">${dia.split('-').reverse().slice(0,2).join('/')}</span>
-                    <div style="flex: 1; height: 12px; background: var(--bg-input); border-radius: 4px; overflow: hidden;">
-                        <div style="width: ${15 + (pct * 85)}%; height: 100%; background: ${corBarra}; border-radius: 4px;"></div>
-                    </div>
-                    <span class="num" style="font-size: 12px; font-weight: bold; width: 70px;">${moedaPTBR(media)}</span>
-                </div>`;
-        });
-        document.getElementById('listaEvolucaoDiaria').innerHTML = htmlDiario;
-
-        const blocos = [{l:'00h-09h',s:0,e:8,p:[]},{l:'09h-12h',s:9,e:11,p:[]},{l:'12h-15h',s:12,e:14,p:[]},{l:'15h-18h',s:15,e:17,p:[]},{l:'18h-21h',s:18,e:20,p:[]},{l:'21h-23h',s:21,e:23,p:[]}];
-        dadosCronologicos.forEach(d => { let hr = new Date(d.dataTransacao).getHours(); let b = blocos.find(x => hr >= x.s && hr <= x.e); if(b) b.p.push(Number(d.valorLitro)); });
-        let htmlIntra = ''; let prev = null;
-        blocos.forEach(b => {
-            if(b.p.length === 0) return; let med = b.p.reduce((a, c) => a + c, 0) / b.p.length; let dif = 0; let cls = 'fill-neutro'; let pctBar = '20%';
-            if(prev !== null) { dif = med - prev; if(dif > 0.005) { cls = 'fill-alta'; pctBar = '80%'; } else if(dif < -0.005) { cls = 'fill-baixa'; pctBar = '80%'; } }
-            prev = med;
-            htmlIntra += `<tr><td style="font-weight:bold; font-size: 13px;">${b.l}</td><td><div class="bar-bg"><div class="bar-fill ${cls}" style="width: ${pctBar};"></div></div></td><td class="num" style="font-size:15px; font-weight:bold;">${moedaPTBR(med)}</td></tr>`;
-        });
-        document.getElementById('tabelaIntel').innerHTML = htmlIntra;
-    }
-
-    function mostrarAba(a) {
-        abaAtual = a; ['aba-operacional', 'aba-gerencial', 'aba-intel', 'aba-sheets'].forEach(id => document.getElementById(id).style.display = 'none');
-        document.getElementById('aba-' + a).style.display = 'block';
-        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + a).classList.add('active');
-        if(a === 'gerencial') renderGerencial(); if(a === 'intel') renderInteligencia();
-    }
-
-    function updateChart(id, type, labels, data, label, color, axis = 'x') {
-        if (charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), { type: type, data: { labels: labels, datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, tension: 0.3, fill: type === 'line' }] }, options: { indexAxis: axis, responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: axis === 'x' ? false : true, color: '#1e293b' } } } } });
+        document.getElementById('kTotal').innerText = fmtM(tV);
+        document.getElementById('kLitros').innerText = fmtN(tL);
+        document.getElementById('kMedia').innerText = fmtM(tV/tL || 0);
     }
 
     function baixarExcel() {
-        let csv = ["DATA;HORA;PLACA;TICKET LOG;ORIGEM (FROTA/AGREGADO);POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
-        dadosFiltrados.forEach(i => {
-            let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            let data = d.toISOString().split("T")[0];
-            let hora = d.toTimeString().split(" ")[0];
-            
-            let litros = Number(i.litros || 0).toFixed(2).replace('.', ',');
-            let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
-            let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
-            let tlogStr = i.tipoFrota || '-';
-            let origemStr = i.origemConta || 'OUTROS';
-            let cidadeStr = i.nomeCidade || '';
-            
-            csv.push(`${data};${hora};${i.placa};${tlogStr};${origemStr};${i.nomeReduzidoEstabelecimento};${cidadeStr};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro}`);
+        let csv = "DATA;PLACA;TIPO;ORIGEM;POSTO;CIDADE;UF;VALOR;LITROS\n";
+        dados.forEach(d => {
+            csv += `${d.dataTransacao};${d.placa};${d.tipoFrota};${d.origemConta};${d.nomeReduzidoEstabelecimento};${d.nomeCidade};${d.uf};${d.valorTransacao};${d.litros}\n`;
         });
-
-        let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob); 
-        a.download = "PizzattoLog_Abastecimentos.csv"; 
-        a.click();
+        const blob = new Blob([csv], {type: 'text/csv'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'abastecimentos.csv'; a.click();
     }
 </script>
 </body>
