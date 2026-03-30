@@ -68,17 +68,49 @@
     .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
     .btn-excel:hover { background: #059669; transform: translateY(-2px); }
 
-    /* Customização apenas para não desalinhar as 3 caixas novas */
-    .choices { margin-bottom: 0; font-size: 13px; }
-    .choices__inner { background-color: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; min-height: 38px; padding: 4px 14px; display: flex; align-items: center; }
-    .choices__input { color: var(--text-primary); background-color: transparent; }
-    .choices__input::placeholder { color: #64748b; opacity: 1; font-weight: 600;}
-    .choices__list--dropdown { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 100; word-break: break-word; }
-    .choices__list--dropdown .choices__item--selectable { color: var(--text-primary); padding: 10px; font-size: 13px; border-bottom: 1px solid var(--bg-input);}
-    .choices__list--dropdown .choices__item--selectable.is-highlighted { background-color: #334155; }
-    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red); border: 1px solid var(--pizzatto-orange); border-radius: 6px; font-size: 12px; font-weight: bold; padding: 4px 8px; margin-right: 5px;}
-    .choices[data-type*="select-multiple"] .choices__button { border-left: 1px solid rgba(255,255,255,0.2); margin-left: 8px; padding-left: 8px; }
-    .is-open .choices__inner, .is-focused .choices__inner { border-radius: 8px; border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    /* 🔥 CORREÇÕES CHOICES.JS (DARK THEME DEFINITIVO E ALINHAMENTO) 🔥 */
+    .filtro-wrapper { display: flex; flex-direction: column; justify-content: center; } /* Garante que não encavale */
+    .choices { margin-bottom: 0 !important; width: 100%; font-size: 13px; }
+    .choices__inner { 
+        background-color: var(--bg-input) !important; 
+        border: 1px solid var(--border) !important; 
+        border-radius: 8px !important; 
+        min-height: 38px !important; 
+        height: auto !important;
+        padding: 4px 10px !important; 
+        display: flex !important; 
+        flex-wrap: wrap !important;
+        align-items: center !important; 
+        gap: 5px !important; /* Espaço entre os balões */
+    }
+    .choices__input { color: var(--text-primary) !important; background-color: transparent !important; margin-bottom: 0 !important; }
+    .choices__input::placeholder { color: #64748b; font-weight: 600; }
+    
+    /* Fundo Escuro do Menu Dropdown */
+    .choices__list--dropdown, .choices__list[aria-expanded] { 
+        background-color: var(--bg-card) !important; 
+        border: 1px solid var(--pizzatto-orange) !important; 
+        border-radius: 8px !important; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important; 
+        z-index: 999 !important; 
+    }
+    /* Cores das opções dentro da lista */
+    .choices__list--dropdown .choices__item { color: var(--text-primary) !important; font-size: 13px !important; border-bottom: 1px solid var(--border) !important; }
+    .choices__list--dropdown .choices__item.is-highlighted { background-color: var(--border) !important; }
+    
+    /* Balõezinhos Vermelhos (Tags Escolhidas) */
+    .choices__list--multiple .choices__item { 
+        background-color: var(--pizzatto-red) !important; 
+        border: 1px solid var(--pizzatto-orange) !important; 
+        border-radius: 6px !important; 
+        font-size: 12px !important; 
+        font-weight: bold !important; 
+        padding: 4px 8px !important; 
+        margin: 0 !important; /* Zera margem nativa e usa o gap do flex */
+    }
+    .is-open .choices__inner, .is-focused .choices__inner { border-color: var(--pizzatto-orange) !important; box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important; }
+    /* Caixa de busca quando há muitos itens */
+    .choices__input--cloned { background-color: var(--bg-input) !important; color: var(--text-primary) !important; border: 1px solid var(--border) !important; border-radius: 4px !important; }
 
     /* TABELAS */
     .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
@@ -144,9 +176,9 @@
         <input type="date" id="filtroDataInicio" title="Data Inicial">
         <input type="date" id="filtroDataFim" title="Data Final">
         
-        <div style="width: 200px;"><select id="filtroPosto" multiple></select></div>
-        <div style="width: 130px;"><select id="filtroUF" multiple></select></div>
-        <div style="width: 180px;"><select id="filtroProduto" multiple></select></div>
+        <div class="filtro-wrapper" style="flex: 1; min-width: 180px; max-width: 250px;"><select id="filtroPosto" multiple></select></div>
+        <div class="filtro-wrapper" style="width: 110px;"><select id="filtroUF" multiple></select></div>
+        <div class="filtro-wrapper" style="flex: 1; min-width: 150px; max-width: 200px;"><select id="filtroProduto" multiple></select></div>
         
         <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Baixar Excel</button>
     </div>
