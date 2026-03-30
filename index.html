@@ -74,64 +74,27 @@
     .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
 
     /* 🔹 FILTROS GLOBAIS - ESPAÇAMENTO AUMENTADO */
-    .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .filtro-box { flex: 1; min-width: 140px; } /* Wrappers para não encavalar */
+    .filtros { display: flex; flex-wrap: wrap; gap: 15px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .filtro-box { flex: 1; min-width: 140px; } 
     .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
     .filtros input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
     
     .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
     .btn-excel:hover { background: #059669; transform: translateY(-2px); }
 
-    /* 🔥 CORREÇÕES CHOICES.JS (SCROLLBAR DARK E ESPAÇOS) 🔥 */
+    /* 🔥 CORREÇÕES CHOICES.JS 🔥 */
     .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); box-sizing: border-box; }
-    .choices__inner { 
-        background-color: var(--bg-input) !important; 
-        border: 1px solid var(--border) !important; 
-        border-radius: 8px !important; 
-        min-height: 38px !important; 
-        padding: 2px 8px !important; 
-        display: flex !important; 
-        flex-wrap: wrap !important;
-        align-items: center !important; 
-        gap: 5px !important;
-    }
+    .choices__inner { background-color: var(--bg-input) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; min-height: 38px !important; padding: 2px 8px !important; display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 5px !important; }
     .choices__input { color: var(--text-primary) !important; background-color: transparent !important; margin: 0 !important;}
     .choices__input::placeholder { color: #64748b; font-weight: 600; }
-    
-    /* Fundo Escuro Forçado e SCROLLBAR Escura */
-    .choices__list--dropdown, .choices__list[aria-expanded] { 
-        background-color: var(--bg-card) !important; 
-        border: 1px solid var(--border) !important; 
-        border-radius: 8px !important; 
-        z-index: 9999 !important; 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important;
-        overflow-y: auto !important;
-    }
-    
-    /* Mágica da Barra de Rolagem Dark */
+    .choices__list--dropdown, .choices__list[aria-expanded] { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; z-index: 9999 !important; box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important; overflow-y: auto !important; }
     .choices__list--dropdown::-webkit-scrollbar { width: 8px; }
     .choices__list--dropdown::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 0 8px 8px 0; }
     .choices__list--dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .choices__list--dropdown::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
-    .choices__list--dropdown .choices__item { 
-        color: var(--text-primary) !important; 
-        font-size: 13px !important; 
-        border-bottom: 1px solid var(--border) !important; 
-        background-color: var(--bg-card) !important;
-    }
+    .choices__list--dropdown .choices__item { color: var(--text-primary) !important; font-size: 13px !important; border-bottom: 1px solid var(--border) !important; background-color: var(--bg-card) !important; }
     .choices__list--dropdown .choices__item.is-highlighted { background-color: #334155 !important; }
-    
-    /* Balõezinhos Vermelhos (Tags) */
-    .choices__list--multiple .choices__item { 
-        background-color: var(--pizzatto-red) !important; 
-        border: 1px solid var(--pizzatto-orange) !important; 
-        border-radius: 6px !important; 
-        font-size: 12px !important; 
-        font-weight: bold !important; 
-        padding: 4px 8px !important; 
-        margin: 0 !important;
-    }
+    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red) !important; border: 1px solid var(--pizzatto-orange) !important; border-radius: 6px !important; font-size: 12px !important; font-weight: bold !important; padding: 4px 8px !important; margin: 0 !important; }
     .is-open .choices__inner, .is-focused .choices__inner { border-color: var(--pizzatto-orange) !important; box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important; }
 
     /* TABELAS */
@@ -142,6 +105,11 @@
     tr:hover { background: rgba(255,255,255,0.03); }
     .num { text-align: right; font-family: monospace; font-size: 14px; }
     .caro { color: var(--danger); font-weight: bold; }
+    
+    /* 🔥 ETIQUETAS FROTA E AGREGADO 🔥 */
+    .badge-tipo { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+    .tipo-frota { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .tipo-agregado { background: rgba(249, 115, 22, 0.15); color: var(--pizzatto-orange); border: 1px solid rgba(249, 115, 22, 0.3); }
 
     /* --- GERENCIAL E INTELIGÊNCIA --- */
     .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
@@ -207,6 +175,8 @@
     </div>
 
     <div class="filtros">
+        <div class="filtro-box" style="flex: 1.2;"><select id="filtroTipoFrota" multiple></select></div>
+
         <div class="filtro-box" style="flex: 0.8;">
             <input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa...">
             <datalist id="listaPlacas"></datalist>
@@ -235,7 +205,7 @@
         </div>
         <div class="table-container">
             <table>
-                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
+                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Tipo</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
                 <tbody id="tabela"></tbody>
             </table>
         </div>
@@ -318,7 +288,7 @@
 </div>
 
 <script>
-    // Inicializa os ícones do Lucide (precisa rodar para mostrar o cadeado)
+    // Inicializa os ícones do Lucide
     lucide.createIcons();
 
     let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
@@ -363,7 +333,8 @@
     }
 
     function iniciarApp() {
-        fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
+        // 🔥 LÊ O ARQUIVO DIRETO DO GITHUB PAGES 🔥
+        fetch("transacoes.json?v=" + new Date().getTime()).then(r => r.json()).then(j => {
             dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
 
@@ -377,17 +348,18 @@
             preencherFiltros(); 
             atualizarTudo(); 
             lucide.createIcons();
-        }).catch(e => console.error("Erro:", e));
+        }).catch(e => console.error("Erro ao carregar dados:", e));
     }
 
     function preencherFiltros() {
-        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set();
+        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set(), frotas = new Set();
         dadosBrutos.forEach(i => { 
             if (i.placa && i.placa.trim() !== '') placas.add(i.placa.trim()); 
             if (i.nomeCidade && i.nomeCidade.trim() !== '') cidades.add(i.nomeCidade.trim()); 
             if (i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento); 
             if (i.uf) ufs.add(i.uf); 
             if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
+            if (i.tipoFrota) frotas.add(i.tipoFrota); // Novo filtro
         });
 
         const listaPlacas = document.getElementById('listaPlacas');
@@ -419,9 +391,10 @@
             select.addEventListener('change', aplicarFiltros);
         };
 
-        initChoice('filtroPosto', postos, '⛽ Escolher vários Postos...');
-        initChoice('filtroUF', ufs, '🌎 Escolher várias UFs...');
-        initChoice('filtroProduto', prods, '🛢️ Escolher vários Produtos...');
+        initChoice('filtroTipoFrota', frotas, '🚚 Frota / Agregado');
+        initChoice('filtroPosto', postos, '⛽ Vários Postos...');
+        initChoice('filtroUF', ufs, '🌎 Várias UFs...');
+        initChoice('filtroProduto', prods, '🛢️ Vários Produtos...');
     }
 
     document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
@@ -436,6 +409,7 @@
         let dFim = document.getElementById('filtroDataFim').value;
 
         const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
+        let fTipoFrota = getVals('filtroTipoFrota');
         let fPosto = getVals('filtroPosto');
         let fUF = getVals('filtroUF');
         let fProduto = getVals('filtroProduto');
@@ -445,6 +419,7 @@
             if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
             if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
             
+            if (fTipoFrota.length > 0 && !fTipoFrota.includes(i.tipoFrota)) ok = false;
             if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
             if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
             if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
@@ -466,8 +441,26 @@
         dadosFiltrados.slice(0, 150).forEach(i => {
             total += Number(i.valorTransacao || 0); litros += Number(i.litros || 0);
             let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            // 🔥 COLUNA CIDADE ADICIONADA NA LINHA DEBAIXO 🔥
-            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade || '-'}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td></tr>`;
+            let dtStr = dt.toISOString().split("T")[0] + " " + dt.toTimeString().split(" ")[0];
+            
+            // 🔥 BADGE FROTA / AGREGADO 🔥
+            let badgeHtml = '';
+            if(i.tipoFrota === 'FROTA') badgeHtml = '<span class="badge-tipo tipo-frota">FROTA</span>';
+            else if(i.tipoFrota === 'AGREGADO') badgeHtml = '<span class="badge-tipo tipo-agregado">AGREGADO</span>';
+            else badgeHtml = `<span class="badge-tipo" style="background:#334155; color:#cbd5e1;">${i.tipoFrota || '-'}</span>`;
+
+            tb.innerHTML += `<tr>
+                <td>${dtStr}</td>
+                <td><strong style="color:var(--text-primary)">${i.placa}</strong></td>
+                <td>${badgeHtml}</td>
+                <td>${i.nomeReduzidoEstabelecimento}</td>
+                <td>${i.nomeCidade || '-'}</td>
+                <td>${i.uf}</td>
+                <td>${i.tipoCombustivel||'-'}</td>
+                <td class="num">${numeroPTBR(i.litros)}</td>
+                <td class="num">${moedaPTBR(i.valorTransacao)}</td>
+                <td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td>
+            </tr>`;
         });
         let tTotal = 0, tLitros = 0; dadosFiltrados.forEach(i => { tTotal += Number(i.valorTransacao || 0); tLitros += Number(i.litros || 0); });
         document.getElementById("total").innerText = moedaPTBR(tTotal); document.getElementById("litros").innerText = numeroPTBR(tLitros); document.getElementById("media").innerText = moedaPTBR(tTotal / tLitros || 0);
@@ -595,7 +588,8 @@
     }
 
     function baixarExcel() {
-        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
+        // 🔥 COLUNAS TIPO FROTA E CIDADE INCLUÍDAS NO EXCEL 🔥
+        let csv = ["DATA;HORA;PLACA;TIPO FROTA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
         dadosFiltrados.forEach(i => {
             let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             let data = d.toISOString().split("T")[0];
@@ -604,8 +598,10 @@
             let litros = Number(i.litros || 0).toFixed(2).replace('.', ',');
             let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
             let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
+            let frotaStr = i.tipoFrota || 'OUTROS';
+            let cidadeStr = i.nomeCidade || '';
             
-            csv.push(`${data};${hora};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro}`);
+            csv.push(`${data};${hora};${i.placa};${frotaStr};${i.nomeReduzidoEstabelecimento};${cidadeStr};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro}`);
         });
 
         let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
