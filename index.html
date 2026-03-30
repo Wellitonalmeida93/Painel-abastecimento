@@ -235,7 +235,7 @@
         </div>
         <div class="table-container">
             <table>
-                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
+                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
                 <tbody id="tabela"></tbody>
             </table>
         </div>
@@ -346,8 +346,7 @@
 
     function verificarSenha() {
         const senha = document.getElementById('inputSenha').value;
-        // 👇 A SENHA ESTÁ AQUI. PODE TROCAR SE QUISER!
-        if(senha === 'Pizzatto_&3gm5zQ742i') {
+        if(senha === 'Pizzatto2026') {
             sessionStorage.setItem('pizzatto_autenticado', 'true');
             liberarAcesso();
         } else {
@@ -360,10 +359,9 @@
     function liberarAcesso() {
         document.getElementById('tela-login').style.display = 'none';
         document.getElementById('app-container').style.display = 'block';
-        iniciarApp(); // Só baixa os dados depois que destrancar a porta!
+        iniciarApp(); 
     }
 
-    // 🔥 O MOTOR PRINCIPAL SÓ LIGA DEPOIS DA SENHA 🔥
     function iniciarApp() {
         fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
             dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
@@ -468,7 +466,8 @@
         dadosFiltrados.slice(0, 150).forEach(i => {
             total += Number(i.valorTransacao || 0); litros += Number(i.litros || 0);
             let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td></tr>`;
+            // 🔥 COLUNA CIDADE ADICIONADA NA LINHA DEBAIXO 🔥
+            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade || '-'}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td></tr>`;
         });
         let tTotal = 0, tLitros = 0; dadosFiltrados.forEach(i => { tTotal += Number(i.valorTransacao || 0); tLitros += Number(i.litros || 0); });
         document.getElementById("total").innerText = moedaPTBR(tTotal); document.getElementById("litros").innerText = numeroPTBR(tLitros); document.getElementById("media").innerText = moedaPTBR(tTotal / tLitros || 0);
