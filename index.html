@@ -155,7 +155,6 @@
             <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio" onerror="this.style.display='none'"></div>
             <div class="cabecalho-titulos">
                 <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
-                
                 <span class="cabecalho-subtitulo" style="display: flex; align-items: center; gap: 15px;">
                     PizzattoLog Transportes | Monitoramento Ticket Log
                     <span id="badgeAtualizacao" style="background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); letter-spacing: 1px;">
@@ -175,7 +174,7 @@
     </div>
 
     <div class="filtros">
-        <div class="filtro-box" style="flex: 1.2;"><select id="filtroTipoFrota" multiple></select></div>
+        <div class="filtro-box" style="flex: 1.2;"><select id="filtroCategoria" multiple></select></div>
 
         <div class="filtro-box" style="flex: 0.8;">
             <input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa...">
@@ -235,7 +234,6 @@
                     <span id="cardVarLabel" style="font-size: 13px; font-weight: bold; color: var(--text-secondary);">--</span>
                 </div>
             </div>
-            
             <div class="intel-container" style="padding: 20px;">
                 <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🟠 Maior Pico Registrado (Posto)</p>
                 <div style="display: flex; align-items: baseline; gap: 10px;">
@@ -243,7 +241,6 @@
                     <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
                 </div>
             </div>
-
             <div class="intel-container" style="padding: 20px; border-left: 4px solid var(--danger);">
                 <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🚨 Estado com Maior Alta</p>
                 <div style="display: flex; align-items: baseline; gap: 10px;">
@@ -288,9 +285,7 @@
 </div>
 
 <script>
-    // Inicializa os ícones do Lucide
     lucide.createIcons();
-
     let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
     let choicesInstances = {}; 
     
@@ -305,7 +300,6 @@
         'PR':'SUL', 'RS':'SUL', 'SC':'SUL'
     };
 
-    // 🔥 FUNÇÃO DE LOGIN E SEGURANÇA BÁSICA 🔥
     window.onload = function() {
         if(sessionStorage.getItem('pizzatto_autenticado') === 'true') {
             liberarAcesso();
@@ -316,7 +310,7 @@
 
     function verificarSenha() {
         const senha = document.getElementById('inputSenha').value;
-        if(senha === 'Pizzatto_&3gm5zQ742i') {
+        if(senha === 'Pizzatto2026') {
             sessionStorage.setItem('pizzatto_autenticado', 'true');
             liberarAcesso();
         } else {
@@ -333,7 +327,6 @@
     }
 
     function iniciarApp() {
-        // 🔥 LÊ O ARQUIVO DIRETO DO GITHUB PAGES 🔥
         fetch("transacoes.json?v=" + new Date().getTime()).then(r => r.json()).then(j => {
             dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
@@ -352,14 +345,14 @@
     }
 
     function preencherFiltros() {
-        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set(), frotas = new Set();
+        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set(), categorias = new Set();
         dadosBrutos.forEach(i => { 
             if (i.placa && i.placa.trim() !== '') placas.add(i.placa.trim()); 
             if (i.nomeCidade && i.nomeCidade.trim() !== '') cidades.add(i.nomeCidade.trim()); 
             if (i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento); 
             if (i.uf) ufs.add(i.uf); 
             if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
-            if (i.tipoFrota) frotas.add(i.tipoFrota); // Novo filtro
+            if (i.categoriaCliente) categorias.add(i.categoriaCliente); // MUDAMOS AQUI
         });
 
         const listaPlacas = document.getElementById('listaPlacas');
@@ -378,20 +371,13 @@
             });
             
             choicesInstances[id] = new Choices(select, {
-                removeItemButton: true,
-                searchEnabled: true,
-                placeholder: true,
-                placeholderValue: placeholder,
-                searchPlaceholderValue: "Pesquisar...",
-                itemSelectText: '',
-                noResultsText: 'Não encontrado',
-                noChoicesText: 'Fim'
+                removeItemButton: true, searchEnabled: true, placeholder: true, placeholderValue: placeholder,
+                searchPlaceholderValue: "Pesquisar...", itemSelectText: '', noResultsText: 'Não encontrado', noChoicesText: 'Fim'
             });
-            
             select.addEventListener('change', aplicarFiltros);
         };
 
-        initChoice('filtroTipoFrota', frotas, '🚚 Frota / Agregado');
+        initChoice('filtroCategoria', categorias, '🚚 Frota / Agregado');
         initChoice('filtroPosto', postos, '⛽ Vários Postos...');
         initChoice('filtroUF', ufs, '🌎 Várias UFs...');
         initChoice('filtroProduto', prods, '🛢️ Vários Produtos...');
@@ -409,7 +395,7 @@
         let dFim = document.getElementById('filtroDataFim').value;
 
         const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
-        let fTipoFrota = getVals('filtroTipoFrota');
+        let fCategoria = getVals('filtroCategoria');
         let fPosto = getVals('filtroPosto');
         let fUF = getVals('filtroUF');
         let fProduto = getVals('filtroProduto');
@@ -419,7 +405,8 @@
             if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
             if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
             
-            if (fTipoFrota.length > 0 && !fTipoFrota.includes(i.tipoFrota)) ok = false;
+            // FILTRO DE FROTA/AGREGADO CORRIGIDO
+            if (fCategoria.length > 0 && !fCategoria.includes(i.categoriaCliente)) ok = false;
             if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
             if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
             if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
@@ -443,11 +430,11 @@
             let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             let dtStr = dt.toISOString().split("T")[0] + " " + dt.toTimeString().split(" ")[0];
             
-            // 🔥 BADGE FROTA / AGREGADO 🔥
             let badgeHtml = '';
-            if(i.tipoFrota === 'FROTA') badgeHtml = '<span class="badge-tipo tipo-frota">FROTA</span>';
-            else if(i.tipoFrota === 'AGREGADO') badgeHtml = '<span class="badge-tipo tipo-agregado">AGREGADO</span>';
-            else badgeHtml = `<span class="badge-tipo" style="background:#334155; color:#cbd5e1;">${i.tipoFrota || '-'}</span>`;
+            // NOME DA VARIAVEL MUDADO AQUI TAMBÉM
+            if(i.categoriaCliente === 'FROTA') badgeHtml = '<span class="badge-tipo tipo-frota">FROTA</span>';
+            else if(i.categoriaCliente === 'AGREGADO') badgeHtml = '<span class="badge-tipo tipo-agregado">AGREGADO</span>';
+            else badgeHtml = `<span class="badge-tipo" style="background:#334155; color:#cbd5e1;">${i.categoriaCliente || 'OUTROS'}</span>`;
 
             tb.innerHTML += `<tr>
                 <td>${dtStr}</td>
@@ -588,7 +575,6 @@
     }
 
     function baixarExcel() {
-        // 🔥 COLUNAS TIPO FROTA E CIDADE INCLUÍDAS NO EXCEL 🔥
         let csv = ["DATA;HORA;PLACA;TIPO FROTA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
         dadosFiltrados.forEach(i => {
             let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
@@ -598,7 +584,7 @@
             let litros = Number(i.litros || 0).toFixed(2).replace('.', ',');
             let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
             let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
-            let frotaStr = i.tipoFrota || 'OUTROS';
+            let frotaStr = i.categoriaCliente || 'OUTROS';
             let cidadeStr = i.nomeCidade || '';
             
             csv.push(`${data};${hora};${i.placa};${frotaStr};${i.nomeReduzidoEstabelecimento};${cidadeStr};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro}`);
