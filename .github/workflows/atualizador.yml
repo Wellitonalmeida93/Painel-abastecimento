@@ -1,8 +1,9 @@
 name: Atualizador Automático Ticket Log
 
 on:
-  schedule:
-    - cron: '0 * * * *' # Roda no minuto zero de toda hora (ex: 14:00, 15:00)
+schedule:
+    # Roda às 06h, 10h, 14h, 17h e 20h (Horário de Brasília)
+    - cron: '0 9,13,17,20,23 * * *'
   workflow_dispatch: # Cria um botão mágico para você testar na hora que quiser
 
 permissions:
