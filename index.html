@@ -59,48 +59,56 @@
     .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
     .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
 
-    /* 🔹 FILTROS GLOBAIS - CAIXAS NORMAIS */
-    .filtros { display: flex; flex-wrap: wrap; gap: 12px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: center; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .filtros input { height: 38px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
-    .filtros input::placeholder { color: #64748b; }
-    .filtros input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    /* 🔹 FILTROS GLOBAIS - ESPAÇAMENTO AUMENTADO */
+    .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .filtro-box { flex: 1; min-width: 140px; } /* Wrappers para não encavalar */
+    .filtros input[type="date"] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
+    .filtros input[type="date"]:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
     
-    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
+    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
     .btn-excel:hover { background: #059669; transform: translateY(-2px); }
 
-    /* 🔥 CORREÇÕES CHOICES.JS (DARK THEME E ALINHAMENTO FORÇADO) 🔥 */
-    .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); }
+    /* 🔥 CORREÇÕES CHOICES.JS (SCROLLBAR DARK E ESPAÇOS) 🔥 */
+    .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); box-sizing: border-box; }
     .choices__inner { 
         background-color: var(--bg-input) !important; 
         border: 1px solid var(--border) !important; 
         border-radius: 8px !important; 
         min-height: 38px !important; 
-        padding: 0px 8px !important; /* Controle interno */
+        padding: 2px 8px !important; 
         display: flex !important; 
+        flex-wrap: wrap !important;
         align-items: center !important; 
         gap: 5px !important;
     }
     .choices__input { color: var(--text-primary) !important; background-color: transparent !important; margin: 0 !important;}
     .choices__input::placeholder { color: #64748b; font-weight: 600; }
     
-    /* Fundo Escuro do Menu Dropdown Forçado */
+    /* Fundo Escuro Forçado e SCROLLBAR Escura */
     .choices__list--dropdown, .choices__list[aria-expanded] { 
         background-color: var(--bg-card) !important; 
         border: 1px solid var(--border) !important; 
         border-radius: 8px !important; 
         z-index: 9999 !important; 
         box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important;
+        overflow-y: auto !important;
     }
+    
+    /* Mágica da Barra de Rolagem Dark */
+    .choices__list--dropdown::-webkit-scrollbar { width: 8px; }
+    .choices__list--dropdown::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 0 8px 8px 0; }
+    .choices__list--dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .choices__list--dropdown::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
     .choices__list--dropdown .choices__item { 
         color: var(--text-primary) !important; 
         font-size: 13px !important; 
         border-bottom: 1px solid var(--border) !important; 
-        background-color: var(--bg-card) !important; /* Esmaga o fundo branco */
+        background-color: var(--bg-card) !important;
     }
     .choices__list--dropdown .choices__item.is-highlighted { background-color: #334155 !important; }
-    .choices__list--dropdown .choices__input { background-color: var(--bg-input) !important; border: 1px solid var(--border) !important; color: var(--text-primary) !important;}
-
-    /* Balõezinhos (Tags Escolhidas) */
+    
+    /* Balõezinhos Vermelhos (Tags) */
     .choices__list--multiple .choices__item { 
         background-color: var(--pizzatto-red) !important; 
         border: 1px solid var(--pizzatto-orange) !important; 
@@ -167,18 +175,15 @@
     </div>
 
     <div class="filtros">
-        <input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa..." style="width:130px">
-        <datalist id="listaPlacas"></datalist>
-
-        <input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..." style="width:150px">
-        <datalist id="listaCidades"></datalist>
-
-        <input type="date" id="filtroDataInicio" title="Data Inicial">
-        <input type="date" id="filtroDataFim" title="Data Final">
+        <div class="filtro-box"><select id="filtroPlaca" multiple></select></div>
+        <div class="filtro-box"><select id="filtroCidade" multiple></select></div>
         
-        <div style="width: 220px;"><select id="filtroPosto" multiple></select></div>
-        <div style="width: 100px;"><select id="filtroUF" multiple></select></div>
-        <div style="width: 180px;"><select id="filtroProduto" multiple></select></div>
+        <div class="filtro-box" style="flex: 0.5;"><input type="date" id="filtroDataInicio" title="Data Inicial"></div>
+        <div class="filtro-box" style="flex: 0.5;"><input type="date" id="filtroDataFim" title="Data Final"></div>
+        
+        <div class="filtro-box" style="flex: 1.5;"><select id="filtroPosto" multiple></select></div>
+        <div class="filtro-box" style="flex: 0.8;"><select id="filtroUF" multiple></select></div>
+        <div class="filtro-box"><select id="filtroProduto" multiple></select></div>
         
         <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Baixar Excel</button>
     </div>
@@ -306,14 +311,7 @@
             if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
         });
 
-        // 1. Placa e Cidade (Inputs com Lista Invisível nativa)
-        const listaPlacas = document.getElementById('listaPlacas');
-        Array.from(placas).sort().forEach(p => listaPlacas.innerHTML += `<option value="${p}">`);
-        
-        const listaCidades = document.getElementById('listaCidades');
-        Array.from(cidades).sort().forEach(c => listaCidades.innerHTML += `<option value="${c}">`);
-
-        // 2. Posto, UF e Produto (Multi-Select Premium)
+        // Todos os 5 campos agora são Multi-Select Premium
         const initChoice = (id, set, placeholder) => {
             const select = document.getElementById(id);
             Array.from(set).sort().forEach(val => {
@@ -337,35 +335,33 @@
             select.addEventListener('change', aplicarFiltros);
         };
 
+        initChoice('filtroPlaca', placas, '🚗 Placas...');
+        initChoice('filtroCidade', cidades, '🏙️ Cidades...');
         initChoice('filtroPosto', postos, '⛽ Postos...');
         initChoice('filtroUF', ufs, '🌎 UFs...');
         initChoice('filtroProduto', prods, '🛢️ Produtos...');
     }
 
-    // Escutando os campos de texto e data
-    document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroCidade').addEventListener("input", aplicarFiltros);
+    // Escutando apenas as datas, o resto escuta via Change da biblioteca
     document.getElementById('filtroDataInicio').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroDataFim').addEventListener("input", aplicarFiltros);
 
     function aplicarFiltros() {
-        // Pegando texto normal
-        let fPlaca = document.getElementById('filtroPlaca').value.toLowerCase();
-        let fCidade = document.getElementById('filtroCidade').value.toLowerCase();
         let dIni = document.getElementById('filtroDataInicio').value;
         let dFim = document.getElementById('filtroDataFim').value;
 
         // Pegando arrays dos selects múltiplos
         const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
+        let fPlaca = getVals('filtroPlaca');
+        let fCidade = getVals('filtroCidade');
         let fPosto = getVals('filtroPosto');
         let fUF = getVals('filtroUF');
         let fProduto = getVals('filtroProduto');
 
         dadosFiltrados = dadosBrutos.filter(i => {
             let ok = true;
-            if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
-            if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
-            
+            if (fPlaca.length > 0 && !fPlaca.includes(i.placa)) ok = false;
+            if (fCidade.length > 0 && !fCidade.includes(i.nomeCidade)) ok = false;
             if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
             if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
             if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
