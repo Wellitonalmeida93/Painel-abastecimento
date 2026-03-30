@@ -62,8 +62,8 @@
     /* 🔹 FILTROS GLOBAIS - ESPAÇAMENTO AUMENTADO */
     .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     .filtro-box { flex: 1; min-width: 140px; } /* Wrappers para não encavalar */
-    .filtros input[type="date"] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
-    .filtros input[type="date"]:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
+    .filtros input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
     
     .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
     .btn-excel:hover { background: #059669; transform: translateY(-2px); }
@@ -162,7 +162,14 @@
             <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio" onerror="this.style.display='none'"></div>
             <div class="cabecalho-titulos">
                 <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
-                <span class="cabecalho-subtitulo">PizzattoLog Transportes | Monitoramento Ticket Log</span>
+                
+                <span class="cabecalho-subtitulo" style="display: flex; align-items: center; gap: 15px;">
+                    PizzattoLog Transportes | Monitoramento Ticket Log
+                    <span id="badgeAtualizacao" style="background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); letter-spacing: 1px;">
+                        <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>
+                        ATUALIZADO: --/--/----
+                    </span>
+                </span>
             </div>
         </div>
     </header>
@@ -175,15 +182,22 @@
     </div>
 
     <div class="filtros">
-        <div class="filtro-box"><select id="filtroPlaca" multiple></select></div>
-        <div class="filtro-box"><select id="filtroCidade" multiple></select></div>
+        <div class="filtro-box" style="flex: 0.8;">
+            <input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa...">
+            <datalist id="listaPlacas"></datalist>
+        </div>
+
+        <div class="filtro-box" style="flex: 1;">
+            <input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade...">
+            <datalist id="listaCidades"></datalist>
+        </div>
         
-        <div class="filtro-box" style="flex: 0.5;"><input type="date" id="filtroDataInicio" title="Data Inicial"></div>
-        <div class="filtro-box" style="flex: 0.5;"><input type="date" id="filtroDataFim" title="Data Final"></div>
+        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataInicio" title="Data Inicial"></div>
+        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataFim" title="Data Final"></div>
         
         <div class="filtro-box" style="flex: 1.5;"><select id="filtroPosto" multiple></select></div>
         <div class="filtro-box" style="flex: 0.8;"><select id="filtroUF" multiple></select></div>
-        <div class="filtro-box"><select id="filtroProduto" multiple></select></div>
+        <div class="filtro-box" style="flex: 1.5;"><select id="filtroProduto" multiple></select></div>
         
         <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Baixar Excel</button>
     </div>
@@ -294,8 +308,18 @@
     };
 
     fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
+        // Ordena do mais novo pro mais antigo
         dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
         dadosFiltrados = [...dadosBrutos];
+
+        // 🔥 MÁGICA DA ÚLTIMA ATUALIZAÇÃO 🔥
+        if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
+            let ultimaData = new Date(dadosBrutos[0].dataTransacao);
+            let dataFmt = ultimaData.toLocaleDateString('pt-BR');
+            let horaFmt = ultimaData.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('badgeAtualizacao').innerHTML = `<i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>ATUALIZADO: ${dataFmt} ÀS ${horaFmt}`;
+        }
+
         preencherFiltros(); 
         atualizarTudo(); 
         lucide.createIcons();
@@ -311,7 +335,14 @@
             if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
         });
 
-        // Todos os 5 campos agora são Multi-Select Premium
+        // 1. Placa e Cidade (Inputs com Lista Invisível nativa)
+        const listaPlacas = document.getElementById('listaPlacas');
+        Array.from(placas).sort().forEach(p => listaPlacas.innerHTML += `<option value="${p}">`);
+        
+        const listaCidades = document.getElementById('listaCidades');
+        Array.from(cidades).sort().forEach(c => listaCidades.innerHTML += `<option value="${c}">`);
+
+        // 2. Posto, UF e Produto (Multi-Select Premium)
         const initChoice = (id, set, placeholder) => {
             const select = document.getElementById(id);
             Array.from(set).sort().forEach(val => {
@@ -335,33 +366,36 @@
             select.addEventListener('change', aplicarFiltros);
         };
 
-        initChoice('filtroPlaca', placas, '🚗 Placas...');
-        initChoice('filtroCidade', cidades, '🏙️ Cidades...');
-        initChoice('filtroPosto', postos, '⛽ Postos...');
-        initChoice('filtroUF', ufs, '🌎 UFs...');
-        initChoice('filtroProduto', prods, '🛢️ Produtos...');
+        // Textos alterados para deixar claro que pode escolher vários
+        initChoice('filtroPosto', postos, '⛽ Escolher vários Postos...');
+        initChoice('filtroUF', ufs, '🌎 Escolher várias UFs...');
+        initChoice('filtroProduto', prods, '🛢️ Escolher vários Produtos...');
     }
 
-    // Escutando apenas as datas, o resto escuta via Change da biblioteca
+    // Escutando apenas as datas e os campos de texto nativos
+    document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
+    document.getElementById('filtroCidade').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroDataInicio').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroDataFim').addEventListener("input", aplicarFiltros);
 
     function aplicarFiltros() {
+        // Pegando texto normal
+        let fPlaca = document.getElementById('filtroPlaca').value.toLowerCase();
+        let fCidade = document.getElementById('filtroCidade').value.toLowerCase();
         let dIni = document.getElementById('filtroDataInicio').value;
         let dFim = document.getElementById('filtroDataFim').value;
 
         // Pegando arrays dos selects múltiplos
         const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
-        let fPlaca = getVals('filtroPlaca');
-        let fCidade = getVals('filtroCidade');
         let fPosto = getVals('filtroPosto');
         let fUF = getVals('filtroUF');
         let fProduto = getVals('filtroProduto');
 
         dadosFiltrados = dadosBrutos.filter(i => {
             let ok = true;
-            if (fPlaca.length > 0 && !fPlaca.includes(i.placa)) ok = false;
-            if (fCidade.length > 0 && !fCidade.includes(i.nomeCidade)) ok = false;
+            if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
+            if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
+            
             if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
             if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
             if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
