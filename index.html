@@ -32,6 +32,20 @@
     .container { padding: 20px; max-width: 1600px; margin: auto; }
     h1, h2, h3 { font-family: 'Poppins', sans-serif; }
 
+    /* --- TELA DE LOGIN PREMIUM --- */
+    #tela-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
+    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; overflow: hidden; }
+    .login-box::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(255,255,255,0) 60%); pointer-events: none; }
+    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .login-logo img { height: 50px; }
+    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
+    .login-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
+    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
+    .login-box input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 2; position: relative;}
+    .login-box button:hover { background: #b91c1c; transform: translateY(-2px); }
+    #msg-erro { color: var(--danger); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; }
+
     /* --- CABEÇALHO PROFISSIONAL --- */
     header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
     header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
@@ -156,7 +170,18 @@
 </head>
 <body>
 
-<div class="container">
+<div id="tela-login">
+    <div class="login-box">
+        <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" onerror="this.style.display='none'"></div>
+        <h2>Acesso Restrito</h2>
+        <p>Insira a senha de administrador para acessar o Painel de Inteligência.</p>
+        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px; vertical-align: -2px;"></i> Senha incorreta! Tente novamente.</div>
+        <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
+        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
+    </div>
+</div>
+
+<div class="container" id="app-container" style="display: none;">
     <header>
         <div class="cabecalho-conteudo">
             <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio" onerror="this.style.display='none'"></div>
@@ -167,7 +192,7 @@
                     PizzattoLog Transportes | Monitoramento Ticket Log
                     <span id="badgeAtualizacao" style="background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); letter-spacing: 1px;">
                         <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>
-                        ATUALIZADO: --/--/----
+                        ATUALIZADO: CARREGANDO...
                     </span>
                 </span>
             </div>
@@ -293,8 +318,11 @@
 </div>
 
 <script>
+    // Inicializa os ícones do Lucide (precisa rodar para mostrar o cadeado)
+    lucide.createIcons();
+
     let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
-    let choicesInstances = {}; // Guarda as instâncias do filtro
+    let choicesInstances = {}; 
     
     const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -307,23 +335,52 @@
         'PR':'SUL', 'RS':'SUL', 'SC':'SUL'
     };
 
-    fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
-        // Ordena do mais novo pro mais antigo
-        dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
-        dadosFiltrados = [...dadosBrutos];
-
-        // 🔥 MÁGICA DA ÚLTIMA ATUALIZAÇÃO 🔥
-        if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
-            let ultimaData = new Date(dadosBrutos[0].dataTransacao);
-            let dataFmt = ultimaData.toLocaleDateString('pt-BR');
-            let horaFmt = ultimaData.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('badgeAtualizacao').innerHTML = `<i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>ATUALIZADO: ${dataFmt} ÀS ${horaFmt}`;
+    // 🔥 FUNÇÃO DE LOGIN E SEGURANÇA BÁSICA 🔥
+    window.onload = function() {
+        if(sessionStorage.getItem('pizzatto_autenticado') === 'true') {
+            liberarAcesso();
+        } else {
+            document.getElementById('inputSenha').focus();
         }
+    };
 
-        preencherFiltros(); 
-        atualizarTudo(); 
-        lucide.createIcons();
-    }).catch(e => console.error("Erro:", e));
+    function verificarSenha() {
+        const senha = document.getElementById('inputSenha').value;
+        // 👇 A SENHA ESTÁ AQUI. PODE TROCAR SE QUISER!
+        if(senha === 'Pizzatto_&3gm5zQ742i') {
+            sessionStorage.setItem('pizzatto_autenticado', 'true');
+            liberarAcesso();
+        } else {
+            document.getElementById('msg-erro').style.display = 'block';
+            document.getElementById('inputSenha').value = '';
+            document.getElementById('inputSenha').focus();
+        }
+    }
+
+    function liberarAcesso() {
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        iniciarApp(); // Só baixa os dados depois que destrancar a porta!
+    }
+
+    // 🔥 O MOTOR PRINCIPAL SÓ LIGA DEPOIS DA SENHA 🔥
+    function iniciarApp() {
+        fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
+            dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
+            dadosFiltrados = [...dadosBrutos];
+
+            if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
+                let ultimaData = new Date(dadosBrutos[0].dataTransacao);
+                let dataFmt = ultimaData.toLocaleDateString('pt-BR');
+                let horaFmt = ultimaData.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('badgeAtualizacao').innerHTML = `<i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>ATUALIZADO: ${dataFmt} ÀS ${horaFmt}`;
+            }
+
+            preencherFiltros(); 
+            atualizarTudo(); 
+            lucide.createIcons();
+        }).catch(e => console.error("Erro:", e));
+    }
 
     function preencherFiltros() {
         let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set();
@@ -335,14 +392,12 @@
             if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
         });
 
-        // 1. Placa e Cidade (Inputs com Lista Invisível nativa)
         const listaPlacas = document.getElementById('listaPlacas');
         Array.from(placas).sort().forEach(p => listaPlacas.innerHTML += `<option value="${p}">`);
         
         const listaCidades = document.getElementById('listaCidades');
         Array.from(cidades).sort().forEach(c => listaCidades.innerHTML += `<option value="${c}">`);
 
-        // 2. Posto, UF e Produto (Multi-Select Premium)
         const initChoice = (id, set, placeholder) => {
             const select = document.getElementById(id);
             Array.from(set).sort().forEach(val => {
@@ -366,26 +421,22 @@
             select.addEventListener('change', aplicarFiltros);
         };
 
-        // Textos alterados para deixar claro que pode escolher vários
         initChoice('filtroPosto', postos, '⛽ Escolher vários Postos...');
         initChoice('filtroUF', ufs, '🌎 Escolher várias UFs...');
         initChoice('filtroProduto', prods, '🛢️ Escolher vários Produtos...');
     }
 
-    // Escutando apenas as datas e os campos de texto nativos
     document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroCidade').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroDataInicio').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroDataFim').addEventListener("input", aplicarFiltros);
 
     function aplicarFiltros() {
-        // Pegando texto normal
         let fPlaca = document.getElementById('filtroPlaca').value.toLowerCase();
         let fCidade = document.getElementById('filtroCidade').value.toLowerCase();
         let dIni = document.getElementById('filtroDataInicio').value;
         let dFim = document.getElementById('filtroDataFim').value;
 
-        // Pegando arrays dos selects múltiplos
         const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
         let fPosto = getVals('filtroPosto');
         let fUF = getVals('filtroUF');
