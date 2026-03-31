@@ -13,284 +13,331 @@
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
 <style>
-    :root {
-        --bg-main: #0b0f19;
-        --bg-card: #111827;
-        --bg-input: #1e293b; 
-        --pizzatto-red: #dc2626; 
-        --pizzatto-orange: #f97316; 
-        --text-primary: #f8fafc;
-        --text-secondary: #94a3b8;
-        --border: #334155;
-        --success: #10b981;
-        --danger: #f87171;
-        --blue: #3b82f6;
-    }
+    /* --- CONFIGURAÇÕES GERAIS --- */
+    :root {
+        --bg-main: #0b0f19;
+        --bg-card: #111827;
+        --bg-input: #1e293b; 
+        --pizzatto-red: #dc2626; 
+        --pizzatto-orange: #f97316; 
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --border: #334155;
+        --success: #10b981;
+        --danger: #f87171;
+        --blue: #3b82f6;
+    }
 
-    body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
-    .container { padding: 20px; max-width: 1600px; margin: auto; }
-    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
+    .container { padding: 20px; max-width: 1600px; margin: auto; }
+    h1, h2, h3 { font-family: 'Poppins', sans-serif; }
 
-    /* LOGIN PREMIUM */
-    #tela-login { position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
-    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; }
-    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; }
-    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
-    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
-    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
-    .login-box button:hover { background: #b91c1c; transform: translateY(-2px); }
+    /* --- TELA DE LOGIN PREMIUM --- */
+    #tela-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
+    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; overflow: hidden; }
+    .login-box::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(255,255,255,0) 60%); pointer-events: none; }
+    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .login-logo img { height: 50px; }
+    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
+    .login-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
+    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
+    .login-box input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 2; position: relative;}
+    .login-box button:hover { background: #b91c1c; transform: translateY(-2px); }
+    #msg-erro { color: var(--danger); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; }
 
-    /* HEADER */
-    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
-    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); margin-right: 20px; }
-    .logo-relatorio { height: 50px; width: auto; }
-    .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
+    /* --- CABEÇALHO PROFISSIONAL --- */
+    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
+    header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
+    .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
+    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .logo-relatorio { height: 60px; width: auto; }
+    .cabecalho-titulos { display: flex; flex-direction: column; }
+    .cabecalho-titulos h1 { font-size: 30px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
+    .icon-bomba { color: var(--pizzatto-orange); width: 32px; height: 32px; }
+    .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
+    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
 
-    /* NAVEGAÇÃO TABS */
-    .tabs { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .tabs button { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-    .tabs button:hover { background: #334155; color: white; }
-    .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); border-bottom: 3px solid var(--pizzatto-orange); }
+    /* --- NAVEGAÇÃO --- */
+    .tabs { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tabs button { background: var(--bg-input); border: none; color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
+    .tabs button:hover { background: #334155; color: white; transform: translateY(-1px); }
+    .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); border-bottom: 3px solid var(--pizzatto-orange); }
+    .btn-sheets { background: #064e3b !important; border-color: #065f46 !important; } 
+    .btn-sheets:hover { background: #059669 !important; }
+    .btn-sheets.active { background: #10b981 !important; border-bottom: 3px solid #047857 !important; color: white !important;}
 
-    /* KPIS */
-    .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
-    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
-    .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
+    /* --- DASHBOARD ELEMENTS --- */
+    .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
+    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
+    .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
 
-    /* FILTROS GLOBAIS - FUNDO ESCURO */
-    .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); }
-    .filtro-box { flex: 1; min-width: 140px; }
-    .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; }
-    
-    /* CHOICES.JS DARK FIX */
-    .choices__input { background-color: transparent !important; color: var(--text-primary) !important; }
-    .choices__inner { background-color: var(--bg-input) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; min-height: 38px !important; }
-    .choices__list--dropdown, .choices__list[aria-expanded] { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; z-index: 999; }
-    .choices__list--dropdown .choices__item { color: var(--text-primary) !important; border-bottom: 1px solid var(--border) !important; }
+    /* FILTROS GLOBAIS */
+    .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .filtro-box { flex: 1; min-width: 140px; }
+    .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
+    .filtros input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    
+    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
+    .btn-excel:hover { background: #059669; transform: translateY(-2px); }
 
-    /* TABELA */
-    .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-    tr:hover { background: rgba(255,255,255,0.03); }
-    .num { text-align: right; font-family: monospace; font-size: 14px; }
-    .caro { color: var(--danger); font-weight: bold; }
+    /* CHOICES.JS DARK */
+    .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); box-sizing: border-box; }
+    .choices__inner { background-color: var(--bg-input) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; min-height: 38px !important; padding: 2px 8px !important; display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 5px !important; }
+    .choices__list--dropdown, .choices__list[aria-expanded] { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; z-index: 9999 !important; box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important; overflow-y: auto !important; }
+    .choices__list--dropdown::-webkit-scrollbar { width: 8px; }
+    .choices__list--dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .choices__list--dropdown .choices__item { color: var(--text-primary) !important; font-size: 13px !important; border-bottom: 1px solid var(--border) !important; background-color: var(--bg-card) !important; }
+    .choices__list--dropdown .choices__item.is-highlighted { background-color: #334155 !important; }
+    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red) !important; border: 1px solid var(--pizzatto-orange) !important; border-radius: 6px !important; font-size: 12px !important; font-weight: bold !important; padding: 4px 8px !important; margin: 0 !important; }
 
-    /* GERENCIAL & INTEL */
-    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-    .intel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
-    .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
-    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); }
-    .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; }
+    /* TABELAS */
+    .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+    tr:hover { background: rgba(255,255,255,0.03); }
+    .num { text-align: right; font-family: monospace; font-size: 14px; }
+    .caro { color: var(--danger); font-weight: bold; }
+
+    /* GERENCIAL E INTELIGÊNCIA */
+    .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
+    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
+    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+    /* INTELIGÊNCIA */
+    .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
+    .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+    .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
+    .bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
+    .fill-alta { background: var(--danger); }
+    .fill-baixa { background: var(--success); }
+    .fill-neutro { background: #64748b; }
+    .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); color: var(--text-primary); }
+    .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; font-weight: bold; }
+    .uf-alta { background: rgba(239, 68, 68, 0.05); color: var(--danger); }
+    .uf-baixa { background: rgba(16, 185, 129, 0.05); color: var(--success); }
 </style>
 </head>
 <body>
 
 <div id="tela-login">
-    <div class="login-box">
-        <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" style="height:50px;" onerror="this.style.display='none'"></div>
-        <h2>Acesso Restrito</h2>
-        <p>Painel de Inteligência PizzattoLog 2026</p>
-        <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
-        <button onclick="verificarSenha()">Acessar BI</button>
-    </div>
+    <div class="login-box">
+        <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" onerror="this.style.display='none'"></div>
+        <h2>Acesso Restrito</h2>
+        <p>Insira a senha de administrador para acessar o Painel de Inteligência.</p>
+        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px; vertical-align: -2px;"></i> Senha incorreta! Tente novamente.</div>
+        <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
+        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
+    </div>
 </div>
 
 <div class="container" id="app-container" style="display: none;">
-    <header>
-        <div class="logo-container"><img src="logo.png?v=3" class="logo-relatorio" onerror="this.parentElement.style.display='none'"></div>
-        <div>
-            <h1 style="margin:0;"><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
-            <small id="badgeAtualizacao" style="color:var(--success); font-weight:bold;">Sincronizando...</small>
-        </div>
-    </header>
+    <header>
+        <div class="cabecalho-conteudo">
+            <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio" onerror="this.style.display='none'"></div>
+            <div class="cabecalho-titulos">
+                <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
+                <span class="cabecalho-subtitulo" style="display: flex; align-items: center; gap: 15px;">
+                    PizzattoLog Transportes | Monitoramento Ticket Log
+                    <span id="badgeAtualizacao" style="background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); letter-spacing: 1px;">ATUALIZADO: CARREGANDO...</span>
+                </span>
+            </div>
+        </div>
+    </header>
 
-    <div class="tabs">
-        <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Abastecimentos</button>
-        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> KPI Gerencial</button>
-        <button id="btn-intel" onclick="mostrarAba('intel')"><i data-lucide="radar"></i> Inteligência</button>
-    </div>
+    <div class="tabs">
+        <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Abastecimentos</button>
+        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> KPI Gerencial</button>
+        <button id="btn-intel" onclick="mostrarAba('intel')"><i data-lucide="radar"></i> Inteligência</button>
+        <button id="btn-sheets" class="btn-sheets" onclick="mostrarAba('sheets')"><i data-lucide="database"></i> Valores Diesel</button>
+    </div>
 
-    <div class="filtros">
-        <div class="filtro-box"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Placa..."><datalist id="listaPlacas"></datalist></div>
-        <div class="filtro-box"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."><datalist id="listaCidades"></datalist></div>
-        <div class="filtro-box"><input type="date" id="filtroDataInicio"></div>
-        <div class="filtro-box"><input type="date" id="filtroDataFim"></div>
-        <div class="filtro-box"><select id="filtroPosto" multiple></select></div>
-        <div class="filtro-box"><select id="filtroUF" multiple></select></div>
-    </div>
+    <div class="filtros">
+        <div class="filtro-box" style="flex: 0.8;"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa..."><datalist id="listaPlacas"></datalist></div>
+        <div class="filtro-box" style="flex: 1;"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."><datalist id="listaCidades"></datalist></div>
+        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataInicio"></div>
+        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataFim"></div>
+        <div class="filtro-box" style="flex: 1.5;"><select id="filtroPosto" multiple></select></div>
+        <div class="filtro-box" style="flex: 0.8;"><select id="filtroUF" multiple></select></div>
+        <div class="filtro-box" style="flex: 1.5;"><select id="filtroProduto" multiple></select></div>
+        <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Excel</button>
+    </div>
 
-    <div id="aba-operacional">
-        <div class="kpis">
-            <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
-            <div class="kpi"><label>Litros Totais</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr>
-                </thead>
-                <tbody id="tabela"></tbody>
-            </table>
-        </div>
-    </div>
+    <div id="aba-operacional">
+        <div class="kpis">
+            <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
+            <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
+            <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
+                <tbody id="tabela"></tbody>
+            </table>
+        </div>
+    </div>
 
-    <div id="aba-gerencial" style="display:none;">
-        <div class="card-chart"><h3>Evolução Diária (R$)</h3><div style="height:300px;"><canvas id="graficoEvolucao"></canvas></div></div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-            <div class="card-chart"><h3>Gastos por Estado (UF)</h3><div style="height:300px;"><canvas id="graficoUF"></canvas></div></div>
-            <div class="card-chart"><h3>Top 10 Postos (Consumo)</h3><div style="height:300px;"><canvas id="graficoPostos"></canvas></div></div>
-        </div>
-        <div class="card-chart">
-            <h3>⚠️ Top 10 Preços Mais Altos</h3>
-            <table style="width:100%"><tbody id="listaMaioresPrecos"></tbody></table>
-        </div>
-    </div>
+    <div id="aba-gerencial" style="display:none;">
+        <div class="card-chart" style="margin-bottom: 20px;"><h3>Evolução Diária (R$)</h3><div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="card-chart"><h3>Gastos por Estado (UF)</h3><div style="height: 350px;"><canvas id="graficoUF"></canvas></div></div>
+            <div class="card-chart"><h3>Ranking de Postos</h3><div style="height: 350px;"><canvas id="graficoPostos"></canvas></div></div>
+        </div>
+    </div>
 
-    <div id="aba-intel" style="display:none;">
-        <div class="intel-grid" id="intelCards"></div>
-        <div id="gridRegioes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;"></div>
-    </div>
+    <div id="aba-intel" style="display:none;">
+        <div id="kpisIntel" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;"></div>
+        <div id="gridRegioes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;"></div>
+    </div>
+
+    <div id="aba-sheets" style="display:none;">
+        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?widget=true&amp;headers=false" style="width: 100%; height: 75vh;"></iframe>
+    </div>
 </div>
 
 <script>
-    lucide.createIcons();
-    let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let choicesInstances = {};
+    lucide.createIcons();
+    let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
+    let choicesInstances = {}; 
 
-    const moeda = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2});
-    const numero = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2});
+    function verificarSenha() {
+        if(document.getElementById('inputSenha').value === 'Pizzatto_&3gm5zQ742i') {
+            sessionStorage.setItem('pizzatto_autenticado', 'true');
+            liberarAcesso();
+        } else { document.getElementById('msg-erro').style.display = 'block'; }
+    }
 
-    function verificarSenha() {
-        if(document.getElementById('inputSenha').value === 'Pizzatto_&3gm5zQ742i') {
-            document.getElementById('tela-login').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            iniciar();
-        } else { alert("Senha incorreta!"); }
-    }
+    function liberarAcesso() {
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        iniciarApp();
+    }
 
-    function iniciar() {
-        fetch("transacoes.json?v=" + Date.now()).then(r => r.json()).then(j => {
-            dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
-            if(dadosBrutos[0]) document.getElementById('badgeAtualizacao').innerText = "ATUALIZADO: " + new Date(dadosBrutos[0].dataTransacao).toLocaleString('pt-BR');
-            preencherFiltros();
-            filtrar();
-        });
-    }
+    function iniciarApp() {
+        fetch("transacoes.json?v=" + Date.now()).then(r => r.json()).then(j => {
+            dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
+            dadosFiltrados = [...dadosBrutos];
+            if(dadosBrutos[0]) {
+                const dt = new Date(dadosBrutos[0].dataTransacao);
+                document.getElementById('badgeAtualizacao').innerText = `ATUALIZADO: ${dt.toLocaleDateString('pt-BR')} ${dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+            }
+            preencherFiltros();
+            atualizarTudo();
+        });
+    }
 
-    function preencherFiltros() {
-        let pks = new Set(), cds = new Set(), pts = new Set(), ufs = new Set();
-        dadosBrutos.forEach(i => { pks.add(i.placa); cds.add(i.nomeCidade); pts.add(i.nomeReduzidoEstabelecimento); ufs.add(i.uf); });
-        
-        document.getElementById('listaPlacas').innerHTML = Array.from(pks).sort().map(p => `<option value="${p}">`).join('');
-        document.getElementById('listaCidades').innerHTML = Array.from(cds).sort().map(c => `<option value="${c}">`).join('');
+    function preencherFiltros() {
+        let pks = new Set(), cds = new Set(), pts = new Set(), ufs = new Set(), prods = new Set();
+        dadosBrutos.forEach(i => {
+            if(i.placa) pks.add(i.placa);
+            if(i.nomeCidade) cds.add(i.nomeCidade);
+            if(i.nomeReduzidoEstabelecimento) pts.add(i.nomeReduzidoEstabelecimento);
+            if(i.uf) ufs.add(i.uf);
+            if(i.tipoCombustivel) prods.add(i.tipoCombustivel);
+        });
+        const lp = document.getElementById('listaPlacas'); pks.forEach(p => lp.innerHTML += `<option value="${p}">`);
+        const lc = document.getElementById('listaCidades'); cds.forEach(c => lc.innerHTML += `<option value="${c}">`);
+        const initChoice = (id, set, ph) => {
+            const el = document.getElementById(id);
+            Array.from(set).sort().forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
+            choicesInstances[id] = new Choices(el, { removeItemButton: true, placeholderValue: ph });
+            el.addEventListener('change', aplicarFiltros);
+        };
+        initChoice('filtroPosto', pts, 'Postos...');
+        initChoice('filtroUF', ufs, 'UFs...');
+        initChoice('filtroProduto', prods, 'Produtos...');
+        ['filtroPlaca', 'filtroCidade', 'filtroDataInicio', 'filtroDataFim'].forEach(id => document.getElementById(id).addEventListener('input', aplicarFiltros));
+    }
 
-        const initChoice = (id, set, ph) => {
-            const el = document.getElementById(id);
-            Array.from(set).sort().forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
-            choicesInstances[id] = new Choices(el, { removeItemButton: true, placeholderValue: ph });
-            el.addEventListener('change', filtrar);
-        };
-        initChoice('filtroPosto', pts, '⛽ Postos...');
-        initChoice('filtroUF', ufs, '🌎 UFs...');
+    function aplicarFiltros() {
+        const p = document.getElementById('filtroPlaca').value.toUpperCase();
+        const c = document.getElementById('filtroCidade').value.toUpperCase();
+        const di = document.getElementById('filtroDataInicio').value;
+        const df = document.getElementById('filtroDataFim').value;
+        const getV = id => choicesInstances[id].getValue(true);
+        const selP = getV('filtroPosto'), selU = getV('filtroUF'), selProd = getV('filtroProduto');
 
-        ['filtroPlaca', 'filtroCidade', 'filtroDataInicio', 'filtroDataFim'].forEach(id => document.getElementById(id).addEventListener('input', filtrar));
-    }
+        dadosFiltrados = dadosBrutos.filter(i => {
+            let ok = true;
+            if(p && !i.placa.includes(p)) ok = false;
+            if(c && !(i.nomeCidade||"").toUpperCase().includes(c)) ok = false;
+            if(selP.length && !selP.includes(i.nomeReduzidoEstabelecimento)) ok = false;
+            if(selU.length && !selU.includes(i.uf)) ok = false;
+            if(selProd.length && !selProd.includes(i.tipoCombustivel)) ok = false;
+            if(i.dataTransacao) {
+                const d = i.dataTransacao.split('T')[0];
+                if(di && d < di) ok = false; if(df && d > df) ok = false;
+            }
+            return ok;
+        });
+        atualizarTudo();
+    }
 
-    function filtrar() {
-        const p = document.getElementById('filtroPlaca').value.toUpperCase();
-        const c = document.getElementById('filtroCidade').value.toUpperCase();
-        const d1 = document.getElementById('filtroDataInicio').value;
-        const d2 = document.getElementById('filtroDataFim').value;
-        const sP = choicesInstances['filtroPosto'].getValue(true);
-        const sU = choicesInstances['filtroUF'].getValue(true);
+    function atualizarTudo() {
+        const tb = document.getElementById('tabela'); tb.innerHTML = '';
+        let tV = 0, tL = 0;
+        dadosFiltrados.slice(0, 150).forEach(i => {
+            tV += i.valorTransacao; tL += i.litros;
+            const dt = new Date(i.dataTransacao);
+            tb.innerHTML += `<tr>
+                <td>${dt.toLocaleDateString('pt-BR')} ${dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
+                <td><b>${i.placa}</b></td>
+                <td>${i.nomeReduzidoEstabelecimento}</td>
+                <td>${i.nomeCidade || '-'}</td>
+                <td>${i.uf}</td>
+                <td>${i.tipoCombustivel}</td>
+                <td class="num">${i.litros.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                <td class="num">R$ ${i.valorTransacao.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                <td class="num ${i.valorLitro > 6.2 ? 'caro' : ''}">R$ ${i.valorLitro.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+            </tr>`;
+        });
+        document.getElementById('total').innerText = "R$ " + tV.toLocaleString('pt-BR', {minimumFractionDigits:2});
+        document.getElementById('litros').innerText = tL.toLocaleString('pt-BR', {minimumFractionDigits:2});
+        document.getElementById('media').innerText = "R$ " + (tV/tL || 0).toLocaleString('pt-BR', {minimumFractionDigits:2});
+        if(abaAtual === 'gerencial') renderGerencial();
+    }
 
-        dadosFiltrados = dadosBrutos.filter(i => {
-            let ok = true;
-            if(p && !i.placa.includes(p)) ok = false;
-            if(c && !(i.nomeCidade||'').toUpperCase().includes(c)) ok = false;
-            if(sP.length && !sP.includes(i.nomeReduzidoEstabelecimento)) ok = false;
-            if(sU.length && !sU.includes(i.uf)) ok = false;
-            if(i.dataTransacao) {
-                const dt = i.dataTransacao.split('T')[0];
-                if(d1 && dt < d1) ok = false; if(d2 && dt > d2) ok = false;
-            }
-            return ok;
-        });
-        atualizarTudo();
-    }
+    function renderGerencial() {
+        const h = {}; dadosFiltrados.forEach(i => { const d = i.dataTransacao.split('T')[0]; h[d] = (h[d]||0) + i.valorTransacao; });
+        const labels = Object.keys(h).sort();
+        updateChart('graficoEvolucao', 'line', labels, labels.map(l => h[l]), 'R$', '#dc2626');
+        const uf = {}; dadosFiltrados.forEach(i => { uf[i.uf] = (uf[i.uf]||0) + i.valorTransacao; });
+        const ufsS = Object.entries(uf).sort((a,b) => b[1]-a[1]);
+        updateChart('graficoUF', 'bar', ufsS.map(x=>x[0]), ufsS.map(x=>x[1]), 'R$', '#3b82f6', 'y');
+        const pts = {}; dadosFiltrados.forEach(i => { pts[i.nomeReduzidoEstabelecimento] = (pts[i.nomeReduzidoEstabelecimento]||0) + i.valorTransacao; });
+        const ptsS = Object.entries(pts).sort((a,b) => b[1]-a[1]).slice(0, 10);
+        updateChart('graficoPostos', 'bar', ptsS.map(x=>x[0]), ptsS.map(x=>x[1]), 'R$', '#f97316', 'y');
+    }
 
-    function atualizarTudo() {
-        const tb = document.getElementById('tabela'); tb.innerHTML = '';
-        let tV = 0, tL = 0;
-        dadosFiltrados.slice(0, 200).forEach(i => {
-            tV += i.valorTransacao; tL += i.litros;
-            const dt = new Date(i.dataTransacao);
-            tb.innerHTML += `<tr>
-                <td>${dt.toLocaleDateString('pt-BR')} ${dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
-                <td><b>${i.placa}</b></td>
-                <td>${i.nomeReduzidoEstabelecimento}</td>
-                <td>${i.nomeCidade || '-'}</td>
-                <td>${i.uf}</td>
-                <td>${i.tipoCombustivel}</td>
-                <td class="num">${i.litros.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-                <td class="num">${moeda(i.valorTransacao)}</td>
-                <td class="num ${i.valorLitro > 6.2 ? 'caro' : ''}">${moeda(i.valorLitro)}</td>
-            </tr>`;
-        });
-        document.getElementById('total').innerText = moeda(tV);
-        document.getElementById('litros').innerText = numero(tL) + " L";
-        document.getElementById('media').innerText = moeda(tV/tL || 0);
+    function updateChart(id, type, l, d, label, color, axis='x') {
+        if(charts[id]) charts[id].destroy();
+        charts[id] = new Chart(document.getElementById(id), {
+            type, data: { labels: l, datasets: [{ label, data: d, backgroundColor: color, borderColor: color, tension: 0.3 }] },
+            options: { indexAxis: axis, responsive: true, maintainAspectRatio: false }
+        });
+    }
 
-        if(abaAtual === 'gerencial') renderGerencial();
-        if(abaAtual === 'intel') renderIntel();
-    }
+    function mostrarAba(a) {
+        abaAtual = a;
+        ['aba-operacional', 'aba-gerencial', 'aba-intel', 'aba-sheets'].forEach(id => document.getElementById(id).style.display = 'none');
+        document.getElementById('aba-' + a).style.display = 'block';
+        document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + a).classList.add('active');
+        atualizarTudo();
+    }
 
-    let abaAtual = 'operacional';
-    function mostrarAba(a) {
-        abaAtual = a;
-        ['aba-operacional', 'aba-gerencial', 'aba-intel'].forEach(id => document.getElementById(id).style.display = 'none');
-        document.getElementById('aba-' + a).style.display = 'block';
-        document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.id === 'btn-' + a));
-        atualizarTudo();
-    }
-
-    function renderGerencial() {
-        // Histórico de Preços Altos
-        const top = [...dadosFiltrados].sort((a,b) => b.valorLitro - a.valorLitro).slice(0, 10);
-        document.getElementById('listaMaioresPrecos').innerHTML = top.map(i => `<tr><td><b>${i.placa}</b><br><small>${i.nomeReduzidoEstabelecimento}</small></td><td class="num caro">${moeda(i.valorLitro)}</td></tr>`).join('');
-        
-        // Gráficos
-        const h = {}; dadosFiltrados.forEach(i => { const d = i.dataTransacao.split('T')[0]; h[d] = (h[d]||0) + i.valorTransacao; });
-        const labels = Object.keys(h).sort();
-        upChart('graficoEvolucao', 'line', labels, labels.map(l => h[l]), 'R$', '#dc2626');
-        
-        const ufs = {}; dadosFiltrados.forEach(i => { ufs[i.uf] = (ufs[i.uf]||0) + i.valorTransacao; });
-        const ufsS = Object.entries(ufs).sort((a,b) => b[1]-a[1]);
-        upChart('graficoUF', 'bar', ufsS.map(x=>x[0]), ufsS.map(x=>x[1]), 'R$', '#3b82f6', 'y');
-    }
-
-    function renderIntel() {
-        if(!dadosFiltrados.length) return;
-        const p1 = dadosFiltrados[dadosFiltrados.length-1].valorLitro;
-        const p2 = dadosFiltrados[0].valorLitro;
-        const dif = p2 - p1;
-
-        document.getElementById('intelCards').innerHTML = `
-            <div class="kpi"><h3>Variação Média</h3><h2 style="color:${dif>0?'var(--danger)':'var(--success)'}">${dif>0?'+':''}${moeda(dif)}</h2><p>Preço Inicial: ${moeda(p1)}</p></div>
-            <div class="kpi"><h3>Maior Valor Local</h3><h2>${moeda(Math.max(...dadosFiltrados.map(d=>d.valorLitro)))}</h2></div>
-        `;
-    }
-
-    function upChart(id, type, l, d, label, color, axis='x') {
-        if(charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), {
-            type, data: { labels: l, datasets: [{ label, data: d, backgroundColor: color, borderColor: color, tension: 0.3 }] },
-            options: { indexAxis: axis, responsive: true, maintainAspectRatio: false }
-        });
-    }
+    function baixarExcel() {
+        let csv = "\ufeffDATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;TOTAL;VL_LITRO\n";
+        dadosFiltrados.forEach(i => {
+            const dt = new Date(i.dataTransacao);
+            csv += `${dt.toLocaleDateString('pt-BR')};${dt.toLocaleTimeString('pt-BR')};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade||''};${i.uf};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.valorLitro}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Abastecimentos.csv'; a.click();
+    }
 </script>
 </body>
 </html>
