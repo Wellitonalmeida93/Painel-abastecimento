@@ -105,7 +105,7 @@
         <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" onerror="this.style.display='none'"></div>
         <h2>Acesso Restrito</h2>
         <p>Insira a senha de administrador para acessar o Painel.</p>
-        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px; vertical-align: -2px;"></i> Senha incorreta!</div>
+        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px; vertical-align: -2px;"></i> Senha incorreta! Tente novamente.</div>
         <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
         <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
     </div>
@@ -129,13 +129,13 @@
     </div>
 
     <div class="filtros">
-        <div class="filtro-box"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Placa..."><datalist id="listaPlacas"></datalist></div>
-        <div class="filtro-box"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."><datalist id="listaCidades"></datalist></div>
-        <div class="filtro-box"><input type="date" id="filtroDataInicio"></div>
-        <div class="filtro-box"><input type="date" id="filtroDataFim"></div>
-        <div class="filtro-box"><select id="filtroPosto" multiple></select></div>
-        <div class="filtro-box"><select id="filtroUF" multiple></select></div>
-        <div class="filtro-box"><select id="filtroProduto" multiple></select></div>
+        <div class="filtro-box" style="flex: 0.8;"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa..."><datalist id="listaPlacas"></datalist></div>
+        <div class="filtro-box" style="flex: 1;"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."><datalist id="listaCidades"></datalist></div>
+        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataInicio"></div>
+        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataFim"></div>
+        <div class="filtro-box" style="flex: 1.5;"><select id="filtroPosto" multiple></select></div>
+        <div class="filtro-box" style="flex: 0.8;"><select id="filtroUF" multiple></select></div>
+        <div class="filtro-box" style="flex: 1.5;"><select id="filtroProduto" multiple></select></div>
         <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Excel</button>
     </div>
 
@@ -184,7 +184,7 @@
     }
 
     function iniciarApp() {
-        // 🔥 CORREÇÃO AQUI: Mudando de /api/dados para transacoes.json
+        // 🔥 LINHA 254: Corrigido para buscar o arquivo JSON correto
         fetch("transacoes.json?v=" + Date.now()).then(r => r.json()).then(j => {
             dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
@@ -200,8 +200,8 @@
     function preencherFiltros() {
         let pks = new Set(), cds = new Set(), pts = new Set(), ufs = new Set(), prods = new Set();
         dadosBrutos.forEach(i => {
-            if(i.placa) pks.add(i.placa);
-            if(i.nomeCidade) cds.add(i.nomeCidade);
+            if(i.placa) pks.add(i.placa.trim());
+            if(i.nomeCidade) cds.add(i.nomeCidade.trim());
             if(i.nomeReduzidoEstabelecimento) pts.add(i.nomeReduzidoEstabelecimento);
             if(i.uf) ufs.add(i.uf);
             if(i.tipoCombustivel) prods.add(i.tipoCombustivel);
@@ -227,7 +227,7 @@
         const c = document.getElementById('filtroCidade').value.toUpperCase();
         const di = document.getElementById('filtroDataInicio').value;
         const df = document.getElementById('filtroDataFim').value;
-        const getV = id => choicesInstances[id].getValue(true);
+        const getV = id => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
         const selP = getV('filtroPosto'), selU = getV('filtroUF'), selProd = getV('filtroProduto');
 
         dadosFiltrados = dadosBrutos.filter(i => {
@@ -249,7 +249,7 @@
     function atualizarTudo() {
         const tb = document.getElementById('tabela'); tb.innerHTML = '';
         let tV = 0, tL = 0;
-        dadosFiltrados.forEach(i => {
+        dadosFiltrados.slice(0, 200).forEach(i => {
             tV += i.valorTransacao; tL += i.litros;
             const dt = new Date(i.dataTransacao);
             tb.innerHTML += `<tr>
@@ -261,7 +261,7 @@
                 <td>${i.tipoCombustivel}</td>
                 <td class="num">${Number(i.litros).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
                 <td class="num">R$ ${Number(i.valorTransacao).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-                <td class="num">R$ ${Number(i.valorLitro).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                <td class="num ${i.valorLitro > 6.2 ? 'caro' : ''}">R$ ${Number(i.valorLitro).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
             </tr>`;
         });
         document.getElementById('total').innerText = "R$ " + tV.toLocaleString('pt-BR', {minimumFractionDigits:2});
@@ -303,7 +303,7 @@
         let csv = "\ufeffDATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;TOTAL;VL_LITRO\n";
         dadosFiltrados.forEach(i => {
             const dt = new Date(i.dataTransacao);
-            csv += `${dt.toLocaleDateString('pt-BR')};${dt.toLocaleTimeString('pt-BR')};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade||''};${i.uf};${i.tipoCombustivel};${i.litros.toFixed(2)};${i.valorTransacao.toFixed(2)};${i.valorLitro.toFixed(2)}\n`;
+            csv += `${dt.toLocaleDateString('pt-BR')};${dt.toLocaleTimeString('pt-BR')};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade||''};${i.uf};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.valorLitro}\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Abastecimentos.csv'; a.click();
