@@ -96,10 +96,6 @@
     tr:hover { background: rgba(255,255,255,0.03); }
     .num { text-align: right; font-family: monospace; font-size: 14px; }
     .caro { color: var(--danger); font-weight: bold; }
-
-    /* ABA GERENCIAL */
-    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
-    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
 </style>
 </head>
 <body>
@@ -188,6 +184,7 @@
     }
 
     function iniciarApp() {
+        // 🔥 CORREÇÃO AQUI: Mudando de /api/dados para transacoes.json
         fetch("transacoes.json?v=" + Date.now()).then(r => r.json()).then(j => {
             dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
@@ -218,7 +215,6 @@
             el.addEventListener('change', aplicarFiltros);
         };
 
-        // 🔥 AQUI ESTÃO OS EMOJIS ADICIONADOS 🔥
         initChoice('filtroPosto', pts, '⛽ Postos...');
         initChoice('filtroUF', ufs, '🌎 UFs...');
         initChoice('filtroProduto', prods, '🛢️ Produtos...');
