@@ -1,53 +1,37 @@
-name: Atualizador de Dados
+name: Atualizador Automático Ticket Log
 
 on:
-  schedule:
-    # Roda 5 vezes ao dia (meio-dia, 16h, 20h, 23h e 02h)
-    - cron: '0 12,16,20,23,02 * * *'
-  workflow_dispatch: # Permite que você clique no botão "Run" manualmente
+schedule:
+    # Roda às 06h, 10h, 14h, 17h e 20h (Horário de Brasília)
+    - cron: '0 9,13,17,20,23 * * *'
+  workflow_dispatch: # Cria um botão mágico para você testar na hora que quiser
+
+permissions:
+  contents: write # Permissão obrigatória para o robô poder salvar o JSON novo
 
 jobs:
-  build:
+  atualizar-dados:
     runs-on: ubuntu-latest
-    
-    # 🔥 Permissões explícitas de escrita
-    permissions:
-      contents: write
-      
-    steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Puxa todo o histórico (Jan a Mar) para evitar conflitos
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
+    steps:
+      - name: 📥 Baixando os arquivos
+        uses: actions/checkout@v3
+
+      - name: 🐍 Preparando o Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Instalar Dependências
+      - name: 📦 Instalando ferramentas
         run: pip install requests
 
-      - name: Executar Robô de Abastecimento
+      - name: 🤖 Rodando o Robô (Buscando Ticket Log)
         run: python robo.py
 
-      - name: Salvar Mudanças (Blindado contra Erro 128)
+      - name: 💾 Salvando JSON e Atualizando o Site
         run: |
-          # 1. Configura a identidade do robô
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          
-          # 2. Configura a URL de acesso com o Token de permissão
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          
-          # 3. Puxa as atualizações do servidor (Jan-Mar) e mescla com os dados novos
-          git pull origin main --rebase
-          
-          # 4. Adiciona o arquivo atualizado
+          git config --global user.name "Robô PizzattoLog"
+          git config --global user.email "robo@pizzattolog.com"
           git add transacoes.json
-          
-          # 5. Tenta o commit; se não houver nada novo, ele não trava
-          git commit -m "Dados atualizados automaticamente" || echo "Sem mudanças para salvar"
-          
-          # 6. Faz o push final para o GitHub
-          git push origin main
+          git commit -m "🔄 Atualização automática do Painel" || echo "Sem mudanças nesta hora."
+          git push
