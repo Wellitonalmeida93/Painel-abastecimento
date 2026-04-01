@@ -1,37 +1,37 @@
-name: Atualizador Automático Ticket Log
+name: Atualizador de Dados
 
 on:
-schedule:
-    # Roda às 06h, 10h, 14h, 17h e 20h (Horário de Brasília)
-    - cron: '0 9,13,17,20,23 * * *'
-  workflow_dispatch: # Cria um botão mágico para você testar na hora que quiser
-
-permissions:
-  contents: write # Permissão obrigatória para o robô poder salvar o JSON novo
+  schedule:
+    - cron: '0 12,16,20,23,02 * * *'
+  workflow_dispatch:
 
 jobs:
-  atualizar-dados:
+  build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write # 👈 Importante: Permite gravar no repositório
+      
     steps:
-      - name: 📥 Baixando os arquivos
-        uses: actions/checkout@v3
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true # 👈 Mantém a senha ativa
 
-      - name: 🐍 Preparando o Python
-        uses: actions/setup-python@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: 📦 Instalando ferramentas
+      - name: Instalar Dependências
         run: pip install requests
 
-      - name: 🤖 Rodando o Robô (Buscando Ticket Log)
+      - name: Executar Robô
         run: python robo.py
 
-      - name: 💾 Salvando JSON e Atualizando o Site
-        run: |
-          git config --global user.name "Robô PizzattoLog"
-          git config --global user.email "robo@pizzattolog.com"
-          git add transacoes.json
-          git commit -m "🔄 Atualização automática do Painel" || echo "Sem mudanças nesta hora."
-          git push
+      # 🚀 O PULO DO GATO: Usar uma ferramenta pronta para salvar
+      - name: Salvar Mudanças no JSON
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Dados atualizados automaticamente [Skip CI]"
+          file_pattern: 'transacoes.json' # Foca apenas no arquivo de dados
+          push_options: '--force' # Força o envio se necessário
