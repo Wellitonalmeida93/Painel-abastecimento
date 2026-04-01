@@ -2,12 +2,15 @@ name: Atualizador de Dados
 
 on:
   schedule:
+    # Roda 5 vezes ao dia (meio-dia, 16h, 20h, 23h e 02h)
     - cron: '0 12,16,20,23,02 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Permite que você clique no botão "Run" manualmente
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # 🔥 Permissões explícitas de escrita
     permissions:
       contents: write
       
@@ -15,7 +18,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Puxa todo o histórico para não dar erro de conflito
+          fetch-depth: 0 # Puxa todo o histórico (Jan a Mar) para evitar conflitos
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -25,17 +28,26 @@ jobs:
       - name: Instalar Dependências
         run: pip install requests
 
-      - name: Executar Robô
+      - name: Executar Robô de Abastecimento
         run: python robo.py
 
-      - name: Salvar Mudanças
+      - name: Salvar Mudanças (Blindado contra Erro 128)
         run: |
+          # 1. Configura a identidade do robô
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-          # 🚨 O SEGREDO: Puxa o que está no GitHub antes de salvar
-          git pull origin main --rebase 
+          # 2. Configura a URL de acesso com o Token de permissão
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           
+          # 3. Puxa as atualizações do servidor (Jan-Mar) e mescla com os dados novos
+          git pull origin main --rebase
+          
+          # 4. Adiciona o arquivo atualizado
           git add transacoes.json
+          
+          # 5. Tenta o commit; se não houver nada novo, ele não trava
           git commit -m "Dados atualizados automaticamente" || echo "Sem mudanças para salvar"
+          
+          # 6. Faz o push final para o GitHub
           git push origin main
