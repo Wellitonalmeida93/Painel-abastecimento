@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import pandas as pd
-import io  # 🔹 Essencial para ler o CSV baixado
+import io
 from datetime import datetime, timedelta
 import time
 
@@ -14,7 +14,7 @@ ARQUIVO_JSON = "transacoes.json"
 CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
-    """Lê a planilha via Requests para evitar bloqueio 400 do Google e organiza por Data"""
+    """Lê a planilha via Requests e organiza por Data (Ajustado para suas colunas)"""
     try:
         # 1. Faz o download usando requests (mais seguro contra bloqueios)
         resposta = requests.get(URL_PLANILHA_ACORDOS, timeout=15)
@@ -23,12 +23,16 @@ def carregar_acordos_temporais():
         # 2. Transforma o texto baixado em uma tabela do Pandas
         df = pd.read_csv(io.StringIO(resposta.text))
         
-        # 3. Limpa o CNPJ
-        df['CNPJ_LIMPO'] = df['CNPJ'].astype(str).str.replace(r'\D', '', regex=True)
+        # 3. Limpa o CNPJ (buscando a coluna 'cnpj' minúscula)
+        if 'cnpj' in df.columns:
+            df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.replace(r'\D', '', regex=True)
+        else:
+            print("⚠️ Coluna 'cnpj' não encontrada na planilha!")
+            return {}
         
-        # 4. Trata a coluna de Data (Se não existir, assume o ano 2000 como padrão)
-        if 'Data Acordo' in df.columns:
-            df['Data_Validade'] = pd.to_datetime(df['Data Acordo'], format='%d/%m/%Y', errors='coerce')
+        # 4. Trata a coluna de Data (buscando a coluna 'Data')
+        if 'Data' in df.columns:
+            df['Data_Validade'] = pd.to_datetime(df['Data'], errors='coerce')
         else:
             df['Data_Validade'] = pd.NaT
             
@@ -41,7 +45,14 @@ def carregar_acordos_temporais():
         for _, row in df.iterrows():
             cnpj = row['CNPJ_LIMPO']
             dt = row['Data_Validade']
-            preco = row['Diesel S10']
+            # Puxa o preço usando o nome exato da sua planilha (com o traço)
+            preco = row.get('Diesel S-10', 0)
+            
+            # Converte para número (caso venha como texto na planilha)
+            try:
+                preco = float(str(preco).replace(',', '.'))
+            except:
+                preco = 0
             
             if cnpj not in acordos_dict:
                 acordos_dict[cnpj] = []
@@ -55,8 +66,11 @@ def carregar_acordos_temporais():
 def carregar_historico():
     """Carrega os dados que já existem no GitHub para não perder Janeiro a Março"""
     if os.path.exists(ARQUIVO_JSON):
-        with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"⚠️ Erro ao abrir histórico: {e}")
     return []
 
 def buscar_ticketlog_recente():
@@ -146,8 +160,8 @@ if __name__ == "__main__":
     # Ordena as notas da mais nova para a mais velha para o BI
     lista_final = sorted(unificado.values(), key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
-    # TRAVA DE SEGURANÇA: Só salva se não tiver perdido dados
-    if len(lista_final) >= total_base or total_base == 5000:
+    # TRAVA DE SEGURANÇA GERAL: Só salva se tiver uma base boa ou for o primeiro uso
+    if len(lista_final) >= total_base and len(lista_final) > 0:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
             json.dump(lista_final, f, ensure_ascii=False, indent=2)
         print(f"✅ SUCESSO! Base salva com {len(lista_final)} notas.")
