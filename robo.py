@@ -147,7 +147,7 @@ if __name__ == "__main__":
     lista_final = sorted(unificado.values(), key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
     # TRAVA DE SEGURANÇA: Só salva se não tiver perdido dados
-    if len(lista_final) >= total_base or total_base == 0:
+    if len(lista_final) >= total_base or total_base == 5000:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
             json.dump(lista_final, f, ensure_ascii=False, indent=2)
         print(f"✅ SUCESSO! Base salva com {len(lista_final)} notas.")
