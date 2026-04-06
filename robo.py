@@ -18,9 +18,9 @@ def carregar_acordos_temporais():
         resposta.raise_for_status() 
         df = pd.read_csv(io.StringIO(resposta.text))
         
-        # 🔥 A MÁGICA AQUI: Garante que todo CNPJ tenha 14 dígitos (recolocando o zero)
         if 'cnpj' in df.columns:
-            df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.replace(r'\D', '', regex=True).str.zfill(14)
+            # 🔥 O MATADOR DE ZEROS: O .str.split('.').str[0] arranca o ".0" fantasma do Pandas
+            df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.split('.').str[0].str.replace(r'\D', '', regex=True).str.zfill(14)
         else:
             print("⚠️ Coluna 'cnpj' não encontrada na planilha!")
             return {}
@@ -100,6 +100,10 @@ if __name__ == "__main__":
     acordos = carregar_acordos_temporais()
     print(f"📋 Planilha de Preços lida com sucesso! CNPJs cadastrados: {len(acordos)}")
     
+    # 👀 LINHA ESPIÃ: Mostra como o robô enxergou os 3 primeiros CNPJs da Planilha
+    if acordos:
+        print(f"🔍 Exemplo CNPJ da Planilha: {list(acordos.keys())[:3]}")
+    
     historico = carregar_historico()
     total_base = len(historico)
     
@@ -112,9 +116,15 @@ if __name__ == "__main__":
 
     print(f"⚖️ Iniciando Auditoria Temporal em {len(unificado)} registros...")
     
+    # 👀 LINHA ESPIÃ: Pega o primeiro CNPJ da Ticket Log para comparar
+    exemplo_cnpj_ticket = ""
+    
     for chave, n in unificado.items():
-        # 🔥 A MÁGICA PARTE 2: Garante os 14 dígitos também na Ticket Log
         cnpj = str(n.get("cnpjEstabelecimento", "")).replace(".","").replace("-","").replace("/","").zfill(14)
+        
+        if not exemplo_cnpj_ticket: 
+            exemplo_cnpj_ticket = cnpj
+            
         preco_pago = n.get("valorLitro", 0)
         
         data_str = n.get("dataTransacao", "").split("T")[0]
@@ -137,6 +147,8 @@ if __name__ == "__main__":
             n["status_preco"] = "FORA" if n["divergencia_un"] > 0.01 else ("ABAIXO" if n["divergencia_un"] < -0.01 else "OK")
         else:
             n["status_preco"] = "N/C" 
+
+    print(f"🔍 Exemplo CNPJ da Ticket Log: {exemplo_cnpj_ticket}")
 
     lista_final = sorted(unificado.values(), key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
