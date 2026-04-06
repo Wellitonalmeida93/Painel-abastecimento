@@ -6,7 +6,6 @@ import io
 from datetime import datetime, timedelta
 import time
 
-# 🔹 CONFIGURAÇÕES
 URL_TICKET = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 URL_PLANILHA_ACORDOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-H-zThkjVd5_fooBo9vDrNNH_YNaxh9CNaGkULdD7hFtpmdSpQsEhlHhvbMX-IiEX5zZEjEIsZ-Pf/pub?gid=0&single=true&output=csv"
@@ -14,41 +13,32 @@ ARQUIVO_JSON = "transacoes.json"
 CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
-    """Lê a planilha via Requests e organiza por Data (Ajustado para suas colunas)"""
     try:
-        # 1. Faz o download usando requests (mais seguro contra bloqueios)
         resposta = requests.get(URL_PLANILHA_ACORDOS, timeout=15)
         resposta.raise_for_status() 
-        
-        # 2. Transforma o texto baixado em uma tabela do Pandas
         df = pd.read_csv(io.StringIO(resposta.text))
         
-        # 3. Limpa o CNPJ (buscando a coluna 'cnpj' minúscula)
+        # 🔥 A MÁGICA AQUI: Garante que todo CNPJ tenha 14 dígitos (recolocando o zero)
         if 'cnpj' in df.columns:
-            df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.replace(r'\D', '', regex=True)
+            df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.replace(r'\D', '', regex=True).str.zfill(14)
         else:
             print("⚠️ Coluna 'cnpj' não encontrada na planilha!")
             return {}
         
-        # 4. Trata a coluna de Data (buscando a coluna 'Data')
         if 'Data' in df.columns:
             df['Data_Validade'] = pd.to_datetime(df['Data'], errors='coerce')
         else:
             df['Data_Validade'] = pd.NaT
             
         df['Data_Validade'] = df['Data_Validade'].fillna(pd.to_datetime('2000-01-01'))
-        
-        # Ordena do mais antigo para o mais novo
         df = df.sort_values(by=['CNPJ_LIMPO', 'Data_Validade'])
         
         acordos_dict = {}
         for _, row in df.iterrows():
             cnpj = row['CNPJ_LIMPO']
             dt = row['Data_Validade']
-            # Puxa o preço usando o nome exato da sua planilha (com o traço)
             preco = row.get('Diesel S-10', 0)
             
-            # Converte para número (caso venha como texto na planilha)
             try:
                 preco = float(str(preco).replace(',', '.'))
             except:
@@ -64,7 +54,6 @@ def carregar_acordos_temporais():
         return {}
 
 def carregar_historico():
-    """Carrega os dados que já existem no GitHub para não perder Janeiro a Março"""
     if os.path.exists(ARQUIVO_JSON):
         try:
             with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
@@ -74,7 +63,6 @@ def carregar_historico():
     return []
 
 def buscar_ticketlog_recente():
-    """Busca apenas as notas mais novas para o robô ser rápido"""
     headers = {"Content-Type": "application/json", "Authorization": AUTHORIZATION}
     hoje = datetime.now()
     inicio = hoje - timedelta(days=10)
@@ -114,13 +102,10 @@ if __name__ == "__main__":
     
     historico = carregar_historico()
     total_base = len(historico)
-    print(f"📚 Base de dados atual: {total_base} registros.")
     
     novas_notas = buscar_ticketlog_recente()
     
-    # Unificação Inteligente (Remove duplicados)
     unificado = { (t.get('codigoTransacao') or f"{t.get('placa')}_{t.get('dataTransacao')}"): t for t in historico }
-    
     for n in novas_notas:
         chave = n.get('codigoTransacao') or f"{n.get('placa')}_{n.get('dataTransacao')}"
         unificado[chave] = n
@@ -128,43 +113,36 @@ if __name__ == "__main__":
     print(f"⚖️ Iniciando Auditoria Temporal em {len(unificado)} registros...")
     
     for chave, n in unificado.items():
-        cnpj = str(n.get("cnpjEstabelecimento", "")).replace(".","").replace("-","").replace("/","")
+        # 🔥 A MÁGICA PARTE 2: Garante os 14 dígitos também na Ticket Log
+        cnpj = str(n.get("cnpjEstabelecimento", "")).replace(".","").replace("-","").replace("/","").zfill(14)
         preco_pago = n.get("valorLitro", 0)
         
-        # Descobre a data exata da transação
         data_str = n.get("dataTransacao", "").split("T")[0]
         try:
             data_transacao = pd.to_datetime(data_str)
         except:
             data_transacao = pd.to_datetime('today')
 
-        # Busca o preço teto correspondente à data
         preco_teto = 0
         lista_precos_posto = acordos.get(cnpj, [])
         
-        # Como a lista já está ordenada do mais antigo pro mais novo, 
-        # o último acordo cuja data seja <= a data do abastecimento é o que vale.
         for acordo in lista_precos_posto:
             if acordo['data'] <= data_transacao:
                 preco_teto = acordo['preco']
         
-        # Cálculo de Divergência e Status
         if preco_teto > 0:
             n["precoAcordado"] = preco_teto
             n["divergencia_un"] = round(preco_pago - preco_teto, 3)
             n["perda_total"] = round(n["divergencia_un"] * n.get("litros", 0), 2)
-            n["status_preco"] = "FORA" if n["divergencia_un"] > 0.01 else "OK"
+            n["status_preco"] = "FORA" if n["divergencia_un"] > 0.01 else ("ABAIXO" if n["divergencia_un"] < -0.01 else "OK")
         else:
             n["status_preco"] = "N/C" 
 
-    # Ordena as notas da mais nova para a mais velha para o BI
     lista_final = sorted(unificado.values(), key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
-    # TRAVA DE SEGURANÇA GERAL: Só salva se tiver uma base boa ou for o primeiro uso
     if len(lista_final) >= total_base and len(lista_final) > 0:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
             json.dump(lista_final, f, ensure_ascii=False, indent=2)
         print(f"✅ SUCESSO! Base salva com {len(lista_final)} notas.")
     else:
-        print(f"❌ ERRO CRÍTICO: Robô tentou salvar {len(lista_final)} notas, mas o arquivo original tinha {total_base}.")
-        print("Proteção ativada. Abortando processo para não apagar o histórico.")
+        print("❌ ERRO CRÍTICO: Proteção ativada. Abortando processo.")
