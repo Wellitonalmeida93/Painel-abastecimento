@@ -235,7 +235,7 @@
         </div>
         <div class="table-container">
             <table>
-                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
+                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th><th class="num">Acordo</th><th class="num">Diverg.</th><th style="text-align:center">Status</th></tr></thead>
                 <tbody id="tabela"></tbody>
             </table>
         </div>
@@ -466,8 +466,18 @@
         dadosFiltrados.slice(0, 150).forEach(i => {
             total += Number(i.valorTransacao || 0); litros += Number(i.litros || 0);
             let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            // 🔥 COLUNA CIDADE ADICIONADA NA LINHA DEBAIXO 🔥
-            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade || '-'}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td></tr>`;
+            
+            // 🔥 LÓGICA DAS NOVAS COLUNAS 🔥
+            let vAcordo = i.precoAcordado ? moedaPTBR(i.precoAcordado) : "-";
+            let diverg = i.divergencia_un || 0;
+            let corDiv = diverg > 0.01 ? "color: var(--danger); font-weight: bold;" : (diverg < -0.01 ? "color: var(--success); font-weight: bold;" : "color: var(--text-secondary);");
+            let divFmt = diverg ? (diverg > 0 ? "+" : "") + moedaPTBR(diverg) : "-";
+            
+            let status = i.status_preco || "N/C";
+            let corBadge = status === "FORA" ? "background: rgba(248,113,113,0.15); color: var(--danger);" : (status === "OK" ? "background: rgba(16,185,129,0.15); color: var(--success);" : "background: rgba(148,163,184,0.15); color: var(--text-secondary);");
+            let badge = `<span style="${corBadge} padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px;">${status}</span>`;
+
+            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade || '-'}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td><td class="num">${vAcordo}</td><td class="num" style="${corDiv}">${divFmt}</td><td style="text-align:center">${badge}</td></tr>`;
         });
         let tTotal = 0, tLitros = 0; dadosFiltrados.forEach(i => { tTotal += Number(i.valorTransacao || 0); tLitros += Number(i.litros || 0); });
         document.getElementById("total").innerText = moedaPTBR(tTotal); document.getElementById("litros").innerText = numeroPTBR(tLitros); document.getElementById("media").innerText = moedaPTBR(tTotal / tLitros || 0);
@@ -595,7 +605,8 @@
     }
 
     function baixarExcel() {
-        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO"];
+        // 🔥 ADICIONADO: Acordo, Divergência, Status e Perda no Excel
+        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
         dadosFiltrados.forEach(i => {
             let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             let data = d.toISOString().split("T")[0];
@@ -605,7 +616,12 @@
             let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
             let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
             
-            csv.push(`${data};${hora};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro}`);
+            let vAcordo = i.precoAcordado ? Number(i.precoAcordado).toFixed(3).replace('.', ',') : "";
+            let div = i.divergencia_un ? Number(i.divergencia_un).toFixed(3).replace('.', ',') : "";
+            let status = i.status_preco || "";
+            let perda = i.perda_total ? Number(i.perda_total).toFixed(2).replace('.', ',') : "";
+            
+            csv.push(`${data};${hora};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro};${vAcordo};${div};${status};${perda}`);
         });
 
         let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
