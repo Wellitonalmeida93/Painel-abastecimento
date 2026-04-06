@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import pandas as pd
+import io  # 🔹 Essencial para ler o CSV baixado
 from datetime import datetime, timedelta
 import time
 
@@ -13,12 +14,19 @@ ARQUIVO_JSON = "transacoes.json"
 CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
-    """Lê a planilha e organiza os preços por CNPJ e Data"""
+    """Lê a planilha via Requests para evitar bloqueio 400 do Google e organiza por Data"""
     try:
-        df = pd.read_csv(URL_PLANILHA_ACORDOS)
+        # 1. Faz o download usando requests (mais seguro contra bloqueios)
+        resposta = requests.get(URL_PLANILHA_ACORDOS, timeout=15)
+        resposta.raise_for_status() 
+        
+        # 2. Transforma o texto baixado em uma tabela do Pandas
+        df = pd.read_csv(io.StringIO(resposta.text))
+        
+        # 3. Limpa o CNPJ
         df['CNPJ_LIMPO'] = df['CNPJ'].astype(str).str.replace(r'\D', '', regex=True)
         
-        # Tenta ler a coluna de Data (se não existir ou estiver vazia, assume ano 2000 para valer sempre)
+        # 4. Trata a coluna de Data (Se não existir, assume o ano 2000 como padrão)
         if 'Data Acordo' in df.columns:
             df['Data_Validade'] = pd.to_datetime(df['Data Acordo'], format='%d/%m/%Y', errors='coerce')
         else:
@@ -26,7 +34,7 @@ def carregar_acordos_temporais():
             
         df['Data_Validade'] = df['Data_Validade'].fillna(pd.to_datetime('2000-01-01'))
         
-        # Ordena cronologicamente para garantir que pegamos o mais recente
+        # Ordena do mais antigo para o mais novo
         df = df.sort_values(by=['CNPJ_LIMPO', 'Data_Validade'])
         
         acordos_dict = {}
@@ -41,16 +49,18 @@ def carregar_acordos_temporais():
             
         return acordos_dict
     except Exception as e:
-        print(f"⚠️ Erro ao ler planilha de acordos: {e}")
+        print(f"⚠️ Erro Crítico ao ler planilha de acordos: {e}")
         return {}
 
 def carregar_historico():
+    """Carrega os dados que já existem no GitHub para não perder Janeiro a Março"""
     if os.path.exists(ARQUIVO_JSON):
         with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
             return json.load(f)
     return []
 
 def buscar_ticketlog_recente():
+    """Busca apenas as notas mais novas para o robô ser rápido"""
     headers = {"Content-Type": "application/json", "Authorization": AUTHORIZATION}
     hoje = datetime.now()
     inicio = hoje - timedelta(days=10)
@@ -59,7 +69,7 @@ def buscar_ticketlog_recente():
     data_alvo = inicio
     while data_alvo <= hoje:
         d_str = data_alvo.strftime("%Y-%m-%d")
-        print(f"📅 Ticket Log: {d_str}...", end=" ", flush=True)
+        print(f"📅 Buscando Ticket Log: {d_str}...", end=" ", flush=True)
         n_dia = 0
         for cliente in CODIGOS_CLIENTES:
             origem = "FROTA" if cliente == 122840 else "AGREGADO"
@@ -86,10 +96,15 @@ def buscar_ticketlog_recente():
 
 if __name__ == "__main__":
     acordos = carregar_acordos_temporais()
+    print(f"📋 Planilha de Preços lida com sucesso! CNPJs cadastrados: {len(acordos)}")
+    
     historico = carregar_historico()
     total_base = len(historico)
+    print(f"📚 Base de dados atual: {total_base} registros.")
     
     novas_notas = buscar_ticketlog_recente()
+    
+    # Unificação Inteligente (Remove duplicados)
     unificado = { (t.get('codigoTransacao') or f"{t.get('placa')}_{t.get('dataTransacao')}"): t for t in historico }
     
     for n in novas_notas:
@@ -102,7 +117,7 @@ if __name__ == "__main__":
         cnpj = str(n.get("cnpjEstabelecimento", "")).replace(".","").replace("-","").replace("/","")
         preco_pago = n.get("valorLitro", 0)
         
-        # Descobre a data da transação
+        # Descobre a data exata da transação
         data_str = n.get("dataTransacao", "").split("T")[0]
         try:
             data_transacao = pd.to_datetime(data_str)
@@ -113,11 +128,13 @@ if __name__ == "__main__":
         preco_teto = 0
         lista_precos_posto = acordos.get(cnpj, [])
         
-        # Como está ordenado, o último preço onde a data do acordo é <= data da transação é o vencedor
+        # Como a lista já está ordenada do mais antigo pro mais novo, 
+        # o último acordo cuja data seja <= a data do abastecimento é o que vale.
         for acordo in lista_precos_posto:
             if acordo['data'] <= data_transacao:
                 preco_teto = acordo['preco']
         
+        # Cálculo de Divergência e Status
         if preco_teto > 0:
             n["precoAcordado"] = preco_teto
             n["divergencia_un"] = round(preco_pago - preco_teto, 3)
@@ -126,11 +143,14 @@ if __name__ == "__main__":
         else:
             n["status_preco"] = "N/C" 
 
+    # Ordena as notas da mais nova para a mais velha para o BI
     lista_final = sorted(unificado.values(), key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
+    # TRAVA DE SEGURANÇA: Só salva se não tiver perdido dados
     if len(lista_final) >= total_base or total_base == 0:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
             json.dump(lista_final, f, ensure_ascii=False, indent=2)
         print(f"✅ SUCESSO! Base salva com {len(lista_final)} notas.")
     else:
-        print("❌ ERRO: Proteção contra perda de dados. Abortado.")
+        print(f"❌ ERRO CRÍTICO: Robô tentou salvar {len(lista_final)} notas, mas o arquivo original tinha {total_base}.")
+        print("Proteção ativada. Abortando processo para não apagar o histórico.")
