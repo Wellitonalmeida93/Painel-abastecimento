@@ -25,7 +25,6 @@
         --border: #334155;
         --success: #10b981;
         --danger: #f87171;
-        --blue: #3b82f6;
     }
 
     body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
@@ -34,127 +33,152 @@
 
     /* --- TELA DE LOGIN --- */
     #tela-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
-    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; overflow: hidden; }
-    .login-box::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(255,255,255,0) 60%); pointer-events: none; }
-    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; }
+    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; }
     .login-logo img { height: 50px; }
-    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
-    .login-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
-    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
-    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 2; position: relative;}
-    #msg-erro { color: var(--danger); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; }
+    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; margin-bottom: 15px; outline: none; }
+    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
 
     /* --- CABEÇALHO --- */
-    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
-    header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
-    .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
-    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
-    .logo-relatorio { height: 60px; width: auto; }
-    .cabecalho-titulos h1 { font-size: 30px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
-    .icon-bomba { color: var(--pizzatto-orange); width: 32px; height: 32px; }
+    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+    .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; }
+    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; }
+    .logo-relatorio { height: 60px; }
+    .cabecalho-titulos h1 { font-size: 30px; margin: 0; }
     .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
-    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
+    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; }
 
     /* --- NAVEGAÇÃO --- */
     .tabs { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .tabs button { background: var(--bg-input); border: none; color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
-    .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); border-bottom: 3px solid var(--pizzatto-orange); }
-    .btn-sheets { background: #064e3b !important; }
+    .tabs button { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+    .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); }
 
-    /* --- DASHBOARD --- */
+    /* --- FILTROS (PADRONIZAÇÃO TOTAL) --- */
+    .filtros { display: flex; flex-wrap: wrap; gap: 12px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); align-items: stretch; }
+    
+    .filtro-box { flex: 1; min-width: 150px; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Estilo igual para inputs comuns e data */
+    .filtros input[type="text"], 
+    .filtros input[type="date"], 
+    .filtros .choices__inner { 
+        height: 42px !important; 
+        min-height: 42px !important;
+        width: 100%; 
+        padding: 0 12px !important; 
+        border-radius: 8px !important; 
+        border: 1px solid var(--border) !important; 
+        background: var(--bg-input) !important; 
+        color: var(--text-primary) !important; 
+        font-size: 13px !important; 
+        outline: none; 
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        transition: 0.2s;
+    }
+
+    .filtros input:focus, .filtros .is-focused .choices__inner { border-color: var(--pizzatto-orange) !important; }
+
+    /* Ajustes específicos do Choices.js para modo Dark */
+    .choices { margin-bottom: 0; width: 100%; }
+    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red) !important; border: none !important; border-radius: 4px !important; font-size: 11px; }
+    .choices__input { background: transparent !important; color: white !important; font-size: 13px !important; margin-bottom: 0 !important; padding: 0 !important; }
+    .choices__placeholder { opacity: 0.7; color: var(--text-secondary) !important; }
+    .choices__list--dropdown { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; }
+    .choices__list--dropdown .choices__item--selectable.is-highlighted { background-color: var(--pizzatto-red) !important; color: white !important; }
+
+    .btn-excel { 
+        background: var(--success); 
+        color: white; 
+        border: none; 
+        padding: 0 20px; 
+        border-radius: 8px; 
+        font-weight: 700; 
+        cursor: pointer; 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        height: 42px;
+        transition: 0.3s;
+    }
+    .btn-excel:hover { background: #059669; transform: translateY(-2px); }
+
+    /* --- DASHBOARD ELEMENTS --- */
     .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
     .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
-    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
-    .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
+    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
+    .kpi span { font-size: 24px; font-weight: 800; }
 
-    /* --- FILTROS --- */
-    .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); }
-    .filtro-box { flex: 1; min-width: 140px; } 
-    .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; color-scheme: dark; box-sizing: border-box;}
-    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: auto; transition: 0.3s; }
-
-    /* --- CORREÇÃO CHOICES.JS (FILTROS ESCUROS) --- */
-    .choices__inner { background-color: var(--bg-input) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; min-height: 38px !important; color: white !important; }
-    .choices__list--dropdown { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; z-index: 9999 !important; }
-    .choices__list--dropdown .choices__item--selectable { color: white !important; }
-    .choices__list--dropdown .choices__item--selectable.is-highlighted { background-color: var(--pizzatto-red) !important; }
-    .choices__input { background-color: transparent !important; color: white !important; }
-    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red) !important; border: 1px solid var(--pizzatto-orange) !important; border-radius: 6px !important; }
-
-    /* --- TABELAS --- */
+    /* TABELAS */
     .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
-    th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-    tr:hover { background: rgba(255,255,255,0.03); }
+    th { background: #1e293b; color: #cbd5e1; padding: 12px; text-align: left; text-transform: uppercase; font-size: 11px; }
+    td { padding: 12px; border-bottom: 1px solid var(--border); }
+    tr:hover { background: rgba(255,255,255,0.02); }
     .num { text-align: right; font-family: monospace; font-size: 14px; }
-    .caro { color: var(--danger); font-weight: bold; }
-
-    /* --- GRAFICOS --- */
-    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
-    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-
-    /* --- INTELIGÊNCIA --- */
-    .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
-    .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-    .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
-    .bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
-    .fill-alta { background: var(--danger); }
-    .fill-baixa { background: var(--success); }
-    .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
-    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; color: var(--text-primary); }
-    .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <div id="tela-login">
     <div class="login-box">
-        <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" onerror="this.style.display='none'"></div>
+        <div class="login-logo"><img src="logo.png" alt="PizzattoLog"></div>
         <h2>Acesso Restrito</h2>
-        <p>Insira a senha de administrador.</p>
-        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i> Senha incorreta!</div>
-        <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
-        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
+        <input type="password" id="inputSenha" placeholder="Senha de acesso" onkeypress="if(event.key === 'Enter') verificarSenha()">
+        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Entrar</button>
+        <p id="msg-erro" style="color: var(--danger); font-size: 12px; display:none; margin-top:10px;">Senha incorreta!</p>
     </div>
 </div>
 
 <div class="container" id="app-container" style="display: none;">
     <header>
         <div class="cabecalho-conteudo">
-            <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio"></div>
+            <div class="logo-container"><img src="logo.png" alt="PizzattoLog" class="logo-relatorio"></div>
             <div class="cabecalho-titulos">
-                <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
-                <span class="cabecalho-subtitulo">PizzattoLog Transportes | <span id="badgeAtualizacao">CARREGANDO...</span></span>
+                <h1><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
+                <span class="cabecalho-subtitulo">PizzattoLog Transportes | <span id="badgeAtualizacao">Sincronizando...</span></span>
             </div>
         </div>
     </header>
 
     <div class="tabs">
-        <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Abastecimentos</button>
-        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> KPI Gerencial</button>
-        <button id="btn-intel" onclick="mostrarAba('intel')"><i data-lucide="radar"></i> Inteligência</button>
-        <button id="btn-sheets" class="btn-sheets" onclick="mostrarAba('sheets')"><i data-lucide="database"></i> Valores Diesel</button>
+        <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Geral</button>
+        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> KPIs</button>
+        <button id="btn-sheets" onclick="mostrarAba('sheets')"><i data-lucide="database"></i> Planilha Base</button>
     </div>
 
     <div class="filtros">
-        <div class="filtro-box"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Placa..."></div>
-        <datalist id="listaPlacas"></datalist>
-        <div class="filtro-box"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."></div>
-        <datalist id="listaCidades"></datalist>
-        <div class="filtro-box"><input type="date" id="filtroDataInicio"></div>
-        <div class="filtro-box"><input type="date" id="filtroDataFim"></div>
-        <div class="filtro-box"><select id="filtroPosto" multiple></select></div>
-        <div class="filtro-box"><select id="filtroUF" multiple></select></div>
+        <div class="filtro-box">
+            <input type="text" id="filtroPlaca" placeholder="🚗 Placa...">
+        </div>
+        <div class="filtro-box">
+            <input type="text" id="filtroCidade" placeholder="🏙️ Cidade...">
+        </div>
+        <div class="filtro-box">
+            <input type="date" id="filtroDataInicio" title="Data Início">
+        </div>
+        <div class="filtro-box">
+            <input type="date" id="filtroDataFim" title="Data Fim">
+        </div>
+        <div class="filtro-box">
+            <select id="filtroPosto" multiple></select>
+        </div>
+        <div class="filtro-box">
+            <select id="filtroUF" multiple></select>
+        </div>
+        <div class="filtro-box">
+            <select id="filtroProduto" multiple></select>
+        </div>
         <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Excel</button>
     </div>
 
     <div id="aba-operacional">
         <div class="kpis">
-            <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
-            <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
-            <div class="kpi" style="border-left-color: var(--success);"><label>Média KM/L</label><span id="mediaKml" style="color: var(--success);">0,00</span></div>
+            <div class="kpi"><label>Investimento Total</label><span id="total">R$ 0,00</span></div>
+            <div class="kpi"><label>Volume (Litros)</label><span id="litros">0,00</span></div>
+            <div class="kpi"><label>Preço Médio/L</label><span id="media">R$ 0,00</span></div>
+            <div class="kpi" style="border-left-color: var(--success);"><label>Consumo Médio</label><span id="mediaKml" style="color: var(--success);">0,00 km/l</span></div>
         </div>
         <div class="table-container">
             <table>
@@ -168,7 +192,6 @@
                         <th>Produto</th>
                         <th class="num">Litros</th>
                         <th class="num">Total</th>
-                        <th class="num">Vl. Litro</th>
                         <th class="num" style="color: var(--pizzatto-orange);">KM Rodado</th>
                     </tr>
                 </thead>
@@ -178,45 +201,32 @@
     </div>
 
     <div id="aba-gerencial" style="display:none;">
-        <div class="card-chart" style="margin-bottom: 20px;">
-            <h3><i data-lucide="trending-up"></i> Evolução Diária (R$)</h3>
-            <div style="height: 300px;"><canvas id="graficoEvolucao"></canvas></div>
-        </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="card-chart"><h3><i data-lucide="map"></i> Gastos por UF</h3><div style="height: 300px;"><canvas id="graficoUF"></canvas></div></div>
-            <div class="card-chart"><h3><i data-lucide="award"></i> Ranking de Postos</h3><div style="height: 300px;"><canvas id="graficoPostos"></canvas></div></div>
-        </div>
-    </div>
-
-    <div id="aba-intel" style="display:none;">
-        <div class="intel-container">
-            <div class="intel-header"><h2>Variação por Estado</h2></div>
-            <div id="gridRegioes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;"></div>
+            <div class="card-chart"><h3>Gastos por UF</h3><div style="height: 300px;"><canvas id="graficoUF"></canvas></div></div>
+            <div class="card-chart"><h3>Top Postos</h3><div style="height: 300px;"><canvas id="graficoPostos"></canvas></div></div>
         </div>
     </div>
 
     <div id="aba-sheets" style="display:none;">
-        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?widget=true&amp;headers=false" style="width: 100%; height: 80vh; border: none; background: white; border-radius: 8px;"></iframe>
+        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml" style="width: 100%; height: 70vh; border: none; border-radius: 8px;"></iframe>
     </div>
 </div>
 
 <script>
     lucide.createIcons();
-    let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
-    let choicesInstances = {};
+    let dadosBrutos = []; let dadosFiltrados = []; let choicesInstances = {};
 
-    const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2});
-    const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2});
+    const moeda = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2});
 
     function verificarSenha() {
         if(document.getElementById('inputSenha').value === 'Pizzatto_&3gm5zQ742i') {
-            sessionStorage.setItem('pizzatto_autenticado', 'true');
+            sessionStorage.setItem('autenticado', 'true');
             liberarAcesso();
         } else {
             document.getElementById('msg-erro').style.display = 'block';
         }
     }
-    if(sessionStorage.getItem('pizzatto_autenticado') === 'true') liberarAcesso();
+    if(sessionStorage.getItem('autenticado') === 'true') liberarAcesso();
 
     function liberarAcesso() {
         document.getElementById('tela-login').style.display = 'none';
@@ -225,10 +235,10 @@
     }
 
     function iniciarApp() {
-        fetch("transacoes.json?v=" + new Date().getTime())
+        fetch("transacoes.json?v=" + Date.now())
         .then(r => r.json())
         .then(j => {
-            // Unifica e calcula KM
+            // Ordenação e Cálculo de KM
             let ordenados = j.sort((a,b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
             let kmAnt = {};
             ordenados.forEach(i => {
@@ -246,76 +256,77 @@
 
             if(dadosBrutos.length > 0) {
                 let d = new Date(dadosBrutos[0].dataTransacao);
-                document.getElementById('badgeAtualizacao').innerHTML = `<i data-lucide="clock" style="width:12px; height:12px; display:inline-block; vertical-align:-2px; margin-right:4px;"></i> ÚLTIMA NOTA: ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+                document.getElementById('badgeAtualizacao').innerText = `Última nota: ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
             }
 
             preencherFiltros();
             atualizarTudo();
-            lucide.createIcons();
         });
     }
 
     function preencherFiltros() {
-        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set();
+        let postos = new Set(), ufs = new Set(), produtos = new Set();
         dadosBrutos.forEach(i => {
-            if(i.placa) placas.add(i.placa.trim());
-            if(i.nomeCidade) cidades.add(i.nomeCidade.trim());
             if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
             if(i.uf) ufs.add(i.uf);
+            if(i.tipoCombustivel) produtos.add(i.tipoCombustivel);
         });
 
-        const lp = document.getElementById('listaPlacas');
-        Array.from(placas).sort().forEach(p => lp.innerHTML += `<option value="${p}">`);
-        const lc = document.getElementById('listaCidades');
-        Array.from(cidades).sort().forEach(c => lc.innerHTML += `<option value="${c}">`);
-
-        const initChoice = (id, set, ph) => {
+        const setupChoice = (id, set, placeholder) => {
             const el = document.getElementById(id);
-            Array.from(set).sort().forEach(v => {
-                let o = document.createElement('option'); o.value = v; o.text = v; el.appendChild(o);
+            el.innerHTML = '';
+            Array.from(set).sort().forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
+            choicesInstances[id] = new Choices(el, { 
+                removeItemButton: true, 
+                placeholderValue: placeholder,
+                searchPlaceholderValue: 'Procurar...',
+                itemSelectText: ''
             });
-            choicesInstances[id] = new Choices(el, { removeItemButton: true, itemSelectText: '', placeholderValue: ph });
             el.addEventListener('change', aplicarFiltros);
         };
 
-        initChoice('filtroPosto', postos, 'Postos...');
-        initChoice('filtroUF', ufs, 'UF...');
-        
-        document.getElementById('filtroPlaca').addEventListener('input', aplicarFiltros);
-        document.getElementById('filtroCidade').addEventListener('input', aplicarFiltros);
-        document.getElementById('filtroDataInicio').addEventListener('change', aplicarFiltros);
-        document.getElementById('filtroDataFim').addEventListener('change', aplicarFiltros);
+        setupChoice('filtroPosto', postos, 'Postos...');
+        setupChoice('filtroUF', ufs, 'UF...');
+        setupChoice('filtroProduto', produtos, 'Produtos...');
+
+        ['filtroPlaca', 'filtroCidade', 'filtroDataInicio', 'filtroDataFim'].forEach(id => {
+            document.getElementById(id).addEventListener('input', aplicarFiltros);
+            document.getElementById(id).addEventListener('change', aplicarFiltros);
+        });
     }
 
     function aplicarFiltros() {
-        let placa = document.getElementById('filtroPlaca').value.toLowerCase();
-        let cid = document.getElementById('filtroCidade').value.toLowerCase();
-        let ini = document.getElementById('filtroDataInicio').value;
-        let fim = document.getElementById('filtroDataFim').value;
-        let pSel = choicesInstances['filtroPosto'].getValue(true);
-        let uSel = choicesInstances['filtroUF'].getValue(true);
+        let p = document.getElementById('filtroPlaca').value.toLowerCase();
+        let c = document.getElementById('filtroCidade').value.toLowerCase();
+        let di = document.getElementById('filtroDataInicio').value;
+        let df = document.getElementById('filtroDataFim').value;
+        
+        let selPostos = choicesInstances['filtroPosto'].getValue(true);
+        let selUFs = choicesInstances['filtroUF'].getValue(true);
+        let selProds = choicesInstances['filtroProduto'].getValue(true);
 
         dadosFiltrados = dadosBrutos.filter(i => {
-            let d = i.dataTransacao ? i.dataTransacao.split('T')[0] : '';
-            return (!placa || i.placa.toLowerCase().includes(placa)) &&
-                   (!cid || i.nomeCidade.toLowerCase().includes(cid)) &&
-                   (!ini || d >= ini) && (!fim || d <= fim) &&
-                   (pSel.length === 0 || pSel.includes(i.nomeReduzidoEstabelecimento)) &&
-                   (uSel.length === 0 || uSel.includes(i.uf));
+            let data = i.dataTransacao.split('T')[0];
+            return (!p || i.placa.toLowerCase().includes(p)) &&
+                   (!c || i.nomeCidade.toLowerCase().includes(c)) &&
+                   (!di || data >= di) && (!df || data <= df) &&
+                   (selPostos.length === 0 || selPostos.includes(i.nomeReduzidoEstabelecimento)) &&
+                   (selUFs.length === 0 || selUFs.includes(i.uf)) &&
+                   (selProds.length === 0 || selProds.includes(i.tipoCombustivel));
         });
         atualizarTudo();
     }
 
     function atualizarTudo() {
-        renderOperacional();
-        if(abaAtual === 'gerencial') renderGerencial();
-        if(abaAtual === 'intel') renderIntel();
-    }
-
-    function renderOperacional() {
         const tb = document.getElementById('tabela'); tb.innerHTML = '';
+        let tot = 0, lit = 0, dist = 0;
+
         dadosFiltrados.slice(0, 150).forEach(i => {
             let d = new Date(i.dataTransacao);
+            tot += Number(i.valorTransacao);
+            lit += Number(i.litros);
+            dist += Number(i.kmRodado);
+
             tb.innerHTML += `<tr>
                 <td>${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
                 <td><strong>${i.placa}</strong></td>
@@ -323,68 +334,33 @@
                 <td>${i.nomeReduzidoEstabelecimento}</td>
                 <td>${i.nomeCidade}/${i.uf}</td>
                 <td>${i.tipoCombustivel}</td>
-                <td class="num">${numeroPTBR(i.litros)}</td>
-                <td class="num">${moedaPTBR(i.valorTransacao)}</td>
-                <td class="num">${moedaPTBR(i.valorLitro)}</td>
+                <td class="num">${Number(i.litros).toLocaleString('pt-BR')}</td>
+                <td class="num">${moeda(i.valorTransacao)}</td>
                 <td class="num" style="color:var(--pizzatto-orange); font-weight:bold">${i.kmRodado || '-'}</td>
             </tr>`;
         });
-        
-        let tot = 0, lit = 0, km = 0;
-        dadosFiltrados.forEach(i => { tot += Number(i.valorTransacao); lit += Number(i.litros); km += Number(i.kmRodado); });
-        document.getElementById('total').innerText = moedaPTBR(tot);
-        document.getElementById('litros').innerText = numeroPTBR(lit);
-        document.getElementById('media').innerText = moedaPTBR(tot/lit || 0);
-        document.getElementById('mediaKml').innerText = numeroPTBR(km/lit || 0) + ' km/l';
-    }
 
-    function renderGerencial() {
-        let evol = {}; dadosFiltrados.forEach(i => { let d = i.dataTransacao.split('T')[0]; evol[d] = (evol[d]||0) + Number(i.valorTransacao); });
-        updateChart('graficoEvolucao', 'line', Object.keys(evol).sort(), Object.values(evol), 'R$', '#dc2626');
-        let ufs = {}; dadosFiltrados.forEach(i => ufs[i.uf] = (ufs[i.uf]||0) + Number(i.valorTransacao));
-        updateChart('graficoUF', 'bar', Object.keys(ufs), Object.values(ufs), 'R$', '#3b82f6', 'y');
-        let pR = {}; dadosFiltrados.forEach(i => pR[i.nomeReduzidoEstabelecimento] = (pR[i.nomeReduzidoEstabelecimento]||0) + Number(i.valorTransacao));
-        let topP = Object.entries(pR).sort((a,b) => b[1]-a[1]).slice(0,10);
-        updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'R$', '#f97316', 'y');
-    }
-
-    function renderIntel() {
-        let ufStats = {}; dadosFiltrados.forEach(i => { if(!ufStats[i.uf]) ufStats[i.uf] = []; ufStats[i.uf].push(Number(i.valorLitro)); });
-        let html = '';
-        Object.entries(ufStats).forEach(([uf, precos]) => {
-            let avg = precos.reduce((a,b)=>a+b,0)/precos.length;
-            html += `<div class="regiao-card"><div class="regiao-titulo">${uf}</div><div class="uf-row"><span>Preço Médio</span><span>R$ ${avg.toFixed(2)}</span></div></div>`;
-        });
-        document.getElementById('gridRegioes').innerHTML = html;
+        document.getElementById('total').innerText = moeda(tot);
+        document.getElementById('litros').innerText = lit.toLocaleString('pt-BR');
+        document.getElementById('media').innerText = moeda(tot/lit || 0);
+        document.getElementById('mediaKml').innerText = (dist/lit || 0).toFixed(2) + ' km/l';
     }
 
     function mostrarAba(a) {
-        abaAtual = a;
-        ['operacional', 'gerencial', 'intel', 'sheets'].forEach(id => document.getElementById('aba-'+id).style.display = 'none');
+        ['operacional', 'gerencial', 'sheets'].forEach(id => document.getElementById('aba-'+id).style.display = 'none');
         document.getElementById('aba-'+a).style.display = 'block';
         document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-'+a).classList.add('active');
-        if(a === 'gerencial') renderGerencial(); if(a === 'intel') renderIntel();
-        lucide.createIcons();
-    }
-
-    function updateChart(id, type, labels, data, label, color, axis = 'x') {
-        if(charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), {
-            type: type,
-            data: { labels: labels, datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, tension: 0.3 }] },
-            options: { indexAxis: axis, maintainAspectRatio: false, scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } }
-        });
     }
 
     function baixarExcel() {
-        let csv = "DATA;HORA;PLACA;ODOMETRO;POSTO;CIDADE;UF;PRODUTO;LITROS;TOTAL;KM RODADO\n";
+        let csv = "DATA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;TOTAL;KM_RODADO\n";
         dadosFiltrados.forEach(i => {
-            let d = new Date(i.dataTransacao);
-            csv += `${d.toLocaleDateString('pt-BR')};${d.toLocaleTimeString('pt-BR')};${i.placa};${i.quilometragem};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.kmRodado}\n`;
+            csv += `${i.dataTransacao};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.kmRodado}\n`;
         });
-        let b = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-        let a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "PizzattoLog_Abastecimentos.csv"; a.click();
+        let blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a"); a.href = url; a.download = "Abastecimentos_Pizzatto.csv"; a.click();
     }
 </script>
 </body>
