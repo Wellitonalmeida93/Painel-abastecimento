@@ -91,25 +91,15 @@ def consultar_mes_atual():
 
     return remover_duplicados(todas)
 
-# 🔹 TRANSFORMA PARA TABELA
+# 🔹 TRANSFORMA PARA TABELA (ALTERADO APENAS AQUI)
 def transformar_para_tabela(transacoes):
     linhas = []
 
     for t in transacoes:
-        data_hora = t.get("dataTransacao")
-
-        data = ""
-        hora = ""
-
-        if data_hora:
-            dt = datetime.fromisoformat(data_hora)
-            data = dt.strftime("%Y-%m-%d")
-            hora = dt.strftime("%H:%M:%S")
-
         linhas.append({
-            "Data": data,
-            "Hora": hora,
+            "Data_Original": t.get("dataTransacao"),
             "Placa": t.get("placa"),
+            "KM Odômetro": t.get("quilometragem") or 0,
             "Posto": t.get("nomeReduzidoEstabelecimento"),
             "Cidade": t.get("nomeCidade"),
             "UF": t.get("uf"),
@@ -121,7 +111,33 @@ def transformar_para_tabela(transacoes):
             "Tipo": t.get("considerarTransacao")
         })
 
-    return pd.DataFrame(linhas)
+    df = pd.DataFrame(linhas)
+
+    # Se não houver transações, retorna o DataFrame vazio
+    if df.empty:
+        return df
+
+    # 1. Converter para formato datetime para poder ordenar
+    df['Data_Original'] = pd.to_datetime(df['Data_Original'])
+    
+    # 2. Ordenar por Placa e Data (necessário para o cálculo de KM ser cronológico)
+    df = df.sort_values(by=['Placa', 'Data_Original'])
+
+    # 3. Calcular KM Rodado subtraindo o KM da linha atual pelo da linha anterior (por placa)
+    df['KM Rodado'] = df.groupby('Placa')['KM Odômetro'].diff()
+
+    # 4. Separar Data e Hora mantendo o formato que você já usava ("%Y-%m-%d")
+    df['Data'] = df['Data_Original'].dt.strftime("%Y-%m-%d")
+    df['Hora'] = df['Data_Original'].dt.strftime("%H:%M:%S")
+
+    # 5. Organizar a ordem final das colunas (mantendo as suas e incluindo as novas)
+    colunas_finais = [
+        "Data", "Hora", "Placa", "KM Odômetro", "KM Rodado", 
+        "Posto", "Cidade", "UF", "Produto", "Litros", 
+        "Valor Total", "Valor Unitário", "Cartão", "Tipo"
+    ]
+
+    return df[colunas_finais]
 
 # 🔹 EXECUÇÃO
 if __name__ == "__main__":
