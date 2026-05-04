@@ -232,10 +232,25 @@
             <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
             <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
             <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
+            <div class="kpi" style="border-left-color: var(--success);"><label>Média KM/L</label><span id="mediaKml" style="color: var(--success);">0,00</span></div>
         </div>
         <div class="table-container">
             <table>
-                <thead><tr><th>Data/Hora</th><th>Placa</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Placa</th>
+                        <th class="num">Odômetro</th>
+                        <th>Posto</th>
+                        <th>Cidade</th>
+                        <th>UF</th>
+                        <th>Produto</th>
+                        <th class="num">Litros</th>
+                        <th class="num">Total</th>
+                        <th class="num">Vl. Litro</th>
+                        <th class="num" style="color: var(--pizzatto-orange);">KM Rodado</th>
+                    </tr>
+                </thead>
                 <tbody id="tabela"></tbody>
             </table>
         </div>
@@ -364,7 +379,28 @@
 
     function iniciarApp() {
         fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
-            dadosBrutos = j.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
+            
+            // 🔹 1. Ordena do mais ANTIGO para o mais NOVO para o cálculo fazer sentido
+            let dadosAsc = j.sort((a, b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
+            let kmAnterior = {}; // Guarda o último KM de cada placa
+
+            // 🔹 2. Calcula o KM Rodado linha por linha
+            dadosAsc.forEach(i => {
+                let kmAtual = Number(i.quilometragem || 0);
+                i.kmRodado = 0; // Valor padrão
+                
+                // Se tem KM atual e já existe um KM anterior para essa placa
+                if (kmAtual > 0 && kmAnterior[i.placa] > 0) {
+                    let diff = kmAtual - kmAnterior[i.placa];
+                    i.kmRodado = diff > 0 ? diff : 0; // Evita km negativo se o frentista digitou errado
+                }
+                
+                // Atualiza o "último KM" da placa para a próxima linha
+                if (kmAtual > 0) kmAnterior[i.placa] = kmAtual; 
+            });
+
+            // 🔹 3. Retorna a ordem para o painel (do mais NOVO para o mais ANTIGO)
+            dadosBrutos = dadosAsc.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
 
             if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
@@ -462,16 +498,27 @@
     function atualizarTudo() { renderOperacional(); if(abaAtual === 'gerencial') renderGerencial(); if(abaAtual === 'intel') renderInteligencia(); }
 
     function renderOperacional() {
-        let tb = document.getElementById("tabela"); tb.innerHTML = ""; let total = 0, litros = 0;
+        let tb = document.getElementById("tabela"); tb.innerHTML = "";
+        
         dadosFiltrados.slice(0, 150).forEach(i => {
-            total += Number(i.valorTransacao || 0); litros += Number(i.litros || 0);
             let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             
-            // 🔥 LINHA LIMPA: Removemos as 3 colunas daqui para que não apareçam no visual do site
-            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade || '-'}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td></tr>`;
+            tb.innerHTML += `<tr><td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td><td><strong style="color:var(--text-primary)">${i.placa}</strong></td><td class="num">${i.quilometragem || '-'}</td><td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade || '-'}</td><td>${i.uf}</td><td>${i.tipoCombustivel||'-'}</td><td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td><td class="num ${Number(i.valorLitro)>6?'caro':''}">${moedaPTBR(i.valorLitro)}</td><td class="num" style="color: var(--pizzatto-orange); font-weight: bold;">${i.kmRodado || '-'}</td></tr>`;
         });
-        let tTotal = 0, tLitros = 0; dadosFiltrados.forEach(i => { tTotal += Number(i.valorTransacao || 0); tLitros += Number(i.litros || 0); });
-        document.getElementById("total").innerText = moedaPTBR(tTotal); document.getElementById("litros").innerText = numeroPTBR(tLitros); document.getElementById("media").innerText = moedaPTBR(tTotal / tLitros || 0);
+        
+        let tTotal = 0, tLitros = 0, tKmRodado = 0; 
+        dadosFiltrados.forEach(i => { 
+            tTotal += Number(i.valorTransacao || 0); 
+            tLitros += Number(i.litros || 0); 
+            tKmRodado += Number(i.kmRodado || 0);
+        });
+
+        document.getElementById("total").innerText = moedaPTBR(tTotal); 
+        document.getElementById("litros").innerText = numeroPTBR(tLitros); 
+        document.getElementById("media").innerText = moedaPTBR(tTotal / tLitros || 0);
+        
+        let mediaKml = tLitros > 0 ? (tKmRodado / tLitros) : 0;
+        document.getElementById("mediaKml").innerText = numeroPTBR(mediaKml) + " km/l";
     }
 
     function renderGerencial() {
@@ -596,8 +643,7 @@
     }
 
     function baixarExcel() {
-        // 🔥 A MÁGICA FICA AQUI: O botão de exportar o Excel continua baixando as 4 colunas secretas!
-        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
+        let csv = ["DATA;HORA;PLACA;KM ODOMETRO;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;KM RODADO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
         dadosFiltrados.forEach(i => {
             let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             let data = d.toISOString().split("T")[0];
@@ -607,12 +653,15 @@
             let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
             let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
             
+            let km = i.quilometragem || "";
+            let kmRodado = i.kmRodado || "";
+            
             let vAcordo = i.precoAcordado ? Number(i.precoAcordado).toFixed(3).replace('.', ',') : "";
             let div = i.divergencia_un ? Number(i.divergencia_un).toFixed(3).replace('.', ',') : "";
             let status = i.status_preco || "";
             let perda = i.perda_total ? Number(i.perda_total).toFixed(2).replace('.', ',') : "";
             
-            csv.push(`${data};${hora};${i.placa};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro};${vAcordo};${div};${status};${perda}`);
+            csv.push(`${data};${hora};${i.placa};${km};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro};${kmRodado};${vAcordo};${div};${status};${perda}`);
         });
 
         let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
