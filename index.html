@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
 <style>
+    /* --- CONFIGURAÇÕES GERAIS --- */
     :root {
         --bg-main: #0b0f19;
         --bg-card: #111827;
@@ -31,27 +32,47 @@
     .container { padding: 20px; max-width: 1600px; margin: auto; }
     h1, h2, h3 { font-family: 'Poppins', sans-serif; }
 
+    /* --- TELA DE LOGIN PREMIUM --- */
     #tela-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
-    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; }
-    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; }
+    .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; overflow: hidden; }
+    .login-box::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(255,255,255,0) 60%); pointer-events: none; }
+    .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
     .login-logo img { height: 50px; }
-    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; margin-bottom: 15px; text-align: center; outline: none; }
-    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
+    .login-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
+    .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
+    .login-box input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
+    .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 2; position: relative;}
+    .login-box button:hover { background: #b91c1c; transform: translateY(-2px); }
+    #msg-erro { color: var(--danger); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; }
 
-    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
+    /* --- CABEÇALHO PROFISSIONAL --- */
+    header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
     header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
     .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
-    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; }
-    .logo-relatorio { height: 60px; }
+    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .logo-relatorio { height: 60px; width: auto; }
+    .cabecalho-titulos { display: flex; flex-direction: column; }
+    .cabecalho-titulos h1 { font-size: 30px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
+    .icon-bomba { color: var(--pizzatto-orange); width: 32px; height: 32px; }
     .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
-    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; }
+    .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
 
+    /* --- NAVEGAÇÃO --- */
     .tabs { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .tabs button { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+    .tabs button { background: var(--bg-input); border: none; color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
+    .tabs button:hover { background: #334155; color: white; transform: translateY(-1px); }
     .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); border-bottom: 3px solid var(--pizzatto-orange); }
-    .btn-sheets { background: #064e3b !important; }
+    .btn-sheets { background: #064e3b !important; border-color: #065f46 !important; } 
+    .btn-sheets:hover { background: #059669 !important; }
 
-    /* FILTROS PADRONIZADOS */
+    /* --- DASHBOARD ELEMENTS --- */
+    .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
+    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
+    .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
+
+    /* 🔹 FILTROS PADRONIZADOS DARK */
     .filtros { display: flex; flex-wrap: wrap; gap: 12px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); align-items: stretch; }
     .filtro-box { flex: 1; min-width: 150px; }
     .filtros input[type="text"], .filtros input[type="date"], .choices__inner { 
@@ -61,30 +82,30 @@
     .choices__input { background: transparent !important; color: white !important; margin: 0 !important; }
     .choices__list--dropdown { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; z-index: 999; }
     .choices__list--dropdown .choices__item--selectable.is-highlighted { background-color: var(--pizzatto-red) !important; }
+    .choices__placeholder { color: var(--text-secondary) !important; opacity: 1; }
     .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; height: 42px; display: flex; align-items: center; gap: 8px; }
 
-    .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
-    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; }
-    .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
-
+    /* TABELAS */
     .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { background: #1e293b; color: #cbd5e1; padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 11px; }
-    td { padding: 12px 15px; border-bottom: 1px solid var(--border); }
+    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
     tr:hover { background: rgba(255,255,255,0.03); }
     .num { text-align: right; font-family: monospace; font-size: 14px; }
     .caro { color: var(--danger); font-weight: bold; }
 
+    /* --- INTELIGÊNCIA --- */
     .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
     .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
+    .intel-header h2 { font-size: 18px; margin: 0; color: var(--text-primary); font-family: 'Poppins', sans-serif;}
     .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
     .bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
     .fill-alta { background: var(--danger); }
     .fill-baixa { background: var(--success); }
     .fill-neutro { background: #64748b; }
+    
     .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); color: var(--text-primary); }
     .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; font-weight: bold; }
     .uf-alta { background: rgba(239, 68, 68, 0.05); color: var(--danger); }
     .uf-baixa { background: rgba(16, 185, 129, 0.05); color: var(--success); }
@@ -94,21 +115,21 @@
 
 <div id="tela-login">
     <div class="login-box">
-        <div class="login-logo"><img src="logo.png" alt="PizzattoLog"></div>
+        <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog"></div>
         <h2>Acesso Restrito</h2>
-        <input type="password" id="inputSenha" placeholder="Senha ADM" onkeypress="if(event.key === 'Enter') verificarSenha()">
-        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Entrar</button>
-        <p id="msg-erro" style="color:var(--danger); display:none; margin-top:10px;">Senha incorreta!</p>
+        <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
+        <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
+        <div id="msg-erro">Senha incorreta!</div>
     </div>
 </div>
 
 <div class="container" id="app-container" style="display: none;">
     <header>
         <div class="cabecalho-conteudo">
-            <div class="logo-container"><img src="logo.png" alt="PizzattoLog" class="logo-relatorio"></div>
+            <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio"></div>
             <div class="cabecalho-titulos">
-                <h1><i data-lucide="fuel" style="color:var(--pizzatto-orange); vertical-align: middle;"></i> <span class="bi-destaque">BI</span> Abastecimento</h1>
-                <span class="cabecalho-subtitulo">PizzattoLog Transportes | <span id="badgeAtualizacao">SINCRONIZANDO...</span></span>
+                <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
+                <span class="cabecalho-subtitulo">PizzattoLog Transportes | <span id="badgeAtualizacao">CARREGANDO...</span></span>
             </div>
         </div>
     </header>
@@ -135,15 +156,15 @@
 
     <div id="aba-operacional">
         <div class="kpis">
-            <div class="kpi"><label>Investimento Total</label><span id="total">R$ 0,00</span></div>
-            <div class="kpi"><label>Volume Litros</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média R$/L</label><span id="media">R$ 0,00</span></div>
-            <div class="kpi" style="border-left-color:var(--success)"><label>Média KM/L</label><span id="mediaKml" style="color:var(--success)">0,00</span></div>
+            <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
+            <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
+            <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
+            <div class="kpi" style="border-left-color: var(--success);"><label>Média KM/L</label><span id="mediaKml" style="color: var(--success);">0,00</span></div>
         </div>
         <div class="table-container">
             <table>
                 <thead>
-                    <tr><th>Data/Hora</th><th>Placa</th><th class="num">Odômetro</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th><th class="num" style="color:var(--pizzatto-orange)">KM Rodado</th></tr>
+                    <tr><th>Data/Hora</th><th>Placa</th><th class="num">Odômetro</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th><th class="num" style="color: var(--pizzatto-orange);">KM Rodado</th></tr>
                 </thead>
                 <tbody id="tabela"></tbody>
             </table>
@@ -151,10 +172,10 @@
     </div>
 
     <div id="aba-gerencial" style="display:none;">
-        <div class="intel-container" style="margin-bottom:20px;"><h3>Evolução Diária (R$)</h3><div style="height:350px;"><canvas id="graficoEvolucao"></canvas></div></div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
-            <div class="intel-container"><h3>Gastos por UF</h3><div style="height:350px;"><canvas id="graficoUF"></canvas></div></div>
-            <div class="intel-container"><h3>Top 10 Postos</h3><div style="height:350px;"><canvas id="graficoPostos"></canvas></div></div>
+        <div class="intel-container" style="margin-bottom: 20px;"><h3>Evolução Diária (R$)</h3><div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="intel-container"><h3>Gastos por UF</h3><div style="height: 350px;"><canvas id="graficoUF"></canvas></div></div>
+            <div class="intel-container"><h3>Top 10 Postos</h3><div style="height: 350px;"><canvas id="graficoPostos"></canvas></div></div>
         </div>
         <div class="intel-container">
             <h3><i data-lucide="alert-triangle" style="color:var(--danger)"></i> Top 10 Preços Unitários Mais Altos</h3>
@@ -169,24 +190,18 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;">
             <div class="intel-container">
                 <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold;">🔴 Variação Média (Início vs Fim)</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardVarValor" style="font-size: 34px; margin: 0; font-weight: 900;">R$ 0,00</h2>
-                    <span id="cardVarLabel" style="font-size: 13px; font-weight: bold; color: var(--text-secondary);">--</span>
-                </div>
+                <h2 id="cardVarValor" style="font-size: 34px; margin: 10px 0; font-weight: 900;">R$ 0,00</h2>
+                <span id="cardVarLabel" style="font-size: 13px; color: var(--text-secondary);">--</span>
             </div>
             <div class="intel-container">
                 <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold;">🟠 Maior Pico Registrado</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardPicoValor" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--pizzatto-orange);">R$ 0,00</h2>
-                    <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
-                </div>
+                <h2 id="cardPicoValor" style="font-size: 34px; margin: 10px 0; font-weight: 900; color: var(--pizzatto-orange);">R$ 0,00</h2>
+                <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
             </div>
             <div class="intel-container" style="border-left: 4px solid var(--danger);">
                 <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold;">🚨 Estado com Maior Alta</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardEstadoAlta" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--danger);">--</h2>
-                    <span id="cardEstadoValor" style="font-size: 18px; font-weight: bold; color: var(--danger);">+R$ 0,00</span>
-                </div>
+                <h2 id="cardEstadoAlta" style="font-size: 34px; margin: 10px 0; font-weight: 900; color: var(--danger);">--</h2>
+                <span id="cardEstadoValor" style="font-size: 18px; font-weight: bold; color: var(--danger);">+R$ 0,00</span>
             </div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
@@ -197,7 +212,7 @@
             <div class="intel-container">
                 <div class="intel-header"><h2>Variação Intradiária (Hora a Hora)</h2></div>
                 <table style="width: 100%;">
-                    <thead><tr><th style="background: transparent;">Período</th><th style="background: transparent;">Intensidade</th><th class="num" style="background: transparent;">Média</th></tr></thead>
+                    <thead><tr><th style="background: transparent;">Período</th><th style="background: transparent;">Intensidade</th><th class="num" style="background: transparent;">Preço Médio</th></tr></thead>
                     <tbody id="tabelaIntel"></tbody>
                 </table>
             </div>
@@ -209,7 +224,7 @@
     </div>
 
     <div id="aba-sheets" style="display:none;">
-        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml" style="width:100%; height:75vh; border:none; background:white; border-radius:8px;"></iframe>
+        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml" style="width: 100%; height: 75vh; border: none; background: white; border-radius: 8px;"></iframe>
     </div>
 </div>
 
@@ -230,11 +245,11 @@
 
     function verificarSenha() {
         if(document.getElementById('inputSenha').value === 'Pizzatto_&3gm5zQ742i') {
-            sessionStorage.setItem('pizzatto_auth', 'true');
+            sessionStorage.setItem('pizzatto_ok', 'true');
             liberarAcesso();
-        } else { document.getElementById('msg-erro').style.display='block'; }
+        } else { document.getElementById('msg-erro').style.display = 'block'; }
     }
-    if(sessionStorage.getItem('pizzatto_auth') === 'true') liberarAcesso();
+    if(sessionStorage.getItem('pizzatto_ok') === 'true') liberarAcesso();
 
     function liberarAcesso() {
         document.getElementById('tela-login').style.display = 'none';
@@ -258,7 +273,7 @@
             dadosFiltrados = [...dadosBrutos];
             if(dadosBrutos.length > 0) {
                 let d = new Date(dadosBrutos[0].dataTransacao);
-                document.getElementById('badgeAtualizacao').innerText = `Última nota: ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+                document.getElementById('badgeAtualizacao').innerText = `ÚLTIMA NOTA: ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
             }
             preencherFiltros();
             atualizarTudo();
@@ -266,30 +281,23 @@
     }
 
     function preencherFiltros() {
-        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set();
+        let postos = new Set(), ufs = new Set(), prods = new Set();
         dadosBrutos.forEach(i => {
-            if(i.placa) placas.add(i.placa.trim());
-            if(i.nomeCidade) cidades.add(i.nomeCidade.trim());
             if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
             if(i.uf) ufs.add(i.uf);
             if(i.tipoCombustivel) prods.add(i.tipoCombustivel);
         });
 
-        const lp = document.getElementById('listaPlacas'); lp.innerHTML = '';
-        Array.from(placas).sort().forEach(p => lp.innerHTML += `<option value="${p}">`);
-        const lc = document.getElementById('listaCidades'); lc.innerHTML = '';
-        Array.from(cidades).sort().forEach(c => lc.innerHTML += `<option value="${c}">`);
-
-        const initChoice = (id, set, ph) => {
+        const setupChoice = (id, set, ph) => {
             const el = document.getElementById(id); el.innerHTML = '';
             Array.from(set).sort().forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
             if(choicesInstances[id]) choicesInstances[id].destroy();
             choicesInstances[id] = new Choices(el, { removeItemButton: true, placeholderValue: ph, itemSelectText: '' });
             el.addEventListener('change', aplicarFiltros);
         };
-        initChoice('filtroPosto', postos, 'Postos...');
-        initChoice('filtroUF', ufs, 'UF...');
-        initChoice('filtroProduto', prods, 'Produtos...');
+        setupChoice('filtroPosto', postos, 'Postos...');
+        setupChoice('filtroUF', ufs, 'UF...');
+        setupChoice('filtroProduto', prods, 'Produtos...');
 
         ['filtroPlaca','filtroCidade','filtroDataInicio','filtroDataFim'].forEach(id => {
             document.getElementById(id).addEventListener('input', aplicarFiltros);
@@ -346,7 +354,7 @@
     }
 
     function renderGerencial() {
-        let evol={}; dadosFiltrados.forEach(i => { let d = i.dataTransacao.split('T')[0]; evol[d] = (evol[d]||0) + Number(i.valorTransacao); });
+        let evol={}; dadosFiltrados.forEach(i => { let d = i.dataTransacao.split("T")[0]; evol[d] = (evol[d]||0) + Number(i.valorTransacao); });
         updateChart('graficoEvolucao', 'line', Object.keys(evol).sort(), Object.values(evol), 'R$', '#dc2626');
         let ufs={}; dadosFiltrados.forEach(i => ufs[i.uf] = (ufs[i.uf]||0) + Number(i.valorTransacao));
         updateChart('graficoUF', 'bar', Object.keys(ufs), Object.values(ufs), 'R$', '#3b82f6', 'y');
@@ -403,11 +411,12 @@
         dC.forEach(d => { let hr = new Date(d.dataTransacao).getHours(); let b = blocos.find(x => hr >= x.s && hr <= x.e); if(b) b.p.push(Number(d.valorLitro)); });
         document.getElementById('tabelaIntel').innerHTML = blocos.filter(b => b.p.length > 0).map(b => {
             let med = b.p.reduce((a,c)=>a+c,0)/b.p.length;
-            return `<tr><td>${b.l}</td><td><div class="bar-bg"><div class="bar-fill fill-neutro" style="width:50%"></div></div></td><td class="num">${moedaPTBR(med)}</td></tr>`;
+            return `<tr><td style="font-weight:bold;">${b.l}</td><td><div class="bar-bg"><div class="bar-fill fill-neutro" style="width:50%"></div></div></td><td class="num">${moedaPTBR(med)}</td></tr>`;
         }).join('');
     }
 
     function mostrarAba(a) {
+        abaAtual = a;
         ['operacional', 'gerencial', 'intel', 'sheets'].forEach(id => document.getElementById('aba-'+id).style.display = 'none');
         document.getElementById('aba-'+a).style.display = 'block';
         document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
@@ -425,9 +434,12 @@
     }
 
     function baixarExcel() {
-        let csv = "DATA;PLACA;ODOMETRO;POSTO;CIDADE;PRODUTO;LITROS;TOTAL;KM RODADO\n";
-        dadosFiltrados.forEach(i => { csv += `${i.dataTransacao};${i.placa};${i.quilometragem};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.kmRodado}\n`; });
-        let b = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+        let csv = ["DATA;HORA;PLACA;ODOMETRO;POSTO;CIDADE;UF;PRODUTO;LITROS;TOTAL;KM RODADO"];
+        dadosFiltrados.forEach(i => {
+            let d = new Date(i.dataTransacao);
+            csv.push(`${d.toLocaleDateString('pt-BR')};${d.toLocaleTimeString('pt-BR')};${i.placa};${i.quilometragem};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.kmRodado}`);
+        });
+        let b = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
         let a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "Abastecimentos.csv"; a.click();
     }
 </script>
