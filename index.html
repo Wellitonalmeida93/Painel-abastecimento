@@ -378,7 +378,8 @@
     }
 
     function iniciarApp() {
-        fetch("/api/dados?v=" + new Date().getTime()).then(r => r.json()).then(j => {
+        // 🔹 ALTERAÇÃO AQUI: Mudou de "/api/dados" para "transacoes.json"
+        fetch("transacoes.json?v=" + new Date().getTime()).then(r => r.json()).then(j => {
             
             // 🔹 1. Ordena do mais ANTIGO para o mais NOVO para o cálculo fazer sentido
             let dadosAsc = j.sort((a, b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
