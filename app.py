@@ -8,68 +8,110 @@ import time
 
 app = Flask(__name__, static_folder='.')
 
+# 🔹 CONFIGURAÇÕES
 URL = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
-CODIGO_CLIENTE = 122840
+CODIGOS_CLIENTES = [122840, 206518] # Frota e Agregados
 CACHE_FILE = "cache_transacoes.json"
+HISTORICO_FILE = "transacoes.json"
+DATA_INICIO_RECENTE = datetime(2026, 4, 1) # A partir daqui o robô busca ao vivo
 
 def atualizar_dados_fundo():
-    """Robô que roda no fundo devagar para não ser bloqueado e salva em arquivo"""
+    """Robô que roda no fundo para buscar dados recentes, mesclar com o histórico e calcular KM"""
     while True:
         try:
             print("🔄 [Robô] Iniciando atualização em segundo plano...")
             hoje = datetime.now()
-            inicio_mes = hoje.replace(day=1)
-            data_atual = inicio_mes
-            todas_transacoes = []
+            data_atual = DATA_INICIO_RECENTE
+            transacoes_recentes = []
             
             headers = {
                 "Content-Type": "application/json",
                 "Authorization": AUTHORIZATION
             }
             
+            # 1️⃣ BUSCA DADOS RECENTES (A PARTIR DE 01/04 ATÉ HOJE)
             while data_atual <= hoje:
                 inicio = data_atual.strftime("%Y-%m-%dT00:00:00")
                 fim = data_atual.strftime("%Y-%m-%dT23:59:59")
                 
-                for considerar in ["V", "T"]:
-                    payload = {
-                        "codigoCliente": CODIGO_CLIENTE,
-                        "codigoTipoCartao": 4,
-                        "dataTransacaoInicial": inicio,
-                        "dataTransacaoFinal": fim,
-                        "considerarTransacao": considerar,
-                        "ordem": "S",
-                        "validacao": "S"
-                    }
-                    try:
-                        resp = requests.post(URL, json=payload, headers=headers, timeout=15)
-                        if resp.status_code == 200:
-                            data = resp.json()
-                            if data.get("sucesso"):
-                                todas_transacoes.extend(data.get("transacoes", []))
-                    except Exception as e:
-                        pass # Ignora erros silenciosamente para não travar
+                for cliente in CODIGOS_CLIENTES:
+                    origem = "FROTA" if cliente == 122840 else "AGREGADO"
+                    for considerar in ["V", "T"]:
+                        payload = {
+                            "codigoCliente": cliente,
+                            "codigoTipoCartao": 4,
+                            "dataTransacaoInicial": inicio,
+                            "dataTransacaoFinal": fim,
+                            "considerarTransacao": considerar,
+                            "ordem": "S",
+                            "validacao": "S"
+                        }
                         
+                        # Sistema de tentativas para evitar quedas da API
+                        for tentativa in range(3):
+                            try:
+                                resp = requests.post(URL, json=payload, headers=headers, timeout=20)
+                                if resp.status_code == 200:
+                                    data = resp.json()
+                                    if data.get("sucesso"):
+                                        notas = data.get("transacoes", [])
+                                        for n in notas:
+                                            n["origemConta"] = origem # Marca quem é frota/agregado
+                                        transacoes_recentes.extend(notas)
+                                    break # Deu certo, sai das tentativas
+                            except Exception:
+                                time.sleep(2)
+                                
                 data_atual += timedelta(days=1)
-                time.sleep(1) # Pausa segura de 1 segundo (Idêntico ao seu script original)
-            
-            # Limpeza das duplicadas (Bate o valor de ~66 mil)
+                time.sleep(0.5) # Pausa amigável
+
+            # 2️⃣ CARREGA O HISTÓRICO (JANEIRO A MARÇO)
+            historico = []
+            if os.path.exists(HISTORICO_FILE):
+                try:
+                    with open(HISTORICO_FILE, 'r', encoding='utf-8') as f:
+                        historico = json.load(f)
+                except Exception as e:
+                    print(f"⚠️ Erro ao ler histórico: {e}")
+
+            # 3️⃣ MESCLA TUDO E REMOVE DUPLICADAS
             unicos = {}
-            for t in todas_transacoes:
-                placa = t.get("placa", "SEM_PLACA")
-                data_t = t.get("dataTransacao", "SEM_DATA")
-                valor = t.get("valorTransacao", 0)
-                chave = f"{placa}_{data_t}_{valor}"
+            for t in historico + transacoes_recentes:
+                chave = t.get("codigoTransacao") or f"{t.get('placa')}_{t.get('dataTransacao')}_{t.get('valorTransacao')}"
                 unicos[chave] = t
                 
-            dados_limpos = list(unicos.values())
+            dados_unificados = list(unicos.values())
             
-            # Salva no arquivo (O Render consegue ler sem problema de memória)
-            with open(CACHE_FILE, 'w', encoding='utf-8') as f:
-                json.dump(dados_limpos, f, ensure_ascii=False)
+            # 4️⃣ CÁLCULO DO KM RODADO LINHA A LINHA
+            # Ordena do mais antigo para o mais novo para o cálculo bater
+            dados_unificados.sort(key=lambda x: (str(x.get("placa", "")), str(x.get("dataTransacao", ""))))
+            
+            km_anterior = {}
+            for t in dados_unificados:
+                placa = t.get("placa")
+                try:
+                    km_atual = float(t.get("quilometragem") or 0)
+                except:
+                    km_atual = 0
+                    
+                t["kmRodado"] = 0 # Valor padrão
                 
-            print(f"✅ [Robô] Finalizado! {len(dados_limpos)} transações salvas.")
+                if placa and km_atual > 0:
+                    if placa in km_anterior and km_anterior[placa] > 0:
+                        diff = km_atual - km_anterior[placa]
+                        if diff > 0:
+                            t["kmRodado"] = diff
+                    # Atualiza o km da placa para a próxima leitura
+                    km_anterior[placa] = km_atual
+
+            # 5️⃣ PREPARA PARA O SITE (Do mais novo pro mais antigo) E SALVA
+            dados_unificados.sort(key=lambda x: str(x.get("dataTransacao", "")), reverse=True)
+            
+            with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(dados_unificados, f, ensure_ascii=False)
+                
+            print(f"✅ [Robô] Finalizado! {len(dados_unificados)} transações prontas para o painel.")
             
         except Exception as e:
             print(f"❌ Erro no robô: {e}")
@@ -86,14 +128,14 @@ def index():
 
 @app.route('/api/dados')
 def api_dados():
-    # 1º Tenta pegar o arquivo fresquinho que o robô acabou de criar
+    # 1º Tenta pegar o arquivo fresquinho com o histórico + recentes + cálculos
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, 'r', encoding='utf-8') as f:
             return jsonify(json.load(f))
             
-    # 2º SALVA-VIDAS DA APRESENTAÇÃO: Puxa o seu JSON original que já funcionava!
-    if os.path.exists('transacoes.json'):
-        with open('transacoes.json', 'r', encoding='utf-8') as f:
+    # 2º SALVA-VIDAS: Puxa o JSON histórico caso o robô ainda não tenha terminado a 1ª rodada
+    if os.path.exists(HISTORICO_FILE):
+        with open(HISTORICO_FILE, 'r', encoding='utf-8') as f:
             return jsonify(json.load(f))
             
     return jsonify([])
