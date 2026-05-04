@@ -19,7 +19,6 @@ def carregar_acordos_temporais():
         df = pd.read_csv(io.StringIO(resposta.text))
         
         if 'cnpj' in df.columns:
-            # 🔥 O MATADOR DE ZEROS: O .str.split('.').str[0] arranca o ".0" fantasma do Pandas
             df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.split('.').str[0].str.replace(r'\D', '', regex=True).str.zfill(14)
         else:
             print("⚠️ Coluna 'cnpj' não encontrada na planilha!")
@@ -88,6 +87,7 @@ def buscar_ticketlog_recente():
                         if res.get("sucesso"):
                             for n in res.get("transacoes", []):
                                 n["origemConta"] = origem
+                                n["considerarTransacao"] = tipo # Adiciona o tipo (V ou T)
                                 novas.append(n)
                                 n_dia += 1
                 except: continue
@@ -100,34 +100,33 @@ if __name__ == "__main__":
     acordos = carregar_acordos_temporais()
     print(f"📋 Planilha de Preços lida com sucesso! CNPJs cadastrados: {len(acordos)}")
     
-    # 👀 LINHA ESPIÃ: Mostra como o robô enxergou os 3 primeiros CNPJs da Planilha
-    if acordos:
-        print(f"🔍 Exemplo CNPJ da Planilha: {list(acordos.keys())[:3]}")
-    
     historico = carregar_historico()
     total_base = len(historico)
     
     novas_notas = buscar_ticketlog_recente()
     
+    # Unificação (Remove duplicados)
     unificado = { (t.get('codigoTransacao') or f"{t.get('placa')}_{t.get('dataTransacao')}"): t for t in historico }
     for n in novas_notas:
         chave = n.get('codigoTransacao') or f"{n.get('placa')}_{n.get('dataTransacao')}"
         unificado[chave] = n
 
-    print(f"⚖️ Iniciando Auditoria Temporal em {len(unificado)} registros...")
+    print(f"⚖️ Iniciando Auditoria e Cálculo de KM em {len(unificado)} registros...")
     
-    # 👀 LINHA ESPIÃ: Pega o primeiro CNPJ da Ticket Log para comparar
-    exemplo_cnpj_ticket = ""
+    # 🔹 TRANSFORMA EM LISTA PARA ORDENAÇÃO E CÁLCULO
+    lista_auditoria = list(unificado.values())
     
-    for chave, n in unificado.items():
+    # Ordena Cronologicamente (Antigo para Novo) por Placa para o cálculo de KM
+    lista_auditoria.sort(key=lambda x: (str(x.get("placa", "")), str(x.get("dataTransacao", ""))))
+
+    km_anterior = {}
+
+    for n in lista_auditoria:
+        # --- Lógica de Auditoria de Preço ---
         cnpj = str(n.get("cnpjEstabelecimento", "")).replace(".","").replace("-","").replace("/","").zfill(14)
-        
-        if not exemplo_cnpj_ticket: 
-            exemplo_cnpj_ticket = cnpj
-            
         preco_pago = n.get("valorLitro", 0)
-        
         data_str = n.get("dataTransacao", "").split("T")[0]
+        
         try:
             data_transacao = pd.to_datetime(data_str)
         except:
@@ -135,7 +134,6 @@ if __name__ == "__main__":
 
         preco_teto = 0
         lista_precos_posto = acordos.get(cnpj, [])
-        
         for acordo in lista_precos_posto:
             if acordo['data'] <= data_transacao:
                 preco_teto = acordo['preco']
@@ -146,15 +144,27 @@ if __name__ == "__main__":
             n["perda_total"] = round(n["divergencia_un"] * n.get("litros", 0), 2)
             n["status_preco"] = "FORA" if n["divergencia_un"] > 0.01 else ("ABAIXO" if n["divergencia_un"] < -0.01 else "OK")
         else:
-            n["status_preco"] = "N/C" 
+            n["status_preco"] = "N/C"
 
-    print(f"🔍 Exemplo CNPJ da Ticket Log: {exemplo_cnpj_ticket}")
+        # --- Lógica de Cálculo de KM (NOVO) ---
+        placa = n.get("placa")
+        km_atual = float(n.get("quilometragem") or 0)
+        n["kmRodado"] = 0
+        
+        if placa and km_atual > 0:
+            if placa in km_anterior and km_anterior[placa] > 0:
+                diff = km_atual - km_anterior[placa]
+                # Só registra se for positivo e razoável (evita erro de digitação do posto)
+                if diff > 0:
+                    n["kmRodado"] = diff
+            km_anterior[placa] = km_atual
 
-    lista_final = sorted(unificado.values(), key=lambda x: x.get("dataTransacao", ""), reverse=True)
+    # Ordena para salvar (Mais novos primeiro)
+    lista_final = sorted(lista_auditoria, key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
     if len(lista_final) >= total_base and len(lista_final) > 0:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
             json.dump(lista_final, f, ensure_ascii=False, indent=2)
-        print(f"✅ SUCESSO! Base salva com {len(lista_final)} notas.")
+        print(f"✅ SUCESSO! Base auditada e atualizada com {len(lista_final)} notas.")
     else:
         print("❌ ERRO CRÍTICO: Proteção ativada. Abortando processo.")
