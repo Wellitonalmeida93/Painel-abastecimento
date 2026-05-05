@@ -26,6 +26,7 @@
         --success: #10b981;
         --danger: #f87171;
         --blue: #3b82f6;
+        --yellow: #eab308;
     }
 
     body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
@@ -35,122 +36,56 @@
     /* --- TELA DE LOGIN PREMIUM --- */
     #tela-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 99999; }
     .login-box { background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; width: 100%; max-width: 400px; position: relative; overflow: hidden; }
-    .login-box::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(255,255,255,0) 60%); pointer-events: none; }
     .login-logo { background: white; padding: 15px 25px; border-radius: 12px; display: inline-block; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
     .login-logo img { height: 50px; }
-    .login-box h2 { margin: 0 0 10px 0; color: var(--text-primary); font-size: 22px; }
-    .login-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; }
     .login-box input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: white; font-size: 16px; text-align: center; outline: none; transition: 0.3s; box-sizing: border-box; margin-bottom: 15px; letter-spacing: 2px;}
-    .login-box input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
     .login-box button { width: 100%; background: var(--pizzatto-red); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; z-index: 2; position: relative;}
-    .login-box button:hover { background: #b91c1c; transform: translateY(-2px); }
     #msg-erro { color: var(--danger); font-size: 13px; font-weight: bold; margin-bottom: 15px; display: none; }
 
-    /* --- CABEÇALHO PROFISSIONAL --- */
+    /* --- CABEÇALHO --- */
     header { background: var(--bg-card); padding: 25px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; }
-    header::after { content: ""; position: absolute; left: -50%; top: -100%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
     .cabecalho-conteudo { display: flex; align-items: center; gap: 25px; z-index: 1; }
-    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+    .logo-container { background: white; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); }
     .logo-relatorio { height: 60px; width: auto; }
-    .cabecalho-titulos { display: flex; flex-direction: column; }
-    .cabecalho-titulos h1 { font-size: 30px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
-    .icon-bomba { color: var(--pizzatto-orange); width: 32px; height: 32px; }
     .bi-destaque { color: var(--pizzatto-red); font-weight: 800; }
     .cabecalho-subtitulo { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 600; }
 
     /* --- NAVEGAÇÃO --- */
     .tabs { margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
     .tabs button { background: var(--bg-input); border: none; color: var(--text-secondary); padding: 12px 22px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); }
-    .tabs button:hover { background: #334155; color: white; transform: translateY(-1px); }
     .tabs button.active { background: var(--pizzatto-red); color: white; border-color: var(--pizzatto-red); border-bottom: 3px solid var(--pizzatto-orange); }
-    .btn-sheets { background: #064e3b !important; border-color: #065f46 !important; } 
-    .btn-sheets:hover { background: #059669 !important; }
-    .btn-sheets.active { background: #10b981 !important; border-bottom: 3px solid #047857 !important; color: white !important;}
+    .btn-sheets { background: #064e3b !important; }
 
-    /* --- DASHBOARD ELEMENTS --- */
-    .kpis { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); }
-    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
+    /* --- FILTROS DARK PADRONIZADOS --- */
+    .filtros { display: flex; flex-wrap: wrap; gap: 12px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); align-items: stretch; }
+    .filtro-box { flex: 1; min-width: 150px; }
+    .filtros input[type="text"], .filtros input[type="date"], .choices__inner { 
+        height: 42px !important; min-height: 42px !important; width: 100%; padding: 0 12px !important; border-radius: 8px !important; border: 1px solid var(--border) !important; background: var(--bg-input) !important; color: white !important; font-size: 13px !important; box-sizing: border-box; display: flex; align-items: center;
+    }
+    .choices__input { background: transparent !important; color: white !important; margin: 0 !important; }
+    .choices__list--dropdown { background-color: var(--bg-card) !important; border: 1px solid var(--border) !important; z-index: 999; }
+    .choices__list--dropdown .choices__item--selectable.is-highlighted { background-color: var(--pizzatto-red) !important; }
+    .choices__list--multiple .choices__item { background-color: var(--pizzatto-red) !important; border: none !important; }
+
+    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; height: 42px; display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+    /* --- DASHBOARD ELEMENTS (GRID 6 KPIS) --- */
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .kpi { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); border-left: 5px solid var(--pizzatto-orange); text-align: center; }
+    .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
     .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
 
-    /* 🔹 FILTROS GLOBAIS - ESPAÇAMENTO AUMENTADO */
-    .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .filtro-box { flex: 1; min-width: 140px; }
-    .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
-    .filtros input:focus { border-color: var(--pizzatto-orange); box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2); }
-    
-    .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
-    .btn-excel:hover { background: #059669; transform: translateY(-2px); }
-
-    /* 🔥 CORREÇÕES CHOICES.JS (FUNDOS ESCUROS BLINDADOS) 🔥 */
-    .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); box-sizing: border-box; }
-    .choices__inner { 
-        background: var(--bg-input) !important; 
-        background-color: var(--bg-input) !important;
-        border: 1px solid var(--border) !important; 
-        border-radius: 8px !important; 
-        min-height: 38px !important; 
-        padding: 2px 8px !important; 
-        display: flex !important; 
-        flex-wrap: wrap !important;
-        align-items: center !important; 
-        gap: 5px !important;
-    }
-    .choices__input { color: var(--text-primary) !important; background: transparent !important; background-color: transparent !important; margin: 0 !important;}
-    .choices__input::placeholder { color: #64748b; font-weight: 600; }
-    
-    .choices__list--dropdown, .choices__list[aria-expanded] { 
-        background: var(--bg-card) !important;
-        background-color: var(--bg-card) !important; 
-        border: 1px solid var(--border) !important; 
-        border-radius: 8px !important; 
-        z-index: 9999 !important; 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important;
-        overflow-y: auto !important;
-    }
-    
-    .choices__list--dropdown::-webkit-scrollbar { width: 8px; }
-    .choices__list--dropdown::-webkit-scrollbar-track { background: var(--bg-card); border-radius: 0 8px 8px 0; }
-    .choices__list--dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    .choices__list--dropdown::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
-    .choices__list--dropdown .choices__item, .choices__item--choice { 
-        color: var(--text-primary) !important; 
-        font-size: 13px !important; 
-        border-bottom: 1px solid var(--border) !important; 
-        background: var(--bg-card) !important;
-        background-color: var(--bg-card) !important;
-    }
-    .choices__list--dropdown .choices__item.is-highlighted { background-color: #334155 !important; }
-    
-    .choices__list--multiple .choices__item { 
-        background-color: var(--pizzatto-red) !important; 
-        border: 1px solid var(--pizzatto-orange) !important; 
-        border-radius: 6px !important; 
-        font-size: 12px !important; 
-        font-weight: bold !important; 
-        padding: 4px 8px !important; 
-        margin: 0 !important;
-    }
-    .is-open .choices__inner, .is-focused .choices__inner { border-color: var(--pizzatto-orange) !important; box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important; }
-
-    /* TABELAS */
+    /* --- TABELAS --- */
     .table-container { overflow-x: auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: left; }
     th { background: #1e293b; color: #cbd5e1; font-weight: 600; text-transform: uppercase; font-size: 11px; }
     tr:hover { background: rgba(255,255,255,0.03); }
     .num { text-align: right; font-family: monospace; font-size: 14px; }
-    .caro { color: var(--danger); font-weight: bold; } /* Usado apenas no Ranking Gerencial, não no Operacional */
-
-    /* --- GERENCIAL E INTELIGÊNCIA --- */
-    .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
-    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-    iframe { width: 100%; border: none; background: white; border-radius: 8px; }
+    .km-destaque { color: var(--pizzatto-orange) !important; font-weight: bold; }
 
     /* --- INTELIGÊNCIA --- */
-    .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
+    .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 20px; }
     .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
     .intel-header h2 { font-size: 18px; margin: 0; color: var(--text-primary); font-family: 'Poppins', sans-serif;}
     .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
@@ -159,13 +94,11 @@
     .fill-baixa { background: var(--success); }
     .fill-neutro { background: #64748b; }
     
-    /* Regiões */
     .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
     .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); color: var(--text-primary); }
     .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; font-weight: bold; }
     .uf-alta { background: rgba(239, 68, 68, 0.05); color: var(--danger); }
     .uf-baixa { background: rgba(16, 185, 129, 0.05); color: var(--success); }
-    .uf-neutro { color: var(--text-secondary); }
 </style>
 </head>
 <body>
@@ -174,10 +107,9 @@
     <div class="login-box">
         <div class="login-logo"><img src="logo.png?v=3" alt="PizzattoLog" onerror="this.style.display='none'"></div>
         <h2>Acesso Restrito</h2>
-        <p>Insira a senha de administrador para acessar o Painel de Inteligência.</p>
-        <div id="msg-erro"><i data-lucide="alert-circle" style="width: 14px; height: 14px; vertical-align: -2px;"></i> Senha incorreta! Tente novamente.</div>
         <input type="password" id="inputSenha" placeholder="••••••••" onkeypress="if(event.key === 'Enter') verificarSenha()">
         <button onclick="verificarSenha()"><i data-lucide="lock"></i> Acessar Painel</button>
+        <div id="msg-erro" style="color:var(--danger); display:none; margin-top:15px; font-size:13px;">Senha incorreta!</div>
     </div>
 </div>
 
@@ -186,70 +118,59 @@
         <div class="cabecalho-conteudo">
             <div class="logo-container"><img src="logo.png?v=3" alt="PizzattoLog" class="logo-relatorio" onerror="this.style.display='none'"></div>
             <div class="cabecalho-titulos">
-                <h1><i data-lucide="fuel" class="icon-bomba"></i><span class="bi-destaque">BI</span> Painel de Abastecimento</h1>
-                
-                <span class="cabecalho-subtitulo" style="display: flex; align-items: center; gap: 15px;">
-                    PizzattoLog Transportes | Monitoramento Ticket Log
-                    <span id="badgeAtualizacao" style="background: rgba(16, 185, 129, 0.15); color: var(--success); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); letter-spacing: 1px;">
-                        <i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>
-                        ATUALIZADO: CARREGANDO...
-                    </span>
-                </span>
+                <h1><i data-lucide="fuel" style="color:var(--pizzatto-orange); vertical-align: middle; margin-right: 10px;"></i><span class="bi-destaque">BI</span> Abastecimento</h1>
+                <span class="cabecalho-subtitulo">PizzattoLog Transportes | <span id="badgeAtualizacao">CARREGANDO...</span></span>
             </div>
         </div>
     </header>
 
     <div class="tabs">
-        <button id="btn-operacional" class="active" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Abastecimentos</button>
-        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> KPI Gerencial</button>
+        <button id="btn-total" class="active" onclick="mostrarAba('total')"><i data-lucide="bar-chart-horizontal"></i> Total Geral</button>
+        <button id="btn-operacional" onclick="mostrarAba('operacional')"><i data-lucide="layout-dashboard"></i> Operacional</button>
+        <button id="btn-gerencial" onclick="mostrarAba('gerencial')"><i data-lucide="bar-chart-3"></i> Gerencial</button>
         <button id="btn-intel" onclick="mostrarAba('intel')"><i data-lucide="radar"></i> Inteligência</button>
-        <button id="btn-sheets" class="btn-sheets" onclick="mostrarAba('sheets')"><i data-lucide="database"></i> Valores Diesel</button>
+        <button id="btn-sheets" class="btn-sheets" onclick="mostrarAba('sheets')"><i data-lucide="database"></i> Diesel</button>
     </div>
 
     <div class="filtros">
-        <div class="filtro-box" style="flex: 0.8;">
-            <input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Filtrar Placa...">
-            <datalist id="listaPlacas"></datalist>
-        </div>
-
-        <div class="filtro-box" style="flex: 1;">
-            <input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade...">
-            <datalist id="listaCidades"></datalist>
-        </div>
-        
-        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataInicio" title="Data Inicial"></div>
-        <div class="filtro-box" style="flex: 0.8;"><input type="date" id="filtroDataFim" title="Data Final"></div>
-        
-        <div class="filtro-box" style="flex: 1.5;"><select id="filtroPosto" multiple></select></div>
-        <div class="filtro-box" style="flex: 0.8;"><select id="filtroUF" multiple></select></div>
-        <div class="filtro-box" style="flex: 1.5;"><select id="filtroProduto" multiple></select></div>
-        
-        <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Baixar Excel</button>
+        <div class="filtro-box"><input id="filtroPlaca" list="listaPlacas" placeholder="🚗 Placa..."></div>
+        <datalist id="listaPlacas"></datalist>
+        <div class="filtro-box"><input id="filtroCidade" list="listaCidades" placeholder="🏙️ Cidade..."></div>
+        <datalist id="listaCidades"></datalist>
+        <div class="filtro-box"><input type="date" id="filtroDataInicio"></div>
+        <div class="filtro-box"><input type="date" id="filtroDataFim"></div>
+        <div class="filtro-box"><select id="filtroPosto" multiple></select></div>
+        <div class="filtro-box"><select id="filtroUF" multiple></select></div>
+        <div class="filtro-box"><select id="filtroProduto" multiple></select></div>
+        <button class="btn-excel" onclick="baixarExcel()"><i data-lucide="download"></i> Excel</button>
     </div>
 
-    <div id="aba-operacional">
+    <div id="aba-total">
         <div class="kpis">
-            <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
-            <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
-            <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
-            <div class="kpi" style="border-left-color: var(--success);"><label>Média KM/L</label><span id="mediaKml" style="color: var(--success);">0,00</span></div>
+            <div class="kpi"><label>Custo Abastecimento</label><span id="exec-total">R$ 0,00</span></div>
+            <div class="kpi"><label>Total Consumo (L)</label><span id="exec-litros">0,00</span></div>
+            <div class="kpi"><label>Custo L / KM</label><span id="exec-custo-l-km">R$ 0,00</span></div>
+            <div class="kpi"><label>Total Percorrido (KM)</label><span id="exec-km-total">0</span></div>
+            <div class="kpi"><label>Custo KM Rodado</label><span id="exec-custo-km-rodado">R$ 0,00</span></div>
+            <div class="kpi" style="border-left-color: var(--success);"><label>Média KM/L</label><span id="exec-media-kml" style="color: var(--success);">0,00</span></div>
         </div>
+        
+        <div class="intel-container">
+            <div class="intel-header"><h2>ACUMULADO GERAL DIESEL (MENSAL)</h2></div>
+            <div style="height: 380px;"><canvas id="graficoAcumuladoDiesel"></canvas></div>
+        </div>
+
+        <div class="intel-container">
+            <div class="intel-header"><h2>ACUMULADO GERAL POR PRODUTO</h2></div>
+            <div style="height: 380px;"><canvas id="graficoAcumuladoProdutos"></canvas></div>
+        </div>
+    </div>
+
+    <div id="aba-operacional" style="display:none;">
         <div class="table-container">
             <table>
                 <thead>
-                    <tr>
-                        <th>Data/Hora</th>
-                        <th>Placa</th>
-                        <th class="num">Odômetro</th>
-                        <th>Posto</th>
-                        <th>Cidade</th>
-                        <th>UF</th>
-                        <th>Produto</th>
-                        <th class="num">Litros</th>
-                        <th class="num">Total</th>
-                        <th class="num">Vl. Litro</th>
-                        <th class="num" style="color: var(--pizzatto-orange);">KM Rodado</th>
-                    </tr>
+                    <tr><th>Data/Hora</th><th>Placa</th><th class="num">Odômetro</th><th>Posto</th><th>Cidade</th><th>UF</th><th>Produto</th><th class="num">Litros</th><th class="num">Total</th><th class="num">Vl. Litro</th><th class="num" style="color:var(--pizzatto-orange)">KM Rodado</th></tr>
                 </thead>
                 <tbody id="tabela"></tbody>
             </table>
@@ -257,433 +178,288 @@
     </div>
 
     <div id="aba-gerencial" style="display:none;">
-        <div class="card-chart" style="margin-bottom: 20px;"><h3><i data-lucide="trending-up" style="color:var(--pizzatto-red)"></i> Evolução Diária (R$)</h3><div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div></div>
+        <div class="intel-container"><h3>Evolução de Gastos Diários (R$)</h3><div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div></div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div class="card-chart"><h3><i data-lucide="map-pin" style="color:var(--pizzatto-orange)"></i> Gastos por Estado (UF)</h3><div style="height: 350px;"><canvas id="graficoUF"></canvas></div></div>
-            <div class="card-chart"><h3><i data-lucide="award" style="color:var(--pizzatto-orange)"></i> Ranking de Postos (Maiores Gastos)</h3><div style="height: 350px;"><canvas id="graficoPostos"></canvas></div></div>
-        </div>
-        <div class="card-chart" style="margin-top: 20px;">
-            <h3><i data-lucide="alert-triangle" style="color:var(--danger)"></i> Top 10 Preços Unitários Mais Altos</h3>
-            <table style="width:100%">
-                <thead><tr><th>Placa</th><th>Produto/Posto</th><th class="num">Preço/L</th></tr></thead>
-                <tbody id="listaMaioresPrecos"></tbody>
-            </table>
+            <div class="intel-container"><h3>Gastos por UF</h3><div style="height: 300px;"><canvas id="graficoUF"></canvas></div></div>
+            <div class="intel-container"><h3>Top 10 Postos</h3><div style="height: 300px;"><canvas id="graficoPostos"></canvas></div></div>
         </div>
     </div>
 
     <div id="aba-intel" style="display:none;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;">
-            <div class="intel-container" style="padding: 20px;">
-                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🔴 Variação Média (Início vs Fim)</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardVarValor" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--text-primary);">R$ 0,00</h2>
-                    <span id="cardVarLabel" style="font-size: 13px; font-weight: bold; color: var(--text-secondary);">--</span>
-                </div>
-            </div>
-            
-            <div class="intel-container" style="padding: 20px;">
-                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🟠 Maior Pico Registrado (Posto)</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardPicoValor" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--pizzatto-orange);">R$ 0,00</h2>
-                    <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
-                </div>
-            </div>
-
-            <div class="intel-container" style="padding: 20px; border-left: 4px solid var(--danger);">
-                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">🚨 Estado com Maior Alta</p>
-                <div style="display: flex; align-items: baseline; gap: 10px;">
-                    <h2 id="cardEstadoAlta" style="font-size: 34px; margin: 0; font-weight: 900; color: var(--danger);">--</h2>
-                    <span id="cardEstadoValor" style="font-size: 18px; font-weight: bold; color: var(--danger);">+R$ 0,00</span>
-                </div>
-                <p id="cardEstadoPct" style="font-size: 12px; color: var(--text-secondary); margin: 5px 0 0 0;">--</p>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div class="intel-container">
-                <div class="intel-header"><h2>Evolução Diária do Preço Nacional</h2></div>
-                <div id="listaEvolucaoDiaria" style="display: flex; flex-direction: column; gap: 6px; padding-right: 10px;"></div>
+                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold;">🔴 Variação Média (Período)</p>
+                <h2 id="cardVarValor" style="font-size: 34px; margin: 10px 0; font-weight: 900;">R$ 0,00</h2>
+                <span id="cardVarLabel" style="font-size: 13px; color: var(--text-secondary);">--</span>
             </div>
             <div class="intel-container">
-                <div class="intel-header"><h2>Variação Intradiária (Hora a Hora)</h2></div>
-                <table style="width: 100%;">
-                    <thead><tr><th style="background: transparent; border-bottom: 2px solid var(--border);">Período</th><th style="background: transparent; border-bottom: 2px solid var(--border);">Intensidade</th><th class="num" style="background: transparent; border-bottom: 2px solid var(--border);">Preço Médio</th></tr></thead>
-                    <tbody id="tabelaIntel"></tbody>
-                </table>
+                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold;">🟠 Maior Pico Registrado</p>
+                <h2 id="cardPicoValor" style="font-size: 34px; margin: 10px 0; font-weight: 900; color: var(--pizzatto-orange);">R$ 0,00</h2>
+                <span id="cardPicoLabel" style="font-size: 12px; color: var(--text-secondary);">--</span>
+            </div>
+            <div class="intel-container" style="border-left: 4px solid var(--danger);">
+                <p style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: bold;">🚨 Estado com Maior Alta</p>
+                <h2 id="cardEstadoAlta" style="font-size: 34px; margin: 10px 0; font-weight: 900; color: var(--danger);">--</h2>
+                <span id="cardEstadoValor" style="font-size: 18px; font-weight: bold; color: var(--danger);">+R$ 0,00</span>
             </div>
         </div>
-
-        <div class="intel-container">
-            <div class="intel-header">
-                <h2>Variação por Estado e Região</h2>
-                <span style="background: var(--bg-input); color: var(--text-secondary); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Início vs Fim do período</span>
-            </div>
-            <div id="gridRegioes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="intel-container"><h2>Evolução Diária do Preço Nacional</h2><div id="listaEvolucaoDiaria" style="display: flex; flex-direction: column; gap: 6px;"></div></div>
+            <div class="intel-container"><h2>Variação por Estado e Região</h2><div id="gridRegioes" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"></div></div>
         </div>
     </div>
 
-    <div id="aba-sheets" style="display:none;" class="card-chart">
-        <h3 style="margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-            <i data-lucide="database" style="color:#10b981"></i> Base de Valores Diesel (Google Sheets)
-        </h3>
-        <div style="width: 100%; height: 75vh; border-radius: 8px; overflow: hidden;">
-            <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml?widget=true&amp;headers=false" style="width: 100%; height: 100%; border: none; background: white;"></iframe>
-        </div>
+    <div id="aba-sheets" style="display:none;">
+        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTMrknZbVmnLdLOW4knDIW4Wmjw6CMUyttdpw1c4SnxJP9HjmQcsH0heNOShzOrdHsOs7MDQuhZazcI/pubhtml" style="width: 100%; height: 75vh; border: none; background: white; border-radius: 8px;"></iframe>
     </div>
 </div>
 
 <script>
     lucide.createIcons();
+    let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let choicesInstances = {};
 
-    let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
-    let choicesInstances = {}; 
-    
     const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    const mapaRegioes = {
-        'AC':'NORTE', 'AP':'NORTE', 'AM':'NORTE', 'PA':'NORTE', 'RO':'NORTE', 'RR':'NORTE', 'TO':'NORTE',
-        'AL':'NORDESTE', 'BA':'NORDESTE', 'CE':'NORDESTE', 'MA':'NORDESTE', 'PB':'NORDESTE', 'PE':'NORDESTE', 'PI':'NORDESTE', 'RN':'NORDESTE', 'SE':'NORDESTE',
-        'DF':'CENTRO-OESTE', 'GO':'CENTRO-OESTE', 'MT':'CENTRO-OESTE', 'MS':'CENTRO-OESTE',
-        'ES':'SUDESTE', 'MG':'SUDESTE', 'RJ':'SUDESTE', 'SP':'SUDESTE',
-        'PR':'SUL', 'RS':'SUL', 'SC':'SUL'
-    };
-
-    window.onload = function() {
-        if(sessionStorage.getItem('pizzatto_autenticado') === 'true') {
-            liberarAcesso();
-        } else {
-            document.getElementById('inputSenha').focus();
-        }
-    };
-
     function verificarSenha() {
-        const senha = document.getElementById('inputSenha').value;
-        if(senha === 'Pizzatto_&3gm5zQ742i') {
-            sessionStorage.setItem('pizzatto_autenticado', 'true');
+        if(document.getElementById('inputSenha').value === 'Pizzatto_&3gm5zQ742i') {
+            sessionStorage.setItem('pizzatto_ok', 'true');
             liberarAcesso();
-        } else {
-            document.getElementById('msg-erro').style.display = 'block';
-            document.getElementById('inputSenha').value = '';
-            document.getElementById('inputSenha').focus();
-        }
+        } else { document.getElementById('msg-erro').style.display='block'; }
     }
+    if(sessionStorage.getItem('pizzatto_ok') === 'true') liberarAcesso();
 
     function liberarAcesso() {
         document.getElementById('tela-login').style.display = 'none';
         document.getElementById('app-container').style.display = 'block';
-        iniciarApp(); 
+        iniciarApp();
     }
 
     function iniciarApp() {
-        fetch("transacoes.json?v=" + new Date().getTime()).then(r => r.json()).then(j => {
-            
-            // ORDENA DO MAIS ANTIGO PARA O MAIS NOVO (Para o KM funcionar)
-            let dadosAsc = j.sort((a, b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
-            let kmAnterior = {}; 
-
-            dadosAsc.forEach(i => {
+        fetch("transacoes.json?v=" + Date.now()).then(r => r.json()).then(j => {
+            // Cálculo do KM Rodado (Ignorando Arla)
+            let ordenados = j.sort((a,b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
+            let kmAnt = {};
+            ordenados.forEach(i => {
                 let placa = i.placa;
-                let kmAtual = Number(i.quilometragem || 0);
+                let kmAt = Number(i.quilometragem || 0);
                 let prod = (i.tipoCombustivel || "").toUpperCase();
-                
-                i.kmRodado = 0; 
-                
-                // CÁLCULO INTELIGENTE DE KM (IGNORANDO ARLA)
+                i.kmRodado = 0;
                 if (!prod.includes("ARLA")) {
-                    if (kmAtual > 0 && kmAnterior[placa] > 0) {
-                        let diff = kmAtual - kmAnterior[placa];
-                        i.kmRodado = diff > 0 ? diff : 0; 
+                    if (kmAt > 0 && kmAnt[placa] > 0) {
+                        let diff = kmAt - kmAnt[placa];
+                        if (diff > 0) i.kmRodado = diff;
                     }
-                    if (kmAtual > 0) kmAnterior[placa] = kmAtual; 
+                    if (kmAt > 0) kmAnt[placa] = kmAt;
                 }
             });
-
-            // INVERTE DE VOLTA (MAIS NOVOS PRIMEIRO)
-            dadosBrutos = dadosAsc.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
+            dadosBrutos = ordenados.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
-
-            if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
-                let ultimaData = new Date(dadosBrutos[0].dataTransacao);
-                let dataFmt = ultimaData.toLocaleDateString('pt-BR');
-                let horaFmt = ultimaData.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                document.getElementById('badgeAtualizacao').innerHTML = `<i data-lucide="clock" style="width: 12px; height: 12px; display: inline-block; margin-right: 4px; vertical-align: -2px;"></i>ATUALIZADO: ${dataFmt} ÀS ${horaFmt}`;
+            if(dadosBrutos.length > 0) {
+                let d = new Date(dadosBrutos[0].dataTransacao);
+                document.getElementById('badgeAtualizacao').innerText = `ÚLTIMA NOTA: ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
             }
-
-            preencherFiltros(); 
-            atualizarTudo(); 
-            lucide.createIcons();
-        }).catch(e => console.error("Erro:", e));
+            preencherFiltros();
+            atualizarTudo();
+        });
     }
 
     function preencherFiltros() {
-        let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set();
-        dadosBrutos.forEach(i => { 
-            if (i.placa && i.placa.trim() !== '') placas.add(i.placa.trim()); 
-            if (i.nomeCidade && i.nomeCidade.trim() !== '') cidades.add(i.nomeCidade.trim()); 
-            if (i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento); 
-            if (i.uf) ufs.add(i.uf); 
-            if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
+        let postos = new Set(), ufs = new Set(), prods = new Set();
+        dadosBrutos.forEach(i => {
+            if(i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento);
+            if(i.uf) ufs.add(i.uf);
+            if(i.tipoCombustivel) prods.add(i.tipoCombustivel);
         });
 
-        const listaPlacas = document.getElementById('listaPlacas');
-        Array.from(placas).sort().forEach(p => listaPlacas.innerHTML += `<option value="${p}">`);
-        
-        const listaCidades = document.getElementById('listaCidades');
-        Array.from(cidades).sort().forEach(c => listaCidades.innerHTML += `<option value="${c}">`);
-
-        const initChoice = (id, set, placeholder) => {
-            const select = document.getElementById(id);
-            Array.from(set).sort().forEach(val => {
-                let opt = document.createElement('option');
-                opt.value = val;
-                opt.text = val;
-                select.appendChild(opt);
-            });
-            
-            choicesInstances[id] = new Choices(select, {
-                removeItemButton: true,
-                searchEnabled: true,
-                placeholder: true,
-                placeholderValue: placeholder,
-                searchPlaceholderValue: "Pesquisar...",
-                itemSelectText: '',
-                noResultsText: 'Não encontrado',
-                noChoicesText: 'Fim'
-            });
-            
-            select.addEventListener('change', aplicarFiltros);
+        const setupChoice = (id, set, ph) => {
+            const el = document.getElementById(id); el.innerHTML = '';
+            Array.from(set).sort().forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
+            if(choicesInstances[id]) choicesInstances[id].destroy();
+            choicesInstances[id] = new Choices(el, { removeItemButton: true, placeholderValue: ph, itemSelectText: '' });
+            el.addEventListener('change', aplicarFiltros);
         };
+        setupChoice('filtroPosto', postos, 'Postos...');
+        setupChoice('filtroUF', ufs, 'UF...');
+        setupChoice('filtroProduto', prods, 'Produtos...');
 
-        initChoice('filtroPosto', postos, '⛽ Escolher vários Postos...');
-        initChoice('filtroUF', ufs, '🌎 Escolher várias UFs...');
-        initChoice('filtroProduto', prods, '🛢️ Escolher vários Produtos...');
+        ['filtroPlaca','filtroCidade','filtroDataInicio','filtroDataFim'].forEach(id => {
+            document.getElementById(id).addEventListener('input', aplicarFiltros);
+            document.getElementById(id).addEventListener('change', aplicarFiltros);
+        });
     }
 
-    document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroCidade').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroDataInicio').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroDataFim').addEventListener("input", aplicarFiltros);
-
     function aplicarFiltros() {
-        let fPlaca = document.getElementById('filtroPlaca').value.toLowerCase();
-        let fCidade = document.getElementById('filtroCidade').value.toLowerCase();
-        let dIni = document.getElementById('filtroDataInicio').value;
-        let dFim = document.getElementById('filtroDataFim').value;
-
-        const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
-        let fPosto = getVals('filtroPosto');
-        let fUF = getVals('filtroUF');
-        let fProduto = getVals('filtroProduto');
+        let p = document.getElementById('filtroPlaca').value.toLowerCase();
+        let c = document.getElementById('filtroCidade').value.toLowerCase();
+        let di = document.getElementById('filtroDataInicio').value;
+        let df = document.getElementById('filtroDataFim').value;
+        let sP = choicesInstances['filtroPosto'].getValue(true);
+        let sU = choicesInstances['filtroUF'].getValue(true);
+        let sPr = choicesInstances['filtroProduto'].getValue(true);
 
         dadosFiltrados = dadosBrutos.filter(i => {
-            let ok = true;
-            if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
-            if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
-            
-            if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
-            if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
-            if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
-            
-            if (i.dataTransacao) { 
-                let d = i.dataTransacao.split("T")[0]; 
-                if (dIni && d < dIni) ok = false; 
-                if (dFim && d > dFim) ok = false; 
-            }
-            return ok;
+            let data = i.dataTransacao ? i.dataTransacao.split('T')[0] : '';
+            return (!p || i.placa.toLowerCase().includes(p)) &&
+                   (!c || i.nomeCidade.toLowerCase().includes(c)) &&
+                   (!di || data >= di) && (!df || data <= df) &&
+                   (sP.length === 0 || sP.includes(i.nomeReduzidoEstabelecimento)) &&
+                   (sU.length === 0 || sU.includes(i.uf)) &&
+                   (sPr.length === 0 || sPr.includes(i.tipoCombustivel));
         });
         atualizarTudo();
     }
 
-    function atualizarTudo() { renderOperacional(); if(abaAtual === 'gerencial') renderGerencial(); if(abaAtual === 'intel') renderInteligencia(); }
+    function atualizarTudo() {
+        renderTotalGeral();
+        renderOperacional();
+        let aba = document.querySelector('.tabs button.active').id.split('-')[1];
+        if(aba === 'gerencial') renderGerencial();
+        if(aba === 'intel') renderIntel();
+    }
 
-    function renderOperacional() {
-        let tb = document.getElementById("tabela"); tb.innerHTML = "";
-        
-        dadosFiltrados.slice(0, 150).forEach(i => {
-            let dt = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            
-            tb.innerHTML += `<tr>
-                <td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td>
-                <td><strong style="color:var(--text-primary)">${i.placa}</strong></td>
-                <td class="num">${i.quilometragem || '-'}</td>
-                <td>${i.nomeReduzidoEstabelecimento}</td>
-                <td>${i.nomeCidade || '-'}</td>
-                <td>${i.uf}</td>
-                <td>${i.tipoCombustivel||'-'}</td>
-                <td class="num">${numeroPTBR(i.litros)}</td>
-                <td class="num">${moedaPTBR(i.valorTransacao)}</td>
-                <td class="num">${moedaPTBR(i.valorLitro)}</td>
-                <td class="num" style="color: var(--pizzatto-orange); font-weight: bold;">${i.kmRodado || '-'}</td>
-            </tr>`;
-        });
-        
-        let tTotal = 0, tLitrosGeral = 0, tLitrosCombustivel = 0, tKmRodado = 0; 
-        
-        dadosFiltrados.forEach(i => { 
+    function renderTotalGeral() {
+        let tValor = 0, tLitrosTotal = 0, tLitrosDiesel = 0, tKmTotal = 0;
+        let mesesDiesel = {}, produtosData = {};
+
+        dadosFiltrados.forEach(i => {
+            let v = Number(i.valorTransacao || 0);
+            let l = Number(i.litros || 0);
+            let km = Number(i.kmRodado || 0);
             let prod = (i.tipoCombustivel || "").toUpperCase();
-            
-            tTotal += Number(i.valorTransacao || 0); 
-            tLitrosGeral += Number(i.litros || 0); 
-            
-            // Exclui o Arla da média de KM/L para não distorcer o cálculo
-            if (!prod.includes("ARLA")) {
-                tLitrosCombustivel += Number(i.litros || 0);
-                tKmRodado += Number(i.kmRodado || 0);
+
+            tValor += v;
+            tLitrosTotal += l;
+
+            // Agrupamento por Produto
+            let pNome = i.tipoCombustivel || "OUTROS";
+            if(!produtosData[pNome]) produtosData[pNome] = { v:0, l:0 };
+            produtosData[pNome].v += v;
+            produtosData[pNome].l += l;
+
+            // Logica específica para Diesel
+            if(!prod.includes("ARLA")) {
+                tLitrosDiesel += l;
+                tKmTotal += km;
+
+                // Agrupamento mensal para gráfico dual
+                let mes = i.dataTransacao.substring(0, 7); // 2024-05
+                if(!mesesDiesel[mes]) mesesDiesel[mes] = { km:0, l:0 };
+                mesesDiesel[mes].km += km;
+                mesesDiesel[mes].l += l;
             }
         });
 
-        document.getElementById("total").innerText = moedaPTBR(tTotal); 
-        document.getElementById("litros").innerText = numeroPTBR(tLitrosGeral); 
-        document.getElementById("media").innerText = moedaPTBR(tTotal / tLitrosGeral || 0);
-        
-        let mediaKml = tLitrosCombustivel > 0 ? (tKmRodado / tLitrosCombustivel) : 0;
-        document.getElementById("mediaKml").innerText = numeroPTBR(mediaKml) + " km/l";
+        // Atualiza KPIs
+        document.getElementById('exec-total').innerText = moedaPTBR(tValor);
+        document.getElementById('exec-litros').innerText = numeroPTBR(tLitrosTotal);
+        document.getElementById('exec-custo-l-km').innerText = moedaPTBR(tValor / (tKmTotal || 1));
+        document.getElementById('exec-km-total').innerText = numeroPTBR(tKmTotal);
+        document.getElementById('exec-custo-km-rodado').innerText = moedaPTBR(tValor / (tKmTotal || 1));
+        document.getElementById('exec-media-kml').innerText = (tKmTotal / (tLitrosDiesel || 1)).toFixed(2) + " km/l";
+
+        // Gráfico Dual Diesel (Mensal)
+        let labelsMes = Object.keys(mesesDiesel).sort();
+        if (charts['dieselDual']) charts['dieselDiesel'].destroy();
+        charts['dieselDual'] = new Chart(document.getElementById('graficoAcumuladoDiesel'), {
+            type: 'bar',
+            data: {
+                labels: labelsMes.map(m => m.split('-').reverse().join('/')),
+                datasets: [
+                    { type:'line', label: 'MÉDIA KM/L', data: labelsMes.map(m => mesesDiesel[m].km / mesesDiesel[m].l), borderColor: '#eab308', borderDash: [5, 5], yAxisID: 'y1', tension: 0.4 },
+                    { label: 'KM TOTAL', data: labelsMes.map(m => mesesDiesel[m].km), backgroundColor: 'rgba(59, 130, 246, 0.4)', borderColor: '#3b82f6', borderWidth: 1, yAxisID: 'y' },
+                    { label: 'CONSUMO (L)', data: labelsMes.map(m => mesesDiesel[m].l), backgroundColor: 'rgba(148, 163, 184, 0.2)', borderColor: '#94a3b8', borderWidth: 1, yAxisID: 'y' }
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false, scales: { y: { position:'left', grid: {color:'#1e293b'} }, y1: { position:'right', grid: {display:false} } } }
+        });
+
+        // Gráfico Dual Produtos
+        let labelsProd = Object.keys(produtosData);
+        if (charts['prodDual']) charts['prodDual'].destroy();
+        charts['prodDual'] = new Chart(document.getElementById('graficoAcumuladoProdutos'), {
+            type: 'bar',
+            data: {
+                labels: labelsProd,
+                datasets: [
+                    { type:'line', label: 'VALOR MÉDIO (R$)', data: labelsProd.map(p => produtosData[p].v / produtosData[p].l), borderColor: '#eab308', yAxisID: 'y1' },
+                    { label: 'VALOR TOTAL (R$)', data: labelsProd.map(p => produtosData[p].v), backgroundColor: 'rgba(220, 38, 38, 0.4)', yAxisID: 'y' },
+                    { label: 'LITROS TOTAL', data: labelsProd.map(p => produtosData[p].l), backgroundColor: 'rgba(16, 185, 129, 0.2)', yAxisID: 'y' }
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false, scales: { y: { position:'left', grid: {color:'#1e293b'} }, y1: { position:'right', grid: {display:false} } } }
+        });
+    }
+
+    function renderOperacional() {
+        const tb = document.getElementById('tabela'); tb.innerHTML = '';
+        let tT=0, tL=0, tK=0;
+        dadosFiltrados.slice(0, 150).forEach(i => {
+            let d = new Date(i.dataTransacao);
+            tT += Number(i.valorTransacao); tL += Number(i.litros); tK += Number(i.kmRodado);
+            tb.innerHTML += `<tr>
+                <td>${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
+                <td><strong>${i.placa}</strong></td><td class="num">${i.quilometragem || '-'}</td>
+                <td>${i.nomeReduzidoEstabelecimento}</td><td>${i.nomeCidade}</td><td>${i.uf}</td><td>${i.tipoCombustivel}</td>
+                <td class="num">${numeroPTBR(i.litros)}</td><td class="num">${moedaPTBR(i.valorTransacao)}</td>
+                <td>${moedaPTBR(i.valorLitro)}</td>
+                <td class="num km-destaque">${i.kmRodado || '-'}</td>
+            </tr>`;
+        });
+        document.getElementById('total').innerText = moedaPTBR(tT);
+        document.getElementById('litros').innerText = numeroPTBR(tL);
+        document.getElementById('media').innerText = moedaPTBR(tT/tL || 0);
+        document.getElementById('mediaKml').innerText = (tK/tL || 0).toFixed(2) + ' km/l';
     }
 
     function renderGerencial() {
-        let hist = {}; dadosFiltrados.forEach(i => { if(i.dataTransacao){ let d = i.dataTransacao.split("T")[0]; hist[d] = (hist[d] || 0) + Number(i.valorTransacao); } });
-        updateChart('graficoEvolucao', 'line', Object.keys(hist).sort(), Object.values(hist), 'Despesa R$', '#dc2626');
-        
-        let ufsRaw = {}; dadosFiltrados.forEach(i => { if(i.uf) ufsRaw[i.uf] = (ufsRaw[i.uf] || 0) + Number(i.valorTransacao); });
-        let ufsSorted = Object.entries(ufsRaw).sort((a,b) => b[1] - a[1]); updateChart('graficoUF', 'bar', ufsSorted.map(x=>x[0]), ufsSorted.map(x=>x[1]), 'Total por UF', '#3b82f6', 'y');
-        
-        let pRank = {}; dadosFiltrados.forEach(i => { pRank[i.nomeReduzidoEstabelecimento] = (pRank[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
-        let topP = Object.entries(pRank).sort((a,b) => b[1] - a[1]).slice(0, 10); updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'Faturamento R$', '#f97316', 'y');
-
-        let maioresP = [...dadosFiltrados].sort((a,b) => Number(b.valorLitro || 0) - Number(a.valorLitro || 0)).slice(0, 10);
-        document.getElementById("listaMaioresPrecos").innerHTML = maioresP.map(i => `
-            <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 10px 15px;"><strong>${i.placa}</strong></td>
-                <td style="padding: 10px 15px;"><span style="color:var(--pizzatto-orange); font-size:11px; font-weight: bold;">${i.tipoCombustivel || '-'}</span><br><small style="color:#94a3b8">${(i.nomeReduzidoEstabelecimento || '').substring(0,25)}</small></td>
-                <td class="num caro" style="padding: 10px 15px; font-size: 14px;">${moedaPTBR(i.valorLitro)}</td>
-            </tr>
-        `).join("");
+        let evol={}; dadosFiltrados.forEach(i => { let d = i.dataTransacao.split("T")[0]; evol[d] = (evol[d]||0) + Number(i.valorTransacao); });
+        updateChart('graficoEvolucao', 'line', Object.keys(evol).sort(), Object.values(evol), 'Despesa R$', '#dc2626');
+        let ufs={}; dadosFiltrados.forEach(i => ufs[i.uf] = (ufs[i.uf]||0) + Number(i.valorTransacao));
+        updateChart('graficoUF', 'bar', Object.keys(ufs), Object.values(ufs), 'UF R$', '#3b82f6', 'y');
+        let postos={}; dadosFiltrados.forEach(i => postos[i.nomeReduzidoEstabelecimento] = (postos[i.nomeReduzidoEstabelecimento]||0) + Number(i.valorTransacao));
+        let topP = Object.entries(postos).sort((a,b)=>b[1]-a[1]).slice(0,10);
+        updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'Postos R$', '#f97316', 'y');
     }
 
-    function renderInteligencia() {
+    function renderIntel() {
         if(dadosFiltrados.length === 0) return;
-        let dadosCronologicos = [...dadosFiltrados].sort((a,b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
-        let precosValidos = dadosCronologicos.filter(d => Number(d.valorLitro) > 0);
-
-        if(precosValidos.length > 0) {
-            let pPrimeiro = Number(precosValidos[0].valorLitro); let pUltimo = Number(precosValidos[precosValidos.length - 1].valorLitro); let dif = pUltimo - pPrimeiro;
-            document.getElementById('cardVarValor').innerText = `${dif > 0 ? '+' : ''}R$ ${Math.abs(dif).toFixed(2)}`;
-            document.getElementById('cardVarValor').style.color = dif > 0 ? 'var(--danger)' : (dif < 0 ? 'var(--success)' : 'var(--text-secondary)');
-            document.getElementById('cardVarLabel').innerText = `De R$ ${pPrimeiro.toFixed(2)} para R$ ${pUltimo.toFixed(2)}`;
-            let picoObj = precosValidos.reduce((max, obj) => Number(obj.valorLitro) > Number(max.valorLitro) ? obj : max, precosValidos[0]);
-            document.getElementById('cardPicoValor').innerText = `R$ ${Number(picoObj.valorLitro).toFixed(2)}`;
-            document.getElementById('cardPicoLabel').innerText = `${picoObj.nomeReduzidoEstabelecimento} (${picoObj.uf})`;
+        let dC = [...dadosFiltrados].sort((a,b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
+        let pV = dC.filter(d => Number(d.valorLitro) > 0);
+        if(pV.length > 0) {
+            let pP = Number(pV[0].valorLitro), pU = Number(pV[pV.length-1].valorLitro), dif = pU - pP;
+            document.getElementById('cardVarValor').innerText = moedaPTBR(dif);
+            document.getElementById('cardVarLabel').innerText = `De ${moedaPTBR(pP)} para ${moedaPTBR(pU)}`;
+            let pico = pV.reduce((max, obj) => Number(obj.valorLitro) > Number(max.valorLitro) ? obj : max, pV[0]);
+            document.getElementById('cardPicoValor').innerText = moedaPTBR(pico.valorLitro);
+            document.getElementById('cardPicoLabel').innerText = pico.nomeReduzidoEstabelecimento;
         }
-
-        let ufStats = {};
-        precosValidos.forEach(d => {
-            if(!ufStats[d.uf]) ufStats[d.uf] = { prim: Number(d.valorLitro), ult: Number(d.valorLitro) };
-            else ufStats[d.uf].ult = Number(d.valorLitro);
-        });
-
-        let ufArray = Object.keys(ufStats).map(uf => {
-            let p = ufStats[uf].prim; let u = ufStats[uf].ult; let d = u - p; let pct = p > 0 ? (d/p)*100 : 0;
-            return { uf: uf, dif: d, pct: pct, regiao: mapaRegioes[uf] || 'OUTROS' };
-        }).filter(x => x.prim !== 0);
-
-        if(ufArray.length > 0) {
-            let maiorUf = ufArray.reduce((max, obj) => obj.dif > max.dif ? obj : max, ufArray[0]);
-            document.getElementById('cardEstadoAlta').innerText = maiorUf.uf;
-            document.getElementById('cardEstadoValor').innerText = `${maiorUf.dif > 0 ? '+' : ''}R$ ${Math.abs(maiorUf.dif).toFixed(2)}/L`;
-            document.getElementById('cardEstadoPct').innerText = `${maiorUf.pct > 0 ? '+' : ''}${maiorUf.pct.toFixed(2)}% no período`;
-        }
-
-        let regioesAgrupadas = {};
-        ufArray.forEach(item => { if(!regioesAgrupadas[item.regiao]) regioesAgrupadas[item.regiao] = []; regioesAgrupadas[item.regiao].push(item); });
-        
-        let htmlRegioes = '';
-        Object.keys(regioesAgrupadas).sort().forEach(reg => {
-            let ufsRegiao = regioesAgrupadas[reg].sort((a,b) => b.dif - a.dif); 
-            let linhasUf = ufsRegiao.map(i => {
-                let cls = i.dif > 0 ? 'uf-alta' : (i.dif < 0 ? 'uf-baixa' : 'uf-neutro');
-                let snl = i.dif > 0 ? '+' : '';
-                return `<div class="uf-row ${cls}"><span>${i.uf}</span><span>${snl}R$ ${Math.abs(i.dif).toFixed(2)}/L</span><span style="font-size:11px; opacity:0.8; width: 50px; text-align:right;">${snl}${i.pct.toFixed(1)}%</span></div>`;
-            }).join('');
-            htmlRegioes += `<div class="regiao-card"><div class="regiao-titulo">${reg}</div>${linhasUf}</div>`;
-        });
-        document.getElementById('gridRegioes').innerHTML = htmlRegioes;
-
-        let dias = {}; 
-        dadosCronologicos.forEach(d => { 
-            let dia = d.dataTransacao.split("T")[0]; 
-            if(!dias[dia]) dias[dia] = { s: 0, c: 0 }; 
-            dias[dia].s += Number(d.valorLitro); 
-            dias[dia].c += 1; 
-        });
-        
-        let listaDias = Object.keys(dias).sort().reverse().slice(0, 31); 
-        let medias = listaDias.map(d => dias[d].s / dias[d].c);
-        let minM = Math.min(...medias); let maxM = Math.max(...medias); let range = maxM - minM || 1;
-        
-        let htmlDiario = '';
-        listaDias.forEach(dia => {
-            let media = dias[dia].s / dias[dia].c; let pct = (media - minM) / range;
-            let corBarra = pct > 0.8 ? 'var(--danger)' : (pct > 0.4 ? 'var(--pizzatto-orange)' : 'var(--success)');
-            
-            htmlDiario += `
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <span style="font-size: 11px; color: var(--text-secondary); width: 45px; text-align: right;">${dia.split('-').reverse().slice(0,2).join('/')}</span>
-                    <div style="flex: 1; height: 12px; background: var(--bg-input); border-radius: 4px; overflow: hidden;">
-                        <div style="width: ${15 + (pct * 85)}%; height: 100%; background: ${corBarra}; border-radius: 4px;"></div>
-                    </div>
-                    <span class="num" style="font-size: 12px; font-weight: bold; width: 70px;">${moedaPTBR(media)}</span>
-                </div>`;
-        });
-        document.getElementById('listaEvolucaoDiaria').innerHTML = htmlDiario;
-
-        const blocos = [{l:'00h-09h',s:0,e:8,p:[]},{l:'09h-12h',s:9,e:11,p:[]},{l:'12h-15h',s:12,e:14,p:[]},{l:'15h-18h',s:15,e:17,p:[]},{l:'18h-21h',s:18,e:20,p:[]},{l:'21h-23h',s:21,e:23,p:[]}];
-        dadosCronologicos.forEach(d => { let hr = new Date(d.dataTransacao).getHours(); let b = blocos.find(x => hr >= x.s && hr <= x.e); if(b) b.p.push(Number(d.valorLitro)); });
-        let htmlIntra = ''; let prev = null;
-        blocos.forEach(b => {
-            if(b.p.length === 0) return; let med = b.p.reduce((a, c) => a + c, 0) / b.p.length; let dif = 0; let cls = 'fill-neutro'; let pctBar = '20%';
-            if(prev !== null) { dif = med - prev; if(dif > 0.005) { cls = 'fill-alta'; pctBar = '80%'; } else if(dif < -0.005) { cls = 'fill-baixa'; pctBar = '80%'; } }
-            prev = med;
-            htmlIntra += `<tr><td style="font-weight:bold; font-size: 13px;">${b.l}</td><td><div class="bar-bg"><div class="bar-fill ${cls}" style="width: ${pctBar};"></div></div></td><td class="num" style="font-size:15px; font-weight:bold;">${moedaPTBR(med)}</td></tr>`;
-        });
-        document.getElementById('tabelaIntel').innerHTML = htmlIntra;
+        let ufStats = {}; pV.forEach(d => { if(!ufStats[d.uf]) ufStats[d.uf] = []; ufStats[d.uf].push(Number(d.valorLitro)); });
+        document.getElementById('gridRegioes').innerHTML = Object.entries(ufStats).map(([uf, precos]) => {
+            let avg = precos.reduce((a,b)=>a+b,0)/precos.length;
+            return `<div class="regiao-card"><div class="regiao-titulo">${uf}</div><div class="uf-row">Média: R$ ${avg.toFixed(2)}</div></div>`;
+        }).join('');
     }
 
     function mostrarAba(a) {
-        abaAtual = a; ['aba-operacional', 'aba-gerencial', 'aba-intel', 'aba-sheets'].forEach(id => document.getElementById(id).style.display = 'none');
-        document.getElementById('aba-' + a).style.display = 'block';
+        ['total', 'operacional', 'gerencial', 'intel', 'sheets'].forEach(id => document.getElementById('aba-'+id).style.display = 'none');
+        document.getElementById('aba-'+a).style.display = 'block';
         document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + a).classList.add('active');
-        if(a === 'gerencial') renderGerencial(); if(a === 'intel') renderInteligencia();
+        document.getElementById('btn-'+a).classList.add('active');
+        atualizarTudo();
+        lucide.createIcons();
     }
 
     function updateChart(id, type, labels, data, label, color, axis = 'x') {
-        if (charts[id]) charts[id].destroy();
-        charts[id] = new Chart(document.getElementById(id), { type: type, data: { labels: labels, datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, tension: 0.3, fill: type === 'line' }] }, options: { indexAxis: axis, responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: axis === 'x' ? false : true, color: '#1e293b' } } } } });
+        if(charts[id]) charts[id].destroy();
+        charts[id] = new Chart(document.getElementById(id), { type, data: { labels, datasets: [{ label, data, backgroundColor: color, borderColor: color, tension: 0.3 }] }, options: { indexAxis: axis, maintainAspectRatio: false, scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } } });
     }
 
     function baixarExcel() {
-        let csv = ["DATA;HORA;PLACA;KM ODOMETRO;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;KM RODADO"];
-        dadosFiltrados.forEach(i => {
-            let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
-            let data = d.toISOString().split("T")[0];
-            let hora = d.toTimeString().split(" ")[0];
-            
-            let litros = Number(i.litros || 0).toFixed(2).replace('.', ',');
-            let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
-            let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
-            
-            let km = i.quilometragem || "";
-            let kmRodado = i.kmRodado || "";
-            
-            csv.push(`${data};${hora};${i.placa};${km};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro};${kmRodado}`);
-        });
-
-        let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob); 
-        a.download = "PizzattoLog_Abastecimentos.csv"; 
-        a.click();
+        let csv = "DATA;HORA;PLACA;ODOMETRO;POSTO;CIDADE;UF;PRODUTO;LITROS;TOTAL;KM RODADO\n";
+        dadosFiltrados.forEach(i => { csv += `${i.dataTransacao};${i.placa};${i.quilometragem};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.tipoCombustivel};${i.litros};${i.valorTransacao};${i.kmRodado}\n`; });
+        let b = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+        let a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "Abastecimentos.csv"; a.click();
     }
 </script>
 </body>
