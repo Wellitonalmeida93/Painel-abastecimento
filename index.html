@@ -73,7 +73,7 @@
     .kpi label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
     .kpi span { font-size: 24px; font-weight: 800; color: var(--text-primary); }
 
-    /* 🔹 FILTROS GLOBAIS - ESPAÇAMENTO AUMENTADO */
+    /* FILTROS GLOBAIS */
     .filtros { display: flex; flex-wrap: wrap; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; align-items: flex-start; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
     .filtro-box { flex: 1; min-width: 140px; }
     .filtros input[type="date"], .filtros input[list] { height: 38px; width: 100%; padding: 0 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.3s; color-scheme: dark; box-sizing: border-box;}
@@ -82,7 +82,7 @@
     .btn-excel { background: var(--success); color: white; border: none; padding: 0 20px; height: 38px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-left: auto; transition: 0.3s; box-sizing: border-box;}
     .btn-excel:hover { background: #059669; transform: translateY(-2px); }
 
-    /* 🔥 CORREÇÕES CHOICES.JS (FUNDOS ESCUROS BLINDADOS) 🔥 */
+    /* CORREÇÕES CHOICES.JS */
     .choices { margin-bottom: 0 !important; font-size: 13px; color: var(--text-primary); box-sizing: border-box; }
     .choices__inner { 
         background: var(--bg-input) !important; 
@@ -142,30 +142,6 @@
     tr:hover { background: rgba(255,255,255,0.03); }
     .num { text-align: right; font-family: monospace; font-size: 14px; }
     .caro { color: var(--danger); font-weight: bold; }
-
-    /* --- GERENCIAL E INTELIGÊNCIA --- */
-    .grid-gerencial { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-    .card-chart { background: var(--bg-card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
-    .card-chart h3 { font-size: 16px; margin-top: 0; color: var(--text-primary); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-    iframe { width: 100%; border: none; background: white; border-radius: 8px; }
-
-    /* --- INTELIGÊNCIA --- */
-    .intel-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 30px; }
-    .intel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; }
-    .intel-header h2 { font-size: 18px; margin: 0; color: var(--text-primary); font-family: 'Poppins', sans-serif;}
-    .bar-bg { background: var(--bg-input); width: 100%; height: 12px; border-radius: 6px; overflow: hidden; position: relative; }
-    .bar-fill { height: 100%; transition: width 0.5s ease; border-radius: 6px; }
-    .fill-alta { background: var(--danger); }
-    .fill-baixa { background: var(--success); }
-    .fill-neutro { background: #64748b; }
-    
-    /* Regiões */
-    .regiao-card { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .regiao-titulo { background: var(--bg-input); padding: 10px 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border); color: var(--text-primary); }
-    .uf-row { display: flex; justify-content: space-between; padding: 8px 15px; border-bottom: 1px solid var(--bg-input); font-size: 13px; font-weight: bold; }
-    .uf-alta { background: rgba(239, 68, 68, 0.05); color: var(--danger); }
-    .uf-baixa { background: rgba(16, 185, 129, 0.05); color: var(--success); }
-    .uf-neutro { color: var(--text-secondary); }
 </style>
 </head>
 <body>
@@ -232,7 +208,6 @@
             <div class="kpi"><label>Total Investido</label><span id="total">R$ 0,00</span></div>
             <div class="kpi"><label>Litros Abastecidos</label><span id="litros">0,00</span></div>
             <div class="kpi"><label>Média R$ / Litro</label><span id="media">R$ 0,00</span></div>
-            <div class="kpi" style="border-left-color: var(--success);"><label>Média KM/L</label><span id="mediaKml" style="color: var(--success);">0,00</span></div>
         </div>
         <div class="table-container">
             <table>
@@ -240,7 +215,6 @@
                     <tr>
                         <th>Data/Hora</th>
                         <th>Placa</th>
-                        <th class="num">Odômetro</th>
                         <th>Posto</th>
                         <th>Cidade</th>
                         <th>UF</th>
@@ -248,7 +222,6 @@
                         <th class="num">Litros</th>
                         <th class="num">Total</th>
                         <th class="num">Vl. Litro</th>
-                        <th class="num" style="color: var(--pizzatto-orange);">KM Rodado</th>
                     </tr>
                 </thead>
                 <tbody id="tabela"></tbody>
@@ -333,8 +306,6 @@
 </div>
 
 <script>
-    lucide.createIcons();
-
     let dadosBrutos = []; let dadosFiltrados = []; let charts = {}; let abaAtual = 'operacional';
     let choicesInstances = {}; 
     
@@ -377,30 +348,19 @@
 
     function iniciarApp() {
         fetch("transacoes.json?v=" + new Date().getTime()).then(r => r.json()).then(j => {
-            
-            // ORDENA DO MAIS ANTIGO PARA O MAIS NOVO (Para o KM funcionar)
-            let dadosAsc = j.sort((a, b) => new Date(a.dataTransacao) - new Date(b.dataTransacao));
-            let kmAnterior = {}; 
-
-            dadosAsc.forEach(i => {
-                let placa = i.placa;
-                let kmAtual = Number(i.quilometragem || 0);
-                let prod = (i.tipoCombustivel || "").toUpperCase();
-                
-                i.kmRodado = 0; 
-                
-                // CÁLCULO INTELIGENTE DE KM (IGNORANDO ARLA)
-                if (!prod.includes("ARLA")) {
-                    if (kmAtual > 0 && kmAnterior[placa] > 0) {
-                        let diff = kmAtual - kmAnterior[placa];
-                        i.kmRodado = diff > 0 ? diff : 0; 
-                    }
-                    if (kmAtual > 0) kmAnterior[placa] = kmAtual; 
-                }
+            // 🔥 TRATAMENTO DE VARIÁVEIS DA TICKET LOG PARA EVITAR CONFLITOS NO FILTRO
+            dadosBrutos = j.map(i => {
+                return {
+                    ...i,
+                    placa: String(i.placa || "").trim().toUpperCase(),
+                    postoFmt: String(i.nomeReduzidoEstabelecimento || i.razaoSocialEstabelecimento || "POSTO DESCONHECIDO").trim(),
+                    cidadeFmt: String(i.nomeCidade || i.cidade || "-").trim(),
+                    uf: String(i.uf || "").trim().toUpperCase(),
+                    tipoCombustivel: String(i.tipoCombustivel || "OUTROS").trim()
+                };
             });
-
-            // INVERTE DE VOLTA (MAIS NOVOS PRIMEIRO)
-            dadosBrutos = dadosAsc.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
+            
+            dadosBrutos.sort((a,b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
             dadosFiltrados = [...dadosBrutos];
 
             if(dadosBrutos.length > 0 && dadosBrutos[0].dataTransacao) {
@@ -413,33 +373,39 @@
             preencherFiltros(); 
             atualizarTudo(); 
             lucide.createIcons();
-        }).catch(e => console.error("Erro:", e));
+        }).catch(e => console.error("Erro ao carregar dados:", e));
     }
 
     function preencherFiltros() {
         let placas = new Set(), cidades = new Set(), postos = new Set(), ufs = new Set(), prods = new Set();
+        
         dadosBrutos.forEach(i => { 
-            if (i.placa && i.placa.trim() !== '') placas.add(i.placa.trim()); 
-            if (i.nomeCidade && i.nomeCidade.trim() !== '') cidades.add(i.nomeCidade.trim()); 
-            if (i.nomeReduzidoEstabelecimento) postos.add(i.nomeReduzidoEstabelecimento); 
+            if (i.placa) placas.add(i.placa); 
+            if (i.cidadeFmt && i.cidadeFmt !== "-") cidades.add(i.cidadeFmt); 
+            if (i.postoFmt) postos.add(i.postoFmt); 
             if (i.uf) ufs.add(i.uf); 
             if (i.tipoCombustivel) prods.add(i.tipoCombustivel); 
         });
 
         const listaPlacas = document.getElementById('listaPlacas');
+        listaPlacas.innerHTML = "";
         Array.from(placas).sort().forEach(p => listaPlacas.innerHTML += `<option value="${p}">`);
         
         const listaCidades = document.getElementById('listaCidades');
+        listaCidades.innerHTML = "";
         Array.from(cidades).sort().forEach(c => listaCidades.innerHTML += `<option value="${c}">`);
 
         const initChoice = (id, set, placeholder) => {
             const select = document.getElementById(id);
+            select.innerHTML = ""; 
             Array.from(set).sort().forEach(val => {
                 let opt = document.createElement('option');
                 opt.value = val;
                 opt.text = val;
                 select.appendChild(opt);
             });
+            
+            if (choicesInstances[id]) choicesInstances[id].destroy();
             
             choicesInstances[id] = new Choices(select, {
                 removeItemButton: true,
@@ -462,8 +428,8 @@
 
     document.getElementById('filtroPlaca').addEventListener("input", aplicarFiltros);
     document.getElementById('filtroCidade').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroDataInicio').addEventListener("input", aplicarFiltros);
-    document.getElementById('filtroDataFim').addEventListener("input", aplicarFiltros);
+    document.getElementById('filtroDataInicio').addEventListener("change", aplicarFiltros);
+    document.getElementById('filtroDataFim').addEventListener("change", aplicarFiltros);
 
     function aplicarFiltros() {
         let fPlaca = document.getElementById('filtroPlaca').value.toLowerCase();
@@ -471,17 +437,22 @@
         let dIni = document.getElementById('filtroDataInicio').value;
         let dFim = document.getElementById('filtroDataFim').value;
 
-        const getVals = (id) => choicesInstances[id] ? choicesInstances[id].getValue(true) : [];
+        const getVals = (id) => {
+            if (!choicesInstances[id]) return [];
+            let v = choicesInstances[id].getValue(true);
+            return Array.isArray(v) ? v : (v ? [v] : []);
+        };
+        
         let fPosto = getVals('filtroPosto');
         let fUF = getVals('filtroUF');
         let fProduto = getVals('filtroProduto');
 
         dadosFiltrados = dadosBrutos.filter(i => {
             let ok = true;
-            if (fPlaca && !(i.placa || "").toLowerCase().includes(fPlaca)) ok = false;
-            if (fCidade && !(i.nomeCidade || "").toLowerCase().includes(fCidade)) ok = false;
+            if (fPlaca && !i.placa.toLowerCase().includes(fPlaca)) ok = false;
+            if (fCidade && !i.cidadeFmt.toLowerCase().includes(fCidade)) ok = false;
             
-            if (fPosto.length > 0 && !fPosto.includes(i.nomeReduzidoEstabelecimento)) ok = false;
+            if (fPosto.length > 0 && !fPosto.includes(i.postoFmt)) ok = false;
             if (fUF.length > 0 && !fUF.includes(i.uf)) ok = false;
             if (fProduto.length > 0 && !fProduto.includes(i.tipoCombustivel)) ok = false;
             
@@ -506,39 +477,25 @@
             tb.innerHTML += `<tr>
                 <td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td>
                 <td><strong style="color:var(--text-primary)">${i.placa}</strong></td>
-                <td class="num">${i.quilometragem || '-'}</td>
-                <td>${i.nomeReduzidoEstabelecimento}</td>
-                <td>${i.nomeCidade || '-'}</td>
+                <td>${i.postoFmt}</td>
+                <td>${i.cidadeFmt}</td>
                 <td>${i.uf}</td>
-                <td>${i.tipoCombustivel||'-'}</td>
+                <td>${i.tipoCombustivel}</td>
                 <td class="num">${numeroPTBR(i.litros)}</td>
                 <td class="num">${moedaPTBR(i.valorTransacao)}</td>
                 <td class="num">${moedaPTBR(i.valorLitro)}</td>
-                <td class="num" style="color: var(--pizzatto-orange); font-weight: bold;">${i.kmRodado || '-'}</td>
             </tr>`;
         });
         
-        let tTotal = 0, tLitrosGeral = 0, tLitrosCombustivel = 0, tKmRodado = 0; 
-        
+        let tTotal = 0, tLitrosGeral = 0; 
         dadosFiltrados.forEach(i => { 
-            let prod = (i.tipoCombustivel || "").toUpperCase();
-            
             tTotal += Number(i.valorTransacao || 0); 
             tLitrosGeral += Number(i.litros || 0); 
-            
-            // Exclui o Arla da média de KM/L para não distorcer o cálculo
-            if (!prod.includes("ARLA")) {
-                tLitrosCombustivel += Number(i.litros || 0);
-                tKmRodado += Number(i.kmRodado || 0);
-            }
         });
 
         document.getElementById("total").innerText = moedaPTBR(tTotal); 
         document.getElementById("litros").innerText = numeroPTBR(tLitrosGeral); 
         document.getElementById("media").innerText = moedaPTBR(tTotal / tLitrosGeral || 0);
-        
-        let mediaKml = tLitrosCombustivel > 0 ? (tKmRodado / tLitrosCombustivel) : 0;
-        document.getElementById("mediaKml").innerText = numeroPTBR(mediaKml) + " km/l";
     }
 
     function renderGerencial() {
@@ -548,14 +505,14 @@
         let ufsRaw = {}; dadosFiltrados.forEach(i => { if(i.uf) ufsRaw[i.uf] = (ufsRaw[i.uf] || 0) + Number(i.valorTransacao); });
         let ufsSorted = Object.entries(ufsRaw).sort((a,b) => b[1] - a[1]); updateChart('graficoUF', 'bar', ufsSorted.map(x=>x[0]), ufsSorted.map(x=>x[1]), 'Total por UF', '#3b82f6', 'y');
         
-        let pRank = {}; dadosFiltrados.forEach(i => { pRank[i.nomeReduzidoEstabelecimento] = (pRank[i.nomeReduzidoEstabelecimento] || 0) + Number(i.valorTransacao); });
+        let pRank = {}; dadosFiltrados.forEach(i => { pRank[i.postoFmt] = (pRank[i.postoFmt] || 0) + Number(i.valorTransacao); });
         let topP = Object.entries(pRank).sort((a,b) => b[1] - a[1]).slice(0, 10); updateChart('graficoPostos', 'bar', topP.map(x=>x[0]), topP.map(x=>x[1]), 'Faturamento R$', '#f97316', 'y');
 
         let maioresP = [...dadosFiltrados].sort((a,b) => Number(b.valorLitro || 0) - Number(a.valorLitro || 0)).slice(0, 10);
         document.getElementById("listaMaioresPrecos").innerHTML = maioresP.map(i => `
             <tr style="border-bottom: 1px solid var(--border);">
                 <td style="padding: 10px 15px;"><strong>${i.placa}</strong></td>
-                <td style="padding: 10px 15px;"><span style="color:var(--pizzatto-orange); font-size:11px; font-weight: bold;">${i.tipoCombustivel || '-'}</span><br><small style="color:#94a3b8">${(i.nomeReduzidoEstabelecimento || '').substring(0,25)}</small></td>
+                <td style="padding: 10px 15px;"><span style="color:var(--pizzatto-orange); font-size:11px; font-weight: bold;">${i.tipoCombustivel}</span><br><small style="color:#94a3b8">${i.postoFmt.substring(0,25)}</small></td>
                 <td class="num caro" style="padding: 10px 15px; font-size: 14px;">${moedaPTBR(i.valorLitro)}</td>
             </tr>
         `).join("");
@@ -573,7 +530,7 @@
             document.getElementById('cardVarLabel').innerText = `De R$ ${pPrimeiro.toFixed(2)} para R$ ${pUltimo.toFixed(2)}`;
             let picoObj = precosValidos.reduce((max, obj) => Number(obj.valorLitro) > Number(max.valorLitro) ? obj : max, precosValidos[0]);
             document.getElementById('cardPicoValor').innerText = `R$ ${Number(picoObj.valorLitro).toFixed(2)}`;
-            document.getElementById('cardPicoLabel').innerText = `${picoObj.nomeReduzidoEstabelecimento} (${picoObj.uf})`;
+            document.getElementById('cardPicoLabel').innerText = `${picoObj.postoFmt} (${picoObj.uf})`;
         }
 
         let ufStats = {};
@@ -663,8 +620,7 @@
     }
 
     function baixarExcel() {
-        // 🔥 COMPATIBILIDADE GARANTIDA: Mantive odômetro/KM rodado e injetei as 4 colunas de auditoria financeira direto no CSV exportado!
-        let csv = ["DATA;HORA;PLACA;KM ODOMETRO;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;KM RODADO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
+        let csv = ["DATA;HORA;PLACA;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
         dadosFiltrados.forEach(i => {
             let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             let data = d.toISOString().split("T")[0];
@@ -674,16 +630,12 @@
             let vTotal = Number(i.valorTransacao || 0).toFixed(2).replace('.', ',');
             let vLitro = Number(i.valorLitro || 0).toFixed(2).replace('.', ',');
             
-            let km = i.quilometragem || "";
-            let kmRodado = i.kmRodado || "";
-            
-            // Atributos secretos de auditoria calculados pelo robô
             let vAcordo = i.precoAcordado ? Number(i.precoAcordado).toFixed(3).replace('.', ',') : "";
             let div = i.divergencia_un ? Number(i.divergencia_un).toFixed(3).replace('.', ',') : "";
             let status = i.status_preco || "";
             let perda = i.perda_total ? Number(i.perda_total).toFixed(2).replace('.', ',') : "";
             
-            csv.push(`${data};${hora};${i.placa};${km};${i.nomeReduzidoEstabelecimento};${i.nomeCidade};${i.uf};${i.tipoCombustivel || ''};${litros};${vTotal};${vLitro};${kmRodado};${vAcordo};${div};${status};${perda}`);
+            csv.push(`${data};${hora};${i.placa};${i.postoFmt};${i.cidadeFmt};${i.uf};${i.tipoCombustivel};${litros};${vTotal};${vLitro};${vAcordo};${div};${status};${perda}`);
         });
 
         let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
