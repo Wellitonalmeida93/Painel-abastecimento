@@ -93414,7 +93414,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.04,
     "divergencia_un": -0.75,
     "perda_total": -184.5,
@@ -93486,7 +93486,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.39,
     "divergencia_un": -0.35,
     "perda_total": -37.8,
@@ -93558,7 +93558,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.39,
     "divergencia_un": -0.35,
     "perda_total": -35.0,
@@ -93631,7 +93631,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -4.96,
     "perda_total": -198.4,
@@ -93704,7 +93704,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -1.06,
     "perda_total": -487.6,
@@ -93776,7 +93776,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.59,
     "divergencia_un": -3.6,
     "perda_total": -108.0,
@@ -93848,7 +93848,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.59,
     "divergencia_un": -0.72,
     "perda_total": -374.4,
@@ -93920,7 +93920,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -93989,7 +93989,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94058,7 +94058,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94127,7 +94127,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -169.2,
@@ -94199,7 +94199,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -290.72,
@@ -94270,7 +94270,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -140.0,
@@ -94342,7 +94342,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -272.4,
@@ -94414,7 +94414,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94483,7 +94483,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94552,7 +94552,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94621,7 +94621,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94691,7 +94691,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94760,7 +94760,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94829,7 +94829,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -94898,7 +94898,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -580.29,
@@ -94971,7 +94971,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.42,
     "perda_total": -56.52,
@@ -95043,7 +95043,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -108.05,
@@ -95115,7 +95115,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -231.62,
@@ -95187,7 +95187,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -162.41,
@@ -95260,7 +95260,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95330,7 +95330,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95398,7 +95398,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95467,7 +95467,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95536,7 +95536,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95604,7 +95604,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -198.53,
@@ -95675,7 +95675,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -250.79,
@@ -95747,7 +95747,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95816,7 +95816,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95885,7 +95885,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -95954,7 +95954,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.538,
     "perda_total": -72.02,
@@ -96026,7 +96026,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -96095,7 +96095,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -96165,7 +96165,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -3.26,
     "perda_total": -267.61,
@@ -96237,7 +96237,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.39,
     "divergencia_un": -0.35,
     "perda_total": -150.5,
@@ -96310,7 +96310,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -1.06,
     "perda_total": -487.6,
@@ -96382,7 +96382,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -96451,7 +96451,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -96521,7 +96521,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -23.5,
@@ -96594,7 +96594,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -241.51,
@@ -96666,7 +96666,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -96734,7 +96734,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -232.77,
@@ -96806,7 +96806,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -96876,7 +96876,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.42,
     "perda_total": -76.86,
@@ -96948,7 +96948,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97017,7 +97017,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97087,7 +97087,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97154,7 +97154,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -120.28,
@@ -97226,7 +97226,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -301.01,
@@ -97297,7 +97297,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.99,
     "divergencia_un": -0.33,
     "perda_total": -72.6,
@@ -97369,7 +97369,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97438,7 +97438,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -3.26,
     "perda_total": -256.01,
@@ -97511,7 +97511,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97581,7 +97581,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97651,7 +97651,7 @@
     "servico": "GASOLINA COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -97719,7 +97719,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.912,
     "perda_total": -114.5,
@@ -97790,7 +97790,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.432,
     "perda_total": -71.3,
@@ -101547,7 +101547,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -101614,7 +101614,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.89,
     "perda_total": -85.53,
@@ -101684,7 +101684,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.43,
     "perda_total": -137.6,
@@ -101757,7 +101757,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -280.01,
@@ -101829,7 +101829,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -101898,7 +101898,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -101967,7 +101967,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -102035,7 +102035,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.89,
     "perda_total": -313.45,
@@ -102108,7 +102108,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -102178,7 +102178,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -102246,7 +102246,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.43,
     "perda_total": -301.0,
@@ -102319,7 +102319,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -102388,7 +102388,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.89,
     "perda_total": -242.5,
@@ -102460,7 +102460,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.43,
     "perda_total": -274.34,
@@ -102533,7 +102533,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -4.96,
     "perda_total": -213.68,
@@ -102606,7 +102606,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -1.06,
     "perda_total": -636.0,
@@ -102678,7 +102678,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.43,
     "perda_total": -75.25,
@@ -102748,7 +102748,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -179.69,
@@ -102819,7 +102819,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -146.14,
@@ -102891,7 +102891,7 @@
     "servico": "DIESEL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -102960,7 +102960,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103029,7 +103029,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103098,7 +103098,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103167,7 +103167,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -244.25,
@@ -103237,7 +103237,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -170.26,
@@ -103309,7 +103309,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.04,
     "divergencia_un": -0.65,
     "perda_total": -130.0,
@@ -103381,7 +103381,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.543,
     "perda_total": -216.47,
@@ -103453,7 +103453,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103522,7 +103522,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103590,7 +103590,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -256.6,
@@ -103663,7 +103663,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103733,7 +103733,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -97.34,
@@ -103805,7 +103805,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -511.61,
@@ -103877,7 +103877,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -103945,7 +103945,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -322.34,
@@ -104017,7 +104017,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -168.0,
@@ -104087,7 +104087,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -155.97,
@@ -104159,7 +104159,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -81.72,
@@ -104231,7 +104231,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -567.13,
@@ -104301,7 +104301,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -125.76,
@@ -104373,7 +104373,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -104441,7 +104441,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -104511,7 +104511,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -353.5,
@@ -104582,7 +104582,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -254.32,
@@ -104654,7 +104654,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -104721,7 +104721,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -86.21,
@@ -104793,7 +104793,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -104862,7 +104862,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -257.6,
@@ -104934,7 +104934,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -105003,7 +105003,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -105072,7 +105072,7 @@
     "servico": "ETANOL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -105141,7 +105141,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -188.78,
@@ -105214,7 +105214,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -105284,7 +105284,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -109105,7 +109105,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -212.1,
@@ -109177,7 +109177,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -109246,7 +109246,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -109315,7 +109315,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.89,
     "perda_total": -139.36,
@@ -109387,7 +109387,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.43,
     "perda_total": -151.36,
@@ -109459,7 +109459,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -109527,7 +109527,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.36,
     "perda_total": -70.56,
@@ -109599,7 +109599,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -213.5,
@@ -109671,7 +109671,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -109740,7 +109740,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -109809,7 +109809,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -104.76,
@@ -109881,7 +109881,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -175.0,
@@ -109953,7 +109953,7 @@
     "servico": "GASOLINA COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -110022,7 +110022,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -110090,7 +110090,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -110159,7 +110159,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.04,
     "divergencia_un": -0.58,
     "perda_total": -247.66,
@@ -110230,7 +110230,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -47.0,
@@ -110301,7 +110301,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -371.73,
@@ -110372,7 +110372,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.547,
     "perda_total": -167.28,
@@ -110445,7 +110445,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.98,
     "divergencia_un": -0.08,
     "perda_total": -35.84,
@@ -110516,7 +110516,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -394.98,
@@ -110589,7 +110589,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.36,
     "perda_total": -43.2,
@@ -110660,7 +110660,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -110730,7 +110730,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -110799,7 +110799,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -267.4,
@@ -110871,7 +110871,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -4.08,
     "perda_total": -40.88,
@@ -110943,7 +110943,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.36,
     "perda_total": -63.73,
@@ -111014,7 +111014,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -74.68,
@@ -111086,7 +111086,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.99,
     "divergencia_un": -0.33,
     "perda_total": -212.85,
@@ -111159,7 +111159,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -3.26,
     "perda_total": -100.02,
@@ -111230,7 +111230,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -111299,7 +111299,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -147.14,
@@ -111371,7 +111371,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.59,
     "divergencia_un": -1.2,
     "perda_total": -339.6,
@@ -111442,7 +111442,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.01,
     "divergencia_un": -0.56,
     "perda_total": -314.17,
@@ -111512,7 +111512,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -111581,7 +111581,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.04,
     "divergencia_un": -0.58,
     "perda_total": -251.72,
@@ -111654,7 +111654,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -77.46,
@@ -111725,7 +111725,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -111795,7 +111795,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.7,
     "perda_total": -431.2,
@@ -111865,7 +111865,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -111932,7 +111932,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -112001,7 +112001,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.67,
     "divergencia_un": -0.49,
     "perda_total": -96.53,
@@ -112072,7 +112072,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.43,
     "perda_total": -159.11,
@@ -112143,7 +112143,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.89,
     "perda_total": -81.91,
@@ -112215,7 +112215,7 @@
     "servico": "DIESEL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -112283,7 +112283,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -149.46,
@@ -112354,7 +112354,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -185.12,
@@ -112499,7 +112499,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -3.26,
     "perda_total": -334.05,
@@ -112571,7 +112571,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -5.06,
     "perda_total": -275.57,
@@ -112643,7 +112643,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -1.06,
     "perda_total": -375.2,
@@ -112715,7 +112715,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -170.03,
@@ -112786,7 +112786,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -214.56,
@@ -112858,7 +112858,7 @@
     "servico": "GASOLINA COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -112926,7 +112926,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -112993,7 +112993,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -170.26,
@@ -113065,7 +113065,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.89,
     "perda_total": -62.93,
@@ -113137,7 +113137,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.433,
     "perda_total": -154.23,
@@ -113208,7 +113208,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -156.91,
@@ -113280,7 +113280,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -113349,7 +113349,7 @@
     "servico": "GASOLINA COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -113417,7 +113417,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.333,
     "perda_total": -276.36,
@@ -113488,7 +113488,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -125.76,
@@ -113559,7 +113559,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -113626,7 +113626,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -140.18,
@@ -113698,7 +113698,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -113768,7 +113768,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.04,
     "divergencia_un": -4.75,
     "perda_total": -47.69,
@@ -137623,7 +137623,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -137692,7 +137692,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.99,
     "divergencia_un": -0.33,
     "perda_total": -221.1,
@@ -137764,7 +137764,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -137833,7 +137833,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -518.4,
@@ -137905,7 +137905,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.98,
     "divergencia_un": -0.2,
     "perda_total": -108.0,
@@ -137976,7 +137976,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -447.32,
@@ -138048,7 +138048,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138117,7 +138117,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138186,7 +138186,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138255,7 +138255,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.99,
     "divergencia_un": -0.33,
     "perda_total": -77.55,
@@ -138327,7 +138327,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -482.28,
@@ -138399,7 +138399,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -441.05,
@@ -138472,7 +138472,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138542,7 +138542,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -0.88,
     "perda_total": -211.2,
@@ -138614,7 +138614,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138684,7 +138684,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -5.06,
     "perda_total": -101.2,
@@ -138756,7 +138756,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138824,7 +138824,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.54,
     "perda_total": -233.81,
@@ -138896,7 +138896,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -138965,7 +138965,7 @@
     "servico": "DIESEL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139034,7 +139034,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139101,7 +139101,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -192.51,
@@ -139173,7 +139173,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139243,7 +139243,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139312,7 +139312,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139381,7 +139381,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139451,7 +139451,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -139520,7 +139520,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 8.04,
     "divergencia_un": -0.47,
     "perda_total": -141.0,
@@ -139592,7 +139592,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.59,
     "divergencia_un": -1.09,
     "perda_total": -337.91,
@@ -139664,7 +139664,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.75,
     "divergencia_un": -0.88,
     "perda_total": -299.2,
@@ -139735,7 +139735,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.48,
     "perda_total": -59.52,
@@ -139806,7 +139806,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.48,
     "perda_total": -95.66,
@@ -139877,7 +139877,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -170.26,
@@ -139949,7 +139949,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.37,
     "divergencia_un": -0.48,
     "perda_total": -96.0,
@@ -140020,7 +140020,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -197.8,
@@ -140091,7 +140091,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "status_preco": "N/C"
   },
   {
@@ -140159,7 +140159,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.45,
     "perda_total": -138.93,
@@ -140230,7 +140230,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -4.92,
     "perda_total": -284.23,
@@ -140301,7 +140301,7 @@
     "codigoServicoOrdemServico": 0,
     "controlaHorimetro": "N",
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.74,
     "divergencia_un": -0.28,
     "perda_total": -109.21,
@@ -140373,7 +140373,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.67,
     "divergencia_un": -0.61,
     "perda_total": -122.0,
@@ -140445,7 +140445,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -193.82,
@@ -140517,7 +140517,7 @@
     "servico": "GAS NATURAL",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.52,
     "divergencia_un": -2.93,
     "perda_total": -499.86,
@@ -140589,7 +140589,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 6.99,
     "divergencia_un": -0.33,
     "perda_total": -224.4,
@@ -140661,7 +140661,7 @@
     "servico": "Arla 32",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -4.7,
     "perda_total": -194.06,
@@ -140733,7 +140733,7 @@
     "servico": "DIESEL S-10 COMUM",
     "codigoServicoOrdemServico": 0,
     "origemConta": "FROTA",
-    "considerarTransacao": "V",
+    "considerarTransacao": "T",
     "precoAcordado": 7.29,
     "divergencia_un": -0.45,
     "perda_total": -262.8,
