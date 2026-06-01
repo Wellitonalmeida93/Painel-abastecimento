@@ -6,6 +6,7 @@ import io
 from datetime import datetime, timedelta
 import time
 
+# 🔹 CONFIGURAÇÕES
 URL_TICKET = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 URL_PLANILHA_ACORDOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-H-zThkjVd5_fooBo9vDrNNH_YNaxh9CNaGkULdD7hFtpmdSpQsEhlHhvbMX-IiEX5zZEjEIsZ-Pf/pub?gid=0&single=true&output=csv"
@@ -13,6 +14,7 @@ ARQUIVO_JSON = "transacoes.json"
 CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
+    """Lê a planilha via Requests e organiza por Data"""
     try:
         resposta = requests.get(URL_PLANILHA_ACORDOS, timeout=15)
         resposta.raise_for_status() 
@@ -53,6 +55,7 @@ def carregar_acordos_temporais():
         return {}
 
 def carregar_historico():
+    """Carrega os dados existentes salvos no GitHub"""
     if os.path.exists(ARQUIVO_JSON):
         try:
             with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
@@ -62,9 +65,10 @@ def carregar_historico():
     return []
 
 def buscar_ticketlog_recente():
+    """Busca os dados da TicketLog - AUMENTADO PARA 35 DIAS PARA RECUPERAÇÃO"""
     headers = {"Content-Type": "application/json", "Authorization": AUTHORIZATION}
     hoje = datetime.now()
-    inicio = hoje - timedelta(days=10)
+    inicio = hoje - timedelta(days=35) # 👈 Varredura completa para recuperar Maio
     novas = []
     
     data_alvo = inicio
@@ -87,7 +91,7 @@ def buscar_ticketlog_recente():
                         if res.get("sucesso"):
                             for n in res.get("transacoes", []):
                                 n["origemConta"] = origem
-                                n["considerarTransacao"] = tipo # Adiciona o tipo (V ou T)
+                                n["considerarTransacao"] = tipo
                                 novas.append(n)
                                 n_dia += 1
                 except: continue
@@ -102,28 +106,27 @@ if __name__ == "__main__":
     
     historico = carregar_historico()
     total_base = len(historico)
+    print(f"📚 Base histórica carregada: {total_base} registros.")
     
     novas_notas = buscar_ticketlog_recente()
     
-    # Unificação (Remove duplicados)
-    unificado = { (t.get('codigoTransacao') or f"{t.get('placa')}_{t.get('dataTransacao')}"): t for t in historico }
+    # 🔒 CHAVE COMBINADA BLINDADA: Evita qualquer tipo de colisão ou perda de dados antigos
+    unificado = {}
+    for t in historico:
+        chave = str(t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
+        unificado[chave] = t
+
     for n in novas_notas:
-        chave = n.get('codigoTransacao') or f"{n.get('placa')}_{n.get('dataTransacao')}"
+        chave = str(n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
         unificado[chave] = n
 
-    print(f"⚖️ Iniciando Auditoria e Cálculo de KM em {len(unificado)} registros...")
+    print(f"⚖️ Iniciando Auditoria Financeira em {len(unificado)} registros...")
     
-    # 🔹 TRANSFORMA EM LISTA PARA ORDENAÇÃO E CÁLCULO
-    lista_auditoria = list(unificado.values())
+    lista_final = list(unificado.values())
     
-    # Ordena Cronologicamente (Antigo para Novo) por Placa para o cálculo de KM
-    lista_auditoria.sort(key=lambda x: (str(x.get("placa", "")), str(x.get("dataTransacao", ""))))
-
-    km_anterior = {}
-
-    for n in lista_auditoria:
-        # --- Lógica de Auditoria de Preço ---
-        cnpj = str(n.get("cnpjEstabelecimento", "")).replace(".","").replace("-","").replace("/","").zfill(14)
+    for n in lista_final:
+        # --- Auditoria de Preço ---
+        cnpj = str(n.get("cnpjEstablishment") or n.get("cnpjEstabelecimento") or "").replace(".","").replace("-","").replace("/","").zfill(14)
         preco_pago = n.get("valorLitro", 0)
         data_str = n.get("dataTransacao", "").split("T")[0]
         
@@ -146,25 +149,13 @@ if __name__ == "__main__":
         else:
             n["status_preco"] = "N/C"
 
-        # --- Lógica de Cálculo de KM (NOVO) ---
-        placa = n.get("placa")
-        km_atual = float(n.get("quilometragem") or 0)
-        n["kmRodado"] = 0
-        
-        if placa and km_atual > 0:
-            if placa in km_anterior and km_anterior[placa] > 0:
-                diff = km_atual - km_anterior[placa]
-                # Só registra se for positivo e razoável (evita erro de digitação do posto)
-                if diff > 0:
-                    n["kmRodado"] = diff
-            km_anterior[placa] = km_atual
-
     # Ordena para salvar (Mais novos primeiro)
-    lista_final = sorted(lista_auditoria, key=lambda x: x.get("dataTransacao", ""), reverse=True)
+    lista_salvar = sorted(lista_final, key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
-    if len(lista_final) >= total_base and len(lista_final) > 0:
+    # Trava de Segurança
+    if len(lista_salvar) >= total_base and len(lista_salvar) > 0:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
-            json.dump(lista_final, f, ensure_ascii=False, indent=2)
-        print(f"✅ SUCESSO! Base auditada e atualizada com {len(lista_final)} notas.")
+            json.dump(lista_salvar, f, ensure_ascii=False, indent=2)
+        print(f"✅ SUCESSO! Base auditada e atualizada com {len(lista_salvar)} notas.")
     else:
-        print("❌ ERRO CRÍTICO: Proteção ativada. Abortando processo.")
+        print(f"❌ ERRO CRÍTICO: Tentou salvar {len(lista_salvar)} mas a base tinha {total_base}. Abortado.")
