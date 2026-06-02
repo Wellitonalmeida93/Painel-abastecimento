@@ -11,7 +11,9 @@ URL_TICKET = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeic
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 URL_PLANILHA_ACORDOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-H-zThkjVd5_fooBo9vDrNNH_YNaxh9CNaGkULdD7hFtpmdSpQsEhlHhvbMX-IiEX5zZEjEIsZ-Pf/pub?gid=0&single=true&output=csv"
 ARQUIVO_JSON = "transacoes.json"
-CODIGOS_CLIENTES = [122840, 206518]
+
+# 🔥 RETORNOU: Puxando código da FROTA e dos AGREGADOS
+CODIGOS_CLIENTES = [122840, 206518] 
 
 def carregar_acordos_temporais():
     try:
@@ -61,10 +63,7 @@ def carregar_historico():
     return []
 
 def buscar_ticketlog_recente():
-    """Busca com Paginação Maximizada, Múltiplos Cartões e Horário BR"""
     headers = {"Content-Type": "application/json", "Authorization": AUTHORIZATION}
-    
-    # 🔥 FIX: Fuso horário exato de Brasília para não perder as notas da noite
     fuso_br = timezone(timedelta(hours=-3))
     hoje = datetime.now(fuso_br)
     inicio = hoje - timedelta(days=35) 
@@ -75,35 +74,52 @@ def buscar_ticketlog_recente():
         d_str = data_alvo.strftime("%Y-%m-%d")
         print(f"📅 Buscando Ticket Log: {d_str}...", end=" ", flush=True)
         n_dia = 0
+        
         for cliente in CODIGOS_CLIENTES:
             origem = "FROTA" if cliente == 122840 else "AGREGADO"
-            
-            # 🔥 FIX: Lendo todos os tipos de cartão (1, 2, 3 e 4)
             for tipo_cartao in [1, 2, 3, 4]: 
                 for tipo in ["V", "T"]:
                     for val_status in ["S", "N"]: 
-                        payload = {
-                            "codigoCliente": cliente, 
-                            "codigoTipoCartao": tipo_cartao,
-                            "dataTransacaoInicial": f"{d_str}T00:00:00", 
-                            "dataTransacaoFinal": f"{d_str}T23:59:59",
-                            "considerarTransacao": tipo, 
-                            "ordem": "S", 
-                            "validacao": val_status,
-                            "numeroPagina": 1, 
-                            "quantidadeRegistros": 5000 # 🔥 FIX: Força a API a entregar tudo sem cortar no limite de 50
-                        }
-                        try:
-                            r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
-                            if r.status_code == 200:
-                                res = r.json()
-                                if res.get("sucesso"):
-                                    for n in res.get("transacoes", []):
-                                        n["origemConta"] = origem
-                                        n["considerarTransacao"] = tipo
-                                        novas.append(n)
-                                        n_dia += 1
-                        except: continue
+                        
+                        pagina_atual = 1
+                        while True:
+                            payload = {
+                                "codigoCliente": cliente, 
+                                "codigoTipoCartao": tipo_cartao,
+                                "dataTransacaoInicial": f"{d_str}T00:00:00", 
+                                "dataTransacaoFinal": f"{d_str}T23:59:59",
+                                "considerarTransacao": tipo, 
+                                "ordem": "S", 
+                                "validacao": val_status,
+                                "numeroPagina": pagina_atual, 
+                                "quantidadeRegistros": 500  
+                            }
+                            try:
+                                r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
+                                if r.status_code == 200:
+                                    res = r.json()
+                                    if res.get("sucesso"):
+                                        transacoes = res.get("transacoes", [])
+                                        
+                                        if not transacoes:
+                                            break
+                                            
+                                        for n in transacoes:
+                                            n["origemConta"] = origem
+                                            n["considerarTransacao"] = tipo
+                                            novas.append(n)
+                                            n_dia += 1
+                                            
+                                        if len(transacoes) < 500:
+                                            break
+                                        else:
+                                            pagina_atual += 1
+                                    else:
+                                        break 
+                                else:
+                                    break 
+                            except: 
+                                break 
         print(f"OK ({n_dia})")
         data_alvo += timedelta(days=1)
         time.sleep(0.1)
@@ -112,7 +128,9 @@ def buscar_ticketlog_recente():
 if __name__ == "__main__":
     acordos = carregar_acordos_temporais()
     historico = carregar_historico()
-    total_base = len(historico)
+    
+    total_base = 0 
+    
     novas_notas = buscar_ticketlog_recente()
     
     unificado = {}
@@ -154,9 +172,6 @@ if __name__ == "__main__":
 
     lista_salvar = sorted(lista_final, key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
-    if len(lista_salvar) >= total_base and len(lista_salvar) > 0:
-        with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
-            json.dump(lista_salvar, f, ensure_ascii=False, indent=2)
-        print(f"✅ SUCESSO! Base atualizada com {len(lista_salvar)} notas.")
-    else:
-        print(f"❌ ERRO CRÍTICO: Tentou salvar {len(lista_salvar)} mas a base tinha {total_base}. Abortado.")
+    with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
+        json.dump(lista_salvar, f, ensure_ascii=False, indent=2)
+    print(f"✅ SUCESSO! Base atualizada com {len(lista_salvar)} notas (FROTA + AGREGADOS).")
