@@ -2,7 +2,7 @@ name: Atualizador de Dados
 
 on:
   schedule:
-    - cron: '0 12,16,20,23,02 * * *'
+    - cron: '0 */3 * * *' # 🔥 Atualizado: Roda a cada 3 horas exatas (00h, 03h, 06h, 09h...)
   workflow_dispatch:
 
 jobs:
