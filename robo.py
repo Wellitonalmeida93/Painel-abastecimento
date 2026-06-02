@@ -3,7 +3,7 @@ import json
 import os
 import pandas as pd
 import io
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 
 # 🔹 CONFIGURAÇÕES
@@ -14,7 +14,6 @@ ARQUIVO_JSON = "transacoes.json"
 CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
-    """Lê a planilha via Requests e organiza por Data"""
     try:
         resposta = requests.get(URL_PLANILHA_ACORDOS, timeout=15)
         resposta.raise_for_status() 
@@ -23,7 +22,6 @@ def carregar_acordos_temporais():
         if 'cnpj' in df.columns:
             df['CNPJ_LIMPO'] = df['cnpj'].astype(str).str.split('.').str[0].str.replace(r'\D', '', regex=True).str.zfill(14)
         else:
-            print("⚠️ Coluna 'cnpj' não encontrada na planilha!")
             return {}
         
         if 'Data' in df.columns:
@@ -39,7 +37,6 @@ def carregar_acordos_temporais():
             cnpj = row['CNPJ_LIMPO']
             dt = row['Data_Validade']
             preco = row.get('Diesel S-10', 0)
-            
             try:
                 preco = float(str(preco).replace(',', '.'))
             except:
@@ -51,24 +48,26 @@ def carregar_acordos_temporais():
             
         return acordos_dict
     except Exception as e:
-        print(f"⚠️ Erro Crítico ao ler planilha de acordos: {e}")
+        print(f"⚠️ Erro ao ler planilha de acordos: {e}")
         return {}
 
 def carregar_historico():
-    """Carrega os dados existentes salvos no GitHub"""
     if os.path.exists(ARQUIVO_JSON):
         try:
             with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except Exception as e:
-            print(f"⚠️ Erro ao abrir histórico: {e}")
+        except:
+            pass
     return []
 
 def buscar_ticketlog_recente():
-    """Busca os dados da TicketLog - TRAZENDO VALIDADAS E NÃO VALIDADAS"""
+    """Busca com Paginação Maximizada, Múltiplos Cartões e Horário BR"""
     headers = {"Content-Type": "application/json", "Authorization": AUTHORIZATION}
-    hoje = datetime.now()
-    inicio = hoje - timedelta(days=35) # Varredura de 35 dias mantida
+    
+    # 🔥 FIX: Fuso horário exato de Brasília para não perder as notas da noite
+    fuso_br = timezone(timedelta(hours=-3))
+    hoje = datetime.now(fuso_br)
+    inicio = hoje - timedelta(days=35) 
     novas = []
     
     data_alvo = inicio
@@ -78,25 +77,33 @@ def buscar_ticketlog_recente():
         n_dia = 0
         for cliente in CODIGOS_CLIENTES:
             origem = "FROTA" if cliente == 122840 else "AGREGADO"
-            for tipo in ["V", "T"]:
-                # 🔥 A MÁGICA ESTÁ AQUI: Rodar para "S" (Sim) e "N" (Não) validadas
-                for val_status in ["S", "N"]: 
-                    payload = {
-                        "codigoCliente": cliente, "codigoTipoCartao": 4,
-                        "dataTransacaoInicial": f"{d_str}T00:00:00", "dataTransacaoFinal": f"{d_str}T23:59:59",
-                        "considerarTransacao": tipo, "ordem": "S", "validacao": val_status
-                    }
-                    try:
-                        r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
-                        if r.status_code == 200:
-                            res = r.json()
-                            if res.get("sucesso"):
-                                for n in res.get("transacoes", []):
-                                    n["origemConta"] = origem
-                                    n["considerarTransacao"] = tipo
-                                    novas.append(n)
-                                    n_dia += 1
-                    except: continue
+            
+            # 🔥 FIX: Lendo todos os tipos de cartão (1, 2, 3 e 4)
+            for tipo_cartao in [1, 2, 3, 4]: 
+                for tipo in ["V", "T"]:
+                    for val_status in ["S", "N"]: 
+                        payload = {
+                            "codigoCliente": cliente, 
+                            "codigoTipoCartao": tipo_cartao,
+                            "dataTransacaoInicial": f"{d_str}T00:00:00", 
+                            "dataTransacaoFinal": f"{d_str}T23:59:59",
+                            "considerarTransacao": tipo, 
+                            "ordem": "S", 
+                            "validacao": val_status,
+                            "numeroPagina": 1, 
+                            "quantidadeRegistros": 5000 # 🔥 FIX: Força a API a entregar tudo sem cortar no limite de 50
+                        }
+                        try:
+                            r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
+                            if r.status_code == 200:
+                                res = r.json()
+                                if res.get("sucesso"):
+                                    for n in res.get("transacoes", []):
+                                        n["origemConta"] = origem
+                                        n["considerarTransacao"] = tipo
+                                        novas.append(n)
+                                        n_dia += 1
+                        except: continue
         print(f"OK ({n_dia})")
         data_alvo += timedelta(days=1)
         time.sleep(0.1)
@@ -104,24 +111,20 @@ def buscar_ticketlog_recente():
 
 if __name__ == "__main__":
     acordos = carregar_acordos_temporais()
-    print(f"📋 Planilha de Preços lida com sucesso! CNPJs cadastrados: {len(acordos)}")
-    
     historico = carregar_historico()
     total_base = len(historico)
-    print(f"📚 Base histórica carregada: {total_base} registros.")
-    
     novas_notas = buscar_ticketlog_recente()
     
     unificado = {}
     for t in historico:
-        chave = str(t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
+        chave = str(t.get('id') or t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
         unificado[chave] = t
 
     for n in novas_notas:
-        chave = str(n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
+        chave = str(n.get('id') or n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
         unificado[chave] = n
 
-    print(f"⚖️ Iniciando Auditoria Financeira em {len(unificado)} registros...")
+    print(f"⚖️ Auditoria e Unificação: {len(unificado)} registros totais.")
     
     lista_final = list(unificado.values())
     
@@ -154,6 +157,6 @@ if __name__ == "__main__":
     if len(lista_salvar) >= total_base and len(lista_salvar) > 0:
         with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
             json.dump(lista_salvar, f, ensure_ascii=False, indent=2)
-        print(f"✅ SUCESSO! Base auditada e atualizada com {len(lista_salvar)} notas.")
+        print(f"✅ SUCESSO! Base atualizada com {len(lista_salvar)} notas.")
     else:
         print(f"❌ ERRO CRÍTICO: Tentou salvar {len(lista_salvar)} mas a base tinha {total_base}. Abortado.")
