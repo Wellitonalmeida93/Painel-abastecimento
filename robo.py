@@ -12,7 +12,7 @@ AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 URL_PLANILHA_ACORDOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-H-zThkjVd5_fooBo9vDrNNH_YNaxh9CNaGkULdD7hFtpmdSpQsEhlHhvbMX-IiEX5zZEjEIsZ-Pf/pub?gid=0&single=true&output=csv"
 ARQUIVO_JSON = "transacoes.json"
 
-# 🔥 RETORNOU: Puxando código da FROTA e dos AGREGADOS
+# 🔥 CÓDIGOS DE FROTA E AGREGADOS MANTIDOS
 CODIGOS_CLIENTES = [122840, 206518] 
 
 def carregar_acordos_temporais():
@@ -81,56 +81,38 @@ def buscar_ticketlog_recente():
                 for tipo in ["V", "T"]:
                     for val_status in ["S", "N"]: 
                         
-                        pagina_atual = 1
-                        while True:
-                            payload = {
-                                "codigoCliente": cliente, 
-                                "codigoTipoCartao": tipo_cartao,
-                                "dataTransacaoInicial": f"{d_str}T00:00:00", 
-                                "dataTransacaoFinal": f"{d_str}T23:59:59",
-                                "considerarTransacao": tipo, 
-                                "ordem": "S", 
-                                "validacao": val_status,
-                                "numeroPagina": pagina_atual, 
-                                "quantidadeRegistros": 500  
-                            }
-                            try:
-                                r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
-                                if r.status_code == 200:
-                                    res = r.json()
-                                    if res.get("sucesso"):
-                                        transacoes = res.get("transacoes", [])
-                                        
-                                        if not transacoes:
-                                            break
-                                            
-                                        for n in transacoes:
-                                            n["origemConta"] = origem
-                                            n["considerarTransacao"] = tipo
-                                            novas.append(n)
-                                            n_dia += 1
-                                            
-                                        if len(transacoes) < 500:
-                                            break
-                                        else:
-                                            pagina_atual += 1
-                                    else:
-                                        break 
-                                else:
-                                    break 
-                            except: 
-                                break 
+                        # 🔥 VOLTAMOS PRO MODO TURBO SEGURO: 5000 Registros de uma vez (Não bloqueia na TicketLog)
+                        payload = {
+                            "codigoCliente": cliente, 
+                            "codigoTipoCartao": tipo_cartao,
+                            "dataTransacaoInicial": f"{d_str}T00:00:00", 
+                            "dataTransacaoFinal": f"{d_str}T23:59:59",
+                            "considerarTransacao": tipo, 
+                            "ordem": "S", 
+                            "validacao": val_status,
+                            "numeroPagina": 1, 
+                            "quantidadeRegistros": 5000  
+                        }
+                        try:
+                            r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
+                            if r.status_code == 200:
+                                res = r.json()
+                                if res.get("sucesso"):
+                                    for n in res.get("transacoes", []):
+                                        n["origemConta"] = origem
+                                        n["considerarTransacao"] = tipo
+                                        novas.append(n)
+                                        n_dia += 1
+                        except: 
+                            continue 
         print(f"OK ({n_dia})")
         data_alvo += timedelta(days=1)
-        time.sleep(0.1)
+        time.sleep(0.1) # Pausa estratégica para enganar o bloqueio da API
     return novas
 
 if __name__ == "__main__":
     acordos = carregar_acordos_temporais()
     historico = carregar_historico()
-    
-    total_base = 0 
-    
     novas_notas = buscar_ticketlog_recente()
     
     unificado = {}
