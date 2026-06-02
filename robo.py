@@ -60,7 +60,9 @@ def buscar_ticketlog_recente():
     headers = {"Content-Type": "application/json", "Authorization": AUTHORIZATION}
     fuso_br = timezone(timedelta(hours=-3))
     hoje = datetime.now(fuso_br)
-    inicio = hoje - timedelta(days=35) 
+    
+    # 🔥 AQUI ESTÁ A MÁGICA: Reduzido de 35 para 3 dias! Muito mais rápido.
+    inicio = hoje - timedelta(days=3) 
     novas = []
     
     data_alvo = inicio
@@ -70,7 +72,6 @@ def buscar_ticketlog_recente():
         n_dia = 0
         
         for cliente in CODIGOS_CLIENTES:
-            # 🔥 REGRA SIMPLES E DIRETA: Pelo código do cliente
             origem = "FROTA" if cliente == 122840 else "AGREGADO"
             
             for tipo_cartao in [1, 2, 3, 4]: 
