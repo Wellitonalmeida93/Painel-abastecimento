@@ -10,6 +10,7 @@ URL_TICKET = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeic
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 URL_PLANILHA_ACORDOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-H-zThkjVd5_fooBo9vDrNNH_YNaxh9CNaGkULdD7hFtpmdSpQsEhlHhvbMX-IiEX5zZEjEIsZ-Pf/pub?gid=0&single=true&output=csv"
 ARQUIVO_JSON = "transacoes.json"
+
 CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
@@ -65,41 +66,39 @@ def buscar_ticketlog_recente():
     data_alvo = inicio
     while data_alvo <= hoje:
         d_str = data_alvo.strftime("%Y-%m-%d")
-        print(f"📅 Buscando Ticket Log: {d_str}...", end=" ", flush=True)
+        print(f"📅 Buscando: {d_str}...", end=" ", flush=True)
         n_dia = 0
         
         for cliente in CODIGOS_CLIENTES:
-            for tipo in ["V", "T"]:
-                for val_status in ["S", "N"]: 
-                    # 🔥 Voltamos para a busca rápida que deu certo!
-                    payload = {
-                        "codigoCliente": cliente, 
-                        "codigoTipoCartao": 4,
-                        "dataTransacaoInicial": f"{d_str}T00:00:00", 
-                        "dataTransacaoFinal": f"{d_str}T23:59:59",
-                        "considerarTransacao": tipo, 
-                        "ordem": "S", 
-                        "validacao": val_status
-                    }
-                    try:
-                        r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
-                        if r.status_code == 200:
-                            res = r.json()
-                            if res.get("sucesso"):
-                                for n in res.get("transacoes", []):
-                                    
-                                    # 🔥 LÓGICA NINJA: Separar Frota e Agregado pelo TIPO FROTA real!
-                                    tipo_frota = str(n.get("tipoFrota") or "").upper()
-                                    if cliente == 206518 or "ALUGADO" in tipo_frota or "TERCEIRO" in tipo_frota:
-                                        n["origemConta"] = "AGREGADO"
-                                    else:
-                                        n["origemConta"] = "FROTA"
-                                        
-                                    n["considerarTransacao"] = tipo
-                                    novas.append(n)
-                                    n_dia += 1
-                    except: 
-                        continue 
+            # 🔥 REGRA SIMPLES E DIRETA: Pelo código do cliente
+            origem = "FROTA" if cliente == 122840 else "AGREGADO"
+            
+            for tipo_cartao in [1, 2, 3, 4]: 
+                for tipo in ["V", "T"]:
+                    for val_status in ["S", "N"]: 
+                        payload = {
+                            "codigoCliente": cliente, 
+                            "codigoTipoCartao": tipo_cartao,
+                            "dataTransacaoInicial": f"{d_str}T00:00:00", 
+                            "dataTransacaoFinal": f"{d_str}T23:59:59",
+                            "considerarTransacao": tipo, 
+                            "ordem": "S", 
+                            "validacao": val_status,
+                            "numeroPagina": 1, 
+                            "quantidadeRegistros": 5000  
+                        }
+                        try:
+                            r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
+                            if r.status_code == 200:
+                                res = r.json()
+                                if res.get("sucesso"):
+                                    for n in res.get("transacoes", []):
+                                        n["origemConta"] = origem
+                                        n["considerarTransacao"] = tipo
+                                        novas.append(n)
+                                        n_dia += 1
+                        except: 
+                            continue 
         print(f"OK ({n_dia})")
         data_alvo += timedelta(days=1)
         time.sleep(0.1)
@@ -112,11 +111,11 @@ if __name__ == "__main__":
     
     unificado = {}
     for t in historico:
-        chave = str(t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
+        chave = str(t.get('id') or t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
         unificado[chave] = t
 
     for n in novas_notas:
-        chave = str(n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
+        chave = str(n.get('id') or n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
         unificado[chave] = n
 
     lista_final = list(unificado.values())
