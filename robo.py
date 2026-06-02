@@ -6,14 +6,11 @@ import io
 from datetime import datetime, timedelta, timezone
 import time
 
-# 🔹 CONFIGURAÇÕES
 URL_TICKET = "https://srv1.ticketlog.com.br/ticketlog-servicos/ebs/transacaoVeiculo/search"
 AUTHORIZATION = "Basic W09wZXJhZG9yV2ViXWFwcDEyMjg0MDQxOTg4OjExO1BTVG55"
 URL_PLANILHA_ACORDOS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-H-zThkjVd5_fooBo9vDrNNH_YNaxh9CNaGkULdD7hFtpmdSpQsEhlHhvbMX-IiEX5zZEjEIsZ-Pf/pub?gid=0&single=true&output=csv"
 ARQUIVO_JSON = "transacoes.json"
-
-# 🔥 CÓDIGOS DE FROTA E AGREGADOS MANTIDOS
-CODIGOS_CLIENTES = [122840, 206518] 
+CODIGOS_CLIENTES = [122840, 206518]
 
 def carregar_acordos_temporais():
     try:
@@ -43,14 +40,11 @@ def carregar_acordos_temporais():
                 preco = float(str(preco).replace(',', '.'))
             except:
                 preco = 0
-            
             if cnpj not in acordos_dict:
                 acordos_dict[cnpj] = []
             acordos_dict[cnpj].append({'data': dt, 'preco': preco})
-            
         return acordos_dict
     except Exception as e:
-        print(f"⚠️ Erro ao ler planilha de acordos: {e}")
         return {}
 
 def carregar_historico():
@@ -58,8 +52,7 @@ def carregar_historico():
         try:
             with open(ARQUIVO_JSON, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except:
-            pass
+        except: pass
     return []
 
 def buscar_ticketlog_recente():
@@ -76,38 +69,40 @@ def buscar_ticketlog_recente():
         n_dia = 0
         
         for cliente in CODIGOS_CLIENTES:
-            origem = "FROTA" if cliente == 122840 else "AGREGADO"
-            for tipo_cartao in [1, 2, 3, 4]: 
-                for tipo in ["V", "T"]:
-                    for val_status in ["S", "N"]: 
-                        
-                        # 🔥 VOLTAMOS PRO MODO TURBO SEGURO: 5000 Registros de uma vez (Não bloqueia na TicketLog)
-                        payload = {
-                            "codigoCliente": cliente, 
-                            "codigoTipoCartao": tipo_cartao,
-                            "dataTransacaoInicial": f"{d_str}T00:00:00", 
-                            "dataTransacaoFinal": f"{d_str}T23:59:59",
-                            "considerarTransacao": tipo, 
-                            "ordem": "S", 
-                            "validacao": val_status,
-                            "numeroPagina": 1, 
-                            "quantidadeRegistros": 5000  
-                        }
-                        try:
-                            r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
-                            if r.status_code == 200:
-                                res = r.json()
-                                if res.get("sucesso"):
-                                    for n in res.get("transacoes", []):
-                                        n["origemConta"] = origem
-                                        n["considerarTransacao"] = tipo
-                                        novas.append(n)
-                                        n_dia += 1
-                        except: 
-                            continue 
+            for tipo in ["V", "T"]:
+                for val_status in ["S", "N"]: 
+                    # 🔥 Voltamos para a busca rápida que deu certo!
+                    payload = {
+                        "codigoCliente": cliente, 
+                        "codigoTipoCartao": 4,
+                        "dataTransacaoInicial": f"{d_str}T00:00:00", 
+                        "dataTransacaoFinal": f"{d_str}T23:59:59",
+                        "considerarTransacao": tipo, 
+                        "ordem": "S", 
+                        "validacao": val_status
+                    }
+                    try:
+                        r = requests.post(URL_TICKET, json=payload, headers=headers, timeout=20)
+                        if r.status_code == 200:
+                            res = r.json()
+                            if res.get("sucesso"):
+                                for n in res.get("transacoes", []):
+                                    
+                                    # 🔥 LÓGICA NINJA: Separar Frota e Agregado pelo TIPO FROTA real!
+                                    tipo_frota = str(n.get("tipoFrota") or "").upper()
+                                    if cliente == 206518 or "ALUGADO" in tipo_frota or "TERCEIRO" in tipo_frota:
+                                        n["origemConta"] = "AGREGADO"
+                                    else:
+                                        n["origemConta"] = "FROTA"
+                                        
+                                    n["considerarTransacao"] = tipo
+                                    novas.append(n)
+                                    n_dia += 1
+                    except: 
+                        continue 
         print(f"OK ({n_dia})")
         data_alvo += timedelta(days=1)
-        time.sleep(0.1) # Pausa estratégica para enganar o bloqueio da API
+        time.sleep(0.1)
     return novas
 
 if __name__ == "__main__":
@@ -117,15 +112,13 @@ if __name__ == "__main__":
     
     unificado = {}
     for t in historico:
-        chave = str(t.get('id') or t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
+        chave = str(t.get('codigoTransacao') or '') + "_" + str(t.get('placa') or '') + "_" + str(t.get('dataTransacao') or '')
         unificado[chave] = t
 
     for n in novas_notas:
-        chave = str(n.get('id') or n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
+        chave = str(n.get('codigoTransacao') or '') + "_" + str(n.get('placa') or '') + "_" + str(n.get('dataTransacao') or '')
         unificado[chave] = n
 
-    print(f"⚖️ Auditoria e Unificação: {len(unificado)} registros totais.")
-    
     lista_final = list(unificado.values())
     
     for n in lista_final:
@@ -156,4 +149,4 @@ if __name__ == "__main__":
 
     with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(lista_salvar, f, ensure_ascii=False, indent=2)
-    print(f"✅ SUCESSO! Base atualizada com {len(lista_salvar)} notas (FROTA + AGREGADOS).")
+    print(f"✅ SUCESSO! Base atualizada com {len(lista_salvar)} notas.")
