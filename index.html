@@ -220,7 +220,6 @@
         </div>
     </div>
 
-    <!-- Abas Gerencial, Inteligência e Sheets -->
     <div id="aba-gerencial" style="display:none;">
         <div class="card-chart" style="margin-bottom: 20px;"><h3><i data-lucide="trending-up" style="color:var(--pizzatto-red)"></i> Evolução Diária (R$)</h3><div style="height: 350px;"><canvas id="graficoEvolucao"></canvas></div></div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
@@ -304,6 +303,27 @@
     const moedaPTBR = v => "R$ " + Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const numeroPTBR = v => Number(v || 0).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
+    // 🔥 FUNÇÃO DOS GRÁFICOS RESTAURADA AQUI:
+    function updateChart(id, tipo, labels, data, label, color, indexAxis = 'x') {
+        if (charts[id]) charts[id].destroy();
+        let ctx = document.getElementById(id).getContext('2d');
+        charts[id] = new Chart(ctx, {
+            type: tipo,
+            data: {
+                labels: labels,
+                datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, borderRadius: 4 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, indexAxis: indexAxis,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+    }
+
     const mapaRegioes = {
         'AC':'NORTE', 'AP':'NORTE', 'AM':'NORTE', 'PA':'NORTE', 'RO':'NORTE', 'RR':'NORTE', 'TO':'NORTE',
         'AL':'NORDESTE', 'BA':'NORDESTE', 'CE':'NORDESTE', 'MA':'NORDESTE', 'PB':'NORDESTE', 'PE':'NORDESTE', 'PI':'NORDESTE', 'RN':'NORDESTE', 'SE':'NORDESTE',
@@ -366,7 +386,7 @@
                 i.odometro = odo;
                 i.kmRodado = 0;
                 
-                // 🔥 PROTEÇÃO CORRIGIDA: Agora ele calcula KM para TUDO (Diesel, Etanol, Gás, etc), EXCETO o ARLA 32!
+                // 🔥 PROTEÇÃO ATIVA: Calcula para todos os combustíveis, EXCETO Arla 32.
                 if (odo > 0 && !i.tipoCombustivel.toUpperCase().includes("ARLA")) {
                     if (ultimosKms[i.placa] && odo >= ultimosKms[i.placa]) {
                         let diff = odo - ultimosKms[i.placa];
@@ -515,7 +535,6 @@
             tLitrosGeral += Number(i.litros || 0); 
             tKmTotal += Number(i.kmRodado || 0);
             
-            // 🔥 Na média KM/L, soma os litros de todos os combustíveis válidos (Tudo, menos Arla)
             if(!i.tipoCombustivel.toUpperCase().includes("ARLA") && Number(i.kmRodado || 0) > 0) {
                 tLitrosCombustivel += Number(i.litros || 0);
             }
