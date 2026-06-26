@@ -209,6 +209,7 @@
                         <th>Produto</th>
                         <th class="num">Litros</th>
                         <th class="num">KM Rodado</th>
+                        <th class="num">Média KM/L</th>
                         <th class="num">Total</th>
                         <th class="num">Vl. Litro</th>
                     </tr>
@@ -515,6 +516,9 @@
             
             let kmText = i.kmRodado > 0 ? `<span class="km-label">+${numeroPTBR(i.kmRodado)} km</span>` : `<span style="color:var(--text-secondary)">--</span>`;
             
+            // NOVO: Cálculo do KM/L da linha
+            let kmlLinhaText = (i.kmRodado > 0 && i.litros > 0) ? `<span style="color:var(--blue); font-weight:bold;">${(i.kmRodado / i.litros).toFixed(2)} km/l</span>` : `<span style="color:var(--text-secondary)">--</span>`;
+            
             tb.innerHTML += `<tr>
                 <td>${dt.toISOString().split("T")[0]} ${dt.toTimeString().split(" ")[0]}</td>
                 <td><strong style="color:var(--text-primary)">${i.placa}</strong></td>
@@ -524,6 +528,7 @@
                 <td>${i.tipoCombustivel}</td>
                 <td class="num">${numeroPTBR(i.litros)}</td>
                 <td class="num" title="Odo: ${i.odometro}">${kmText}</td>
+                <td class="num">${kmlLinhaText}</td>
                 <td class="num">${moedaPTBR(i.valorTransacao)}</td>
                 <td class="num">${moedaPTBR(i.valorLitro)}</td>
             </tr>`;
@@ -671,7 +676,8 @@
     }
 
     function baixarExcel() {
-        let csv = ["DATA;HORA;PLACA;ODOMETRO;KM RODADO;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
+        // NOVO: Coluna MEDIA KM/L adicionada no cabeçalho
+        let csv = ["DATA;HORA;PLACA;ODOMETRO;KM RODADO;MEDIA KM/L;POSTO;CIDADE;UF;PRODUTO;LITROS;VALOR TOTAL;VALOR LITRO;ACORDO;DIVERGENCIA;STATUS;PERDA TOTAL"];
         dadosFiltrados.forEach(i => {
             let d = i.dataTransacao ? new Date(i.dataTransacao) : new Date();
             let data = d.toISOString().split("T")[0];
@@ -684,12 +690,16 @@
             let km = i.kmRodado || 0;
             let odo = i.odometro || 0;
             
+            // NOVO: Lógica de exportação da média na linha
+            let kmlExport = (i.kmRodado > 0 && Number(i.litros || 0) > 0) ? (i.kmRodado / Number(i.litros)).toFixed(2).replace('.', ',') : "";
+            
             let vAcordo = i.precoAcordado ? Number(i.precoAcordado).toFixed(3).replace('.', ',') : "";
             let div = i.divergencia_un ? Number(i.divergencia_un).toFixed(3).replace('.', ',') : "";
             let status = i.status_preco || "";
             let perda = i.perda_total ? Number(i.perda_total).toFixed(2).replace('.', ',') : "";
             
-            csv.push(`${data};${hora};${i.placa};${odo};${km};${i.postoFmt};${i.cidadeFmt};${i.uf};${i.tipoCombustivel};${litros};${vTotal};${vLitro};${vAcordo};${div};${status};${perda}`);
+            // NOVO: Inserção do kmlExport
+            csv.push(`${data};${hora};${i.placa};${odo};${km};${kmlExport};${i.postoFmt};${i.cidadeFmt};${i.uf};${i.tipoCombustivel};${litros};${vTotal};${vLitro};${vAcordo};${div};${status};${perda}`);
         });
 
         let blob = new Blob(["\ufeff" + csv.join("\n")], { type: "text/csv;charset=utf-8" });
