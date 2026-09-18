@@ -46,38 +46,7 @@ def carregar_acordos_temporais():
             acordos_dict[cnpj].append({'data': dt, 'preco': preco})
         return acordos_dict
     except Exception as e:
-        print(f"⚠️ Erro ao carregar acordos: {e}")
         return {}
-
-def carregar_base_anp():
-    """Lê o histórico da ANP gerado e cria um dicionário rápido de busca."""
-    anp_dict = {}
-    if os.path.exists("anp_historico_consolidado.csv"):
-        try:
-            df_anp = pd.read_csv("anp_historico_consolidado.csv", sep=";", encoding="utf-8-sig")
-            df_anp['MUNICÍPIO'] = df_anp['MUNICÍPIO'].astype(str).str.strip().str.upper()
-            df_anp['ESTADO'] = df_anp['ESTADO'].astype(str).str.strip().str.upper()
-            
-            for _, row in df_anp.iterrows():
-                uf = row['ESTADO']
-                cidade = row['MUNICÍPIO']
-                produto = str(row['PRODUTO']).strip().upper()
-                preco_medio = str(row['PREÇO MÉDIO REVENDA']).replace(',', '.')
-                
-                try:
-                    preco_medio = float(preco_medio)
-                except:
-                    preco_medio = 0.0
-                
-                # Cria chave única: Ex: PR_CURITIBA_OLEO DIESEL S10
-                chave = f"{uf}_{cidade}_{produto}"
-                anp_dict[chave] = preco_medio
-        except Exception as e:
-            print(f"⚠️ Erro ao carregar base da ANP: {e}")
-    else:
-        print("⚠️ Arquivo anp_historico_consolidado.csv não encontrado no diretório.")
-        
-    return anp_dict
 
 def carregar_historico():
     if os.path.exists(ARQUIVO_JSON):
@@ -92,6 +61,7 @@ def buscar_ticketlog_recente():
     fuso_br = timezone(timedelta(hours=-3))
     hoje = datetime.now(fuso_br)
     
+    # 🔥 AQUI ESTÁ A MÁGICA: Reduzido de 35 para 3 dias! Muito mais rápido.
     inicio = hoje - timedelta(days=3) 
     novas = []
     
@@ -136,10 +106,7 @@ def buscar_ticketlog_recente():
     return novas
 
 if __name__ == "__main__":
-    print("🚀 Iniciando processamento do Cérebro (Ticket Log + Acordos + ANP)...")
-    
     acordos = carregar_acordos_temporais()
-    anp_dados = carregar_base_anp()
     historico = carregar_historico()
     novas_notas = buscar_ticketlog_recente()
     
@@ -155,62 +122,31 @@ if __name__ == "__main__":
     lista_final = list(unificado.values())
     
     for n in lista_final:
-        # 1. Dados Básicos
         cnpj = str(n.get("cnpjEstablishment") or n.get("cnpjEstabelecimento") or "").replace(".","").replace("-","").replace("/","").zfill(14)
         preco_pago = n.get("valorLitro", 0)
         data_str = n.get("dataTransacao", "").split("T")[0]
-        cidade_transacao = str(n.get("nomeCidade", "")).strip().upper()
-        uf_transacao = str(n.get("uf", "")).strip().upper()
-        produto_transacao = str(n.get("tipoCombustivel", "")).strip().upper()
-        litros = n.get("litros", 0)
         
         try:
             data_transacao = pd.to_datetime(data_str)
         except:
             data_transacao = pd.to_datetime('today')
 
-        # 2. Busca Preço Acordo
         preco_teto = 0
         lista_precos_posto = acordos.get(cnpj, [])
         for acordo in lista_precos_posto:
             if acordo['data'] <= data_transacao:
                 preco_teto = acordo['preco']
         
-        # 3. Busca Preço ANP
-        if "S-10" in produto_transacao or "S10" in produto_transacao:
-            prod_busca = "OLEO DIESEL S10"
-        elif "DIESEL" in produto_transacao:
-            prod_busca = "OLEO DIESEL"
-        else:
-            prod_busca = produto_transacao
-
-        chave_anp = f"{uf_transacao}_{cidade_transacao}_{prod_busca}"
-        preco_anp = anp_dados.get(chave_anp, 0.0)
-
-        # 4. Injeta os 3 Pilares no JSON
-        n["precoFrota"] = preco_pago
-        n["precoAcordado"] = preco_teto
-        n["precoANP"] = preco_anp
-        
-        # 5. Cálculos de Saving e Fugas
         if preco_teto > 0:
+            n["precoAcordado"] = preco_teto
             n["divergencia_un"] = round(preco_pago - preco_teto, 3)
-            n["perda_total"] = round(n["divergencia_un"] * litros, 2)
+            n["perda_total"] = round(n["divergencia_un"] * n.get("litros", 0), 2)
             n["status_preco"] = "FORA" if n["divergencia_un"] > 0.01 else ("ABAIXO" if n["divergencia_un"] < -0.01 else "OK")
         else:
-            n["divergencia_un"] = 0
-            n["perda_total"] = 0
             n["status_preco"] = "N/C"
-
-        if preco_anp > 0:
-            n["performance_anp_un"] = round(preco_pago - preco_anp, 3)
-            n["saving_anp_total"] = round((preco_anp - preco_pago) * litros, 2)
-        else:
-            n["performance_anp_un"] = 0
-            n["saving_anp_total"] = 0
 
     lista_salvar = sorted(lista_final, key=lambda x: x.get("dataTransacao", ""), reverse=True)
 
     with open(ARQUIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(lista_salvar, f, ensure_ascii=False, indent=2)
-    print(f"\n✅ SUCESSO! Base consolidada com {len(lista_salvar)} transações, contendo Acordos e ANP.")
+    print(f"✅ SUCESSO! Base atualizada com {len(lista_salvar)} notas.")
